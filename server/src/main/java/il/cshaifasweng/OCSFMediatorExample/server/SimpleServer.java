@@ -26,6 +26,9 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
+		if(msgString.startsWith("#menu")){
+
+		}
 
 	}
 
