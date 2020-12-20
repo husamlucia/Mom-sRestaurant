@@ -1,12 +1,16 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
+import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
-
+import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 public class SimpleServer extends AbstractServer {
 
 	public SimpleServer(int port) {
@@ -28,13 +32,43 @@ public class SimpleServer extends AbstractServer {
 		if(msgString.startsWith("#requestMenu ")){
 			int id = Integer.parseInt(msgString.substring(13));
 			//Should send to client list of Meals..
+
 			BranchDao brDao = new BranchDao();
 			brDao.openCurrentSession();
-			Branch = brDao.findById(id);
-			brDao.closeCurrentSession();
-			System.out.format("Sent menu to client %s\n", client.getInetAddress().getHostAddress());
+			Branch br = brDao.findById(id),
+					brGlobal = brDao.findById(1);
+			List<Meal> meals = new ArrayList<Meal>(br.getMenu().getMeals());
+			meals.addAll(brGlobal.getMenu().getMeals());
+			Menu menu = new Menu();
+			menu.setMeals(meals);
+			try {
+				client.sendToClient(menu);
+				System.out.format("Sent menu to client %s\n", client.getInetAddress().getHostAddress());
+			}
+			 catch (IOException e){
+			e.printStackTrace();
 		}
+			brDao.closeCurrentSession();
+		}
+		else if(msgString.startsWith("#initalizeRestaurant")){
 
+		}
+		else if(msgString.startsWith("#addBranch")){
+			// #addBranch 17:00 20:00
+			String open = msgString.substring(11,16);
+			String close = msgString.substring(17,22);
+			Branch newBranch = new Branch(open,close);
+			BranchDao brDao = new BranchDao();
+			brDao.openCurrentSession();
+			brDao.save(newBranch);
+			brDao.closeCurrentSession();
+
+			MenuDao mDao = new MenuDao();
+			mDao.openCurrentSession();
+			mDao.save(newBranch.getMenu());
+			mDao.closeCurrentSession();
+
+		}
 	}
 
 }

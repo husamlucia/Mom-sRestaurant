@@ -6,6 +6,10 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
+
+import java.util.List;
+
 public class BranchDao implements Dao<Branch>{
     private static Session currentSession;
 

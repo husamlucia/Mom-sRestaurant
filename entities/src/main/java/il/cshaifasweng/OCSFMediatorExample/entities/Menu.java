@@ -1,25 +1,45 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import org.dom4j.Branch;
-import org.hibernate.annotations.Table;
 
 import javax.management.loading.PrivateClassLoader;
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "Menu")
+@Table(name = "menu")
 public class Menu {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
+    @OneToMany
     @Column(name = "meals")
-    private List<Meal> Meals;
+    private List<Meal> meals;
 
-
-    Menu(List<Meal> meals){
-        this.Meals = meals;
+    public Menu(){
+        this.meals = new ArrayList<>();
     }
 
+    void addMeal(Meal meal){
+        meals.add(meal);
+    }
 
+    public int getId() {
+        return id;
+    }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Meal> getMeals() {
+        return meals;
+    }
+
+    public void setMeals(List<Meal> meals) {
+        this.meals = meals;
+    }
 }

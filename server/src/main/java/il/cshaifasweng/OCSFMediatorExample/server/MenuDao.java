@@ -11,8 +11,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 import java.util.function.Consumer;
-
+import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
 public class MenuDao implements Dao<Menu>{
     private static Session currentSession;
 
