@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -63,6 +64,12 @@ public class App extends Application {
     	
     }
 
+    @Subscribe
+    public void onMenuEvent(MenuEvent event){
+        Platform.runLater(()->{
+            //It has MenuEvent which has "Menu" as attribute. Now gotta transform it to "TableView"..
+        });
+    }
 	public static void main(String[] args) {
         launch();
     }

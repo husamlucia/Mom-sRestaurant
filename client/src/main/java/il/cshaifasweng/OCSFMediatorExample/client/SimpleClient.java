@@ -18,7 +18,9 @@ public class SimpleClient extends AbstractClient {
 		if (msg.getClass().equals(Warning.class)) {
 			EventBus.getDefault().post(new WarningEvent((Warning) msg));
 		}
-
+		else if(msg.getClass().equals(Branch.class)){
+			EventBus.getDefault().post(new MenuEvent((Menu) msg.getMenu()));
+		}
 	}
 	
 	public static SimpleClient getClient() {

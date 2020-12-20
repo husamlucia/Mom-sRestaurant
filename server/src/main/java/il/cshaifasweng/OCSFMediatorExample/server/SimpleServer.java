@@ -11,7 +11,6 @@ public class SimpleServer extends AbstractServer {
 
 	public SimpleServer(int port) {
 		super(port);
-		
 	}
 
 	@Override
@@ -26,8 +25,14 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
-		if(msgString.startsWith("#menu")){
-
+		if(msgString.startsWith("#requestMenu ")){
+			int id = Integer.parseInt(msgString.substring(13));
+			//Should send to client list of Meals..
+			BranchDao brDao = new BranchDao();
+			brDao.openCurrentSession();
+			Branch = brDao.findById(id);
+			brDao.closeCurrentSession();
+			System.out.format("Sent menu to client %s\n", client.getInetAddress().getHostAddress());
 		}
 
 	}
