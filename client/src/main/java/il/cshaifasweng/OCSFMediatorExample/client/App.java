@@ -1,7 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,6 +14,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -63,13 +67,18 @@ public class App extends Application {
     	});
     	
     }
-
+    
     @Subscribe
     public void onMenuEvent(MenuEvent event){
         Platform.runLater(()->{
             //It has MenuEvent which has "Menu" as attribute. Now gotta transform it to "TableView"..
+            ObservableList<Meal> MealList = FXCollections.observableArrayList();
+            MealList.addAll(event.getMenu().getMeals());
+            TableView tbl = (TableView) scene.lookup("menuTable");
+            tbl.setItems(MealList);
         });
     }
+
 	public static void main(String[] args) {
         launch();
     }
