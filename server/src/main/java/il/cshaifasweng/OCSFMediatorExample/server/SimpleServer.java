@@ -29,12 +29,13 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
-		if(msgString.startsWith("#requestMenu ")){
+		else if(msgString.startsWith("#requestMenu ")){
 			int id = Integer.parseInt(msgString.substring(13));
 			//Should send to client list of Meals..
 
 			BranchDao brDao = new BranchDao();
 			brDao.openCurrentSession();
+
 			Branch br = brDao.findById(id),
 					brGlobal = brDao.findById(1);
 			List<Meal> meals = new ArrayList<Meal>(br.getMenu().getMeals());
@@ -50,24 +51,24 @@ public class SimpleServer extends AbstractServer {
 		}
 			brDao.closeCurrentSession();
 		}
-		else if(msgString.startsWith("#initalizeRestaurant")){
-
-		}
-		else if(msgString.startsWith("#addBranch")){
+		else if(msgString.startsWith("#addBranch ")){
+			System.out.format("Hey");
 			// #addBranch 17:00 20:00
 			String open = msgString.substring(11,16);
 			String close = msgString.substring(17,22);
 			Branch newBranch = new Branch(open,close);
+
 			BranchDao brDao = new BranchDao();
-			brDao.openCurrentSession();
+			brDao.openCurrentSessionwithTransaction();
 			brDao.save(newBranch);
-			brDao.closeCurrentSession();
+			brDao.closeCurrentSessionwithTransaction();
 
 			MenuDao mDao = new MenuDao();
-			mDao.openCurrentSession();
+			mDao.openCurrentSessionwithTransaction();
 			mDao.save(newBranch.getMenu());
-			mDao.closeCurrentSession();
+			mDao.closeCurrentSessionwithTransaction();
 
+			System.out.format("Hey");
 		}
 	}
 

@@ -61,6 +61,7 @@ public class BranchDao implements Dao<Branch>{
     }
 
     public void save(Branch entity) {
+
         getCurrentSession().save(entity);
     }
 
