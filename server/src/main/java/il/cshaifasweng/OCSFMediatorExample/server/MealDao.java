@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
 import org.hibernate.HibernateException;
@@ -9,7 +10,7 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
+import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import org.hibernate.service.ServiceRegistry;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -17,12 +18,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 
-public class BranchDao implements Dao<Branch> {
+public class MealDao implements Dao<Meal> {
     private static Session currentSession;
 
     private static Transaction currentTransaction;
 
-    public BranchDao() {
+    public MealDao() {
     }
 
     public Session openCurrentSession() {
@@ -80,39 +81,39 @@ public class BranchDao implements Dao<Branch> {
         this.currentTransaction = currentTransaction;
     }
 
-    public void save(Branch entity) {
+    public void save(Meal entity) {
         getCurrentSession().save(entity);
         getCurrentSession().flush();
     }
 
     @Override
-    public void update(Branch entity) {
+    public void update(Meal entity) {
         getCurrentSession().update(entity);
     }
     @Override
-    public Branch findById(int id) {
+    public Meal findById(int id) {
 
-        Branch book = (Branch) getCurrentSession().get(Branch.class, id);
+        Meal book = (Meal) getCurrentSession().get(Meal.class, id);
         return book;
     }
 
     @Override
-    public void delete(Branch entity) {
+    public void delete(Meal entity) {
         getCurrentSession().delete(entity);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Branch> findAll() {
+    public List<Meal> findAll() {
         CriteriaBuilder builder = getCurrentSession().getCriteriaBuilder();
-        CriteriaQuery<Branch> query = builder.createQuery(Branch.class);
-        List<Branch> books = (List<Branch>) getCurrentSession().createQuery(query).list();
+        CriteriaQuery<Meal> query = builder.createQuery(Meal.class);
+        List<Meal> books = (List<Meal>) getCurrentSession().createQuery(query).list();
         return books;
     }
     @Override
     public void deleteAll() {
-        List<Branch> entityList = findAll();
-        for (Branch entity : entityList) {
+        List<Meal> entityList = findAll();
+        for (Meal entity : entityList) {
             delete(entity);
         }
     }
