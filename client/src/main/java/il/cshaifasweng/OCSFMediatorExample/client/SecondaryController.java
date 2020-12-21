@@ -73,7 +73,7 @@ public class SecondaryController {
         int brId = Integer.parseInt(branchIdTF.getText());
         String  msg = "#removeMeal"+  " "+brId;
         try {
-            SimpleClient.getClient().sendToServer(msg);
+            SimpleClient.getClient().sendToServer(msg);//hihi
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
