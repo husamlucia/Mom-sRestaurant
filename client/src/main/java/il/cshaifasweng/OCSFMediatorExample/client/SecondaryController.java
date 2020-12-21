@@ -70,7 +70,14 @@ public class SecondaryController {
 
     @FXML
     void removeMeal(ActionEvent event) {
-
+        int brId = Integer.parseInt(branchIdTF.getText());
+        String  msg = "#removeMeal"+  " "+brId;
+        try {
+            SimpleClient.getClient().sendToServer(msg);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 //    @FXML
