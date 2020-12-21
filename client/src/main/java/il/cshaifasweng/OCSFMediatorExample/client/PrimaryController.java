@@ -40,6 +40,7 @@ public class PrimaryController implements Initializable {
 	@FXML
 	void showEditMenuScreen(ActionEvent event)  throws IOException{
 		App.setRoot("secondary");
+		//
 	}
 
 
