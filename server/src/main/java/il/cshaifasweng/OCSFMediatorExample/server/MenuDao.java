@@ -1,5 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
+import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -25,11 +27,8 @@ public class MenuDao implements Dao<Menu>{
         return currentSession;
     }
     public Session openCurrentSessionwithTransaction() {
-        System.out.println("2");
         currentSession = getSessionFactory().openSession();
-        System.out.println("2");
         currentTransaction = currentSession.beginTransaction();
-        System.out.println("2");
         return currentSession;
     }
 
@@ -44,7 +43,10 @@ public class MenuDao implements Dao<Menu>{
 
     private static SessionFactory getSessionFactory() throws HibernateException {
         Configuration configuration = new Configuration();
+
+        configuration.addAnnotatedClass(Branch.class);
         configuration.addAnnotatedClass(Menu.class);
+        configuration.addAnnotatedClass(Meal.class);
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
                 .build();

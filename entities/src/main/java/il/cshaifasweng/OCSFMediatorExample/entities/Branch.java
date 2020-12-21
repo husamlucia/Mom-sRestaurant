@@ -8,12 +8,12 @@ import javax.persistence.*;
 public class Branch {
 
     @Id
-    @GeneratedValue(generator = "applicationLockSequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @OneToOne(mappedBy = "branch")
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="menu_id")
     private Menu menu;
 
     @Column(name = "openh")

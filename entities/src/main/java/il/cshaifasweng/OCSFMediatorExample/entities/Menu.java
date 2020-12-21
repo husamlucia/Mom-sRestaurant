@@ -9,24 +9,12 @@ import java.util.*;
 public class Menu {
 
     @Id
-    @Column(name = "branch_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "menu_id")
     private int id;
 
     @OneToMany(mappedBy="menu")
     private List<Meal> meals;
-
-    @OneToOne
-    @MapsId
-    @JoinColumn(name="branch_id")
-    private Branch branch;
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch= branch;
-    }
 
     public Menu(){
         this.meals = new ArrayList<>();

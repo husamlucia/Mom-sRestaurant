@@ -16,7 +16,7 @@ public class Meal{
     private int id;
 
     @ManyToOne
-    @JoinColumn(name="menu_id", referencedColumnName = "id")
+    @JoinColumn(name="menu_id", referencedColumnName = "menu_id")
     private Menu menu;
 
     @Column(name = "name")
@@ -25,19 +25,15 @@ public class Meal{
     @Column(name = "price")
     private double price;
 
-    @Column(name = "branch")
-    private Branch branch;
-
     @Column(name = "ingredients")
     private String ingredients;
 
     @Column(name = "image")
     private int[] Image;
 
-    public Meal(String name, double price, Branch branch, String ingredients, int[] image) {
+    public Meal(String name, double price, String ingredients, int[] image) {
         this.name = name;
         this.price = price;
-        this.branch = branch;
         this.ingredients = ingredients;
         Image = image;
     }

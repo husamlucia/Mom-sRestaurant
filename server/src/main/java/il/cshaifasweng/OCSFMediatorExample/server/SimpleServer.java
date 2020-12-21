@@ -53,19 +53,19 @@ public class SimpleServer extends AbstractServer {
 		}
 		else if(msgString.startsWith("#addBranch ")){
 			// #addBranch 17:00 20:00
-			String open = msgString.substring(11,16);
-			String close = msgString.substring(17,22);
+			try {
+				String open = msgString.substring(11,16);
+				String close = msgString.substring(17,22);
 
-			BranchServices brDao = new BranchServices();
-			MenuService menuDao = new MenuService();
+				BranchServices brDao = new BranchServices();
+				MenuService menuDao = new MenuService();
 
-			Branch newBranch = new Branch(open,close);
-			newBranch.getMenu().setBranch(newBranch);
+				Branch newBranch = new Branch(open,close);
+				brDao.save(newBranch);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
 
-			brDao.save(newBranch);
-			menuDao.save(newBranch.getMenu());
-
-			System.out.format("Hey");
 		}
 	}
 
