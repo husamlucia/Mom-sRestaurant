@@ -20,7 +20,11 @@ public class SecondaryController {
     private TextField branchIdTF;
 
     @FXML
-    void activateFields(ActionEvent event) {
+    void addMeal(ActionEvent event) {
+        nameTF.setText("");
+        ingredientsTF.setText("");
+        priceTF.setText("");
+        branchIdTF.setText("");
         nameTF.setEnabled(true);
         ingredientsTF.setEnabled(true);
         priceTF.setEnabled(true);
@@ -28,7 +32,7 @@ public class SecondaryController {
     }
 
     @FXML
-    void addMeal(ActionEvent event) {
+    void save(ActionEvent event) {
         String Name, Ingredients;
         int brId;
         double price;
@@ -38,7 +42,9 @@ public class SecondaryController {
         price = Double.parseDouble(priceTF.getText());
 
         String msg;
+
         msg = "#addMeal " + ' ' + brId + ' ' + Name + ' ' + price + ' ' + Ingredients;
+
         try {
             SimpleClient.getClient().sendToServer(msg);
         } catch (IOException e) {
@@ -53,7 +59,10 @@ public class SecondaryController {
 
     @FXML
     void editMeal(ActionEvent event) {
-
+        nameTF.setEnabled(true);
+        ingredientsTF.setEnabled(true);
+        priceTF.setEnabled(true);
+        branchIdTF.setEnabled(true);
     }
 
     @FXML
@@ -63,7 +72,14 @@ public class SecondaryController {
 
     @FXML
     void removeMeal(ActionEvent event) {
-
+        int brId = Integer.parseInt(branchIdTF.getText());
+        String  msg = "#removeMeal"+  " "+brId;
+        try {
+            SimpleClient.getClient().sendToServer(msg);//hihi
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 //    @FXML
