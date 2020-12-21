@@ -37,6 +37,12 @@ public class PrimaryController implements Initializable {
 	@FXML
 	private TableColumn menuColIng;
 
+	@FXML
+	void showEditMenuScreen(ActionEvent event)  throws IOException{
+		App.setRoot("secondary");
+	}
+
+
 
 	public void initialize(URL url, ResourceBundle rb) {
 		//each cellValueFactory has been set according to the member variables of your entity class
