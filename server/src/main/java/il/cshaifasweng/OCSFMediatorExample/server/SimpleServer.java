@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
@@ -65,6 +66,26 @@ public class SimpleServer extends AbstractServer {
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
 			}
+
+		}
+		else if(msgString.startsWith("#addMeal ")){
+			String[] attributes = msgString.substring(9).split("\\s+");
+			int branchID = Integer.parseInt(attributes[0]);
+			String name = attributes[1];
+			Double price = Double.parseDouble(attributes[2]);
+			String[] ing = Arrays.copyOfRange(attributes, 3, attributes.length);
+			List<String> ingredients = Arrays.asList(ing);
+
+
+			BranchServices brService = new BranchServices();
+
+			Branch br = brService.findById(branchID);
+
+			MealService mealService = new MealService();
+
+			Meal newMeal = new Meal(name,price, ingredients);
+			newMeal.setMenu(br.getMenu());
+			mealService.save(newMeal);
 
 		}
 	}
