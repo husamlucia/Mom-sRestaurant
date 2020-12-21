@@ -38,7 +38,7 @@ public class SecondaryController {
         price = Double.parseDouble(priceTF.getText());
 
         String msg;
-        msg = brId + Name + price + Ingredients;
+        msg = "#addMeal " + ' ' + brId + ' ' + Name + ' ' + price + ' ' + Ingredients;
         try {
             SimpleClient.getClient().sendToServer(msg);
         } catch (IOException e) {

@@ -43,7 +43,6 @@ public class PrimaryController implements Initializable {
 	}
 
 
-
 	public void initialize(URL url, ResourceBundle rb) {
 		//each cellValueFactory has been set according to the member variables of your entity class
 		menuColID.setCellValueFactory(new PropertyValueFactory<Meal, Integer>("id"));
