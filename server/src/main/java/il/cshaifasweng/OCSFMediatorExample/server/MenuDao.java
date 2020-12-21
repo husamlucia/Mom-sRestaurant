@@ -13,6 +13,8 @@ import org.hibernate.cfg.Configuration;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
 import org.hibernate.service.ServiceRegistry;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 public class MenuDao implements Dao<Menu>{
@@ -93,7 +95,9 @@ public class MenuDao implements Dao<Menu>{
     @Override
     @SuppressWarnings("unchecked")
     public List<Menu> findAll() {
-        List<Menu> books = (List<Menu>) getCurrentSession().createQuery("from Book").list();
+        CriteriaBuilder builder = getCurrentSession().getCriteriaBuilder();
+        CriteriaQuery<Menu> query = builder.createQuery(Menu.class);
+        List<Menu> books = (List<Menu>) getCurrentSession().createQuery(query).list();
         return books;
     }
 
