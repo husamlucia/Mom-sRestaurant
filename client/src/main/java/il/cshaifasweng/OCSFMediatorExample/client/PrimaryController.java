@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
@@ -23,6 +24,10 @@ public class PrimaryController implements Initializable {
 	private TextField textClose;
 
 	@FXML
+	private TextField branchIDTF;
+
+
+	@FXML
 	private TableView<Meal> menuTable;
 
 	@FXML
@@ -40,22 +45,22 @@ public class PrimaryController implements Initializable {
 	@FXML
 	void showEditMenuScreen(ActionEvent event)  throws IOException{
 		App.setRoot("secondary");
-		//
 	}
 
 
-	public void initialize(URL url, ResourceBundle rb) {
-		//each cellValueFactory has been set according to the member variables of your entity class
-		menuColID.setCellValueFactory(new PropertyValueFactory<Meal, Integer>("id"));
-		menuColName.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
-		menuColPrice.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
-		menuColIng.setCellValueFactory(new PropertyValueFactory<Meal, String>("ingredients"));
-	}
+		public void initialize(URL url, ResourceBundle rb) {
+			//each cellValueFactory has been set according to the member variables of your entity class
+			menuColID.setCellValueFactory(new PropertyValueFactory<Meal, Integer>("id"));
+			menuColName.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
+			menuColPrice.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
+			menuColIng.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
+		}
 
 	@FXML
 	void requestMenu(ActionEvent event) {
 		try {
-			SimpleClient.getClient().sendToServer("#requestMenu");
+			String message = "#requestMenu " + branchIDTF.getText();
+			SimpleClient.getClient().sendToServer(message);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

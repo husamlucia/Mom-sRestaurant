@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import org.hibernate.annotations.CollectionId;
+
+import java.io.Serializable;
 import java.util.*;
 
 import javax.persistence.*;
@@ -8,12 +10,20 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "meals")// create table of meal in database
-public class Meal{
+public class Meal implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @ManyToOne
     @JoinColumn(name="menu_id", referencedColumnName = "menu_id")
@@ -25,13 +35,13 @@ public class Meal{
     @Column(name = "price")
     private double price;
 
-    @ElementCollection
-    @CollectionTable(name= "ingredients")
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> ingredients;
 
-    @Column(name = "image")
-    private int[] Image;
 
+    public Meal(){
+
+    }
     public Meal(String name, double price, List<String> ingredients) {
         this.name = name;
         this.price = price;
@@ -68,13 +78,5 @@ public class Meal{
 
     public void setIngredients(List<String> ingredients) {
         this.ingredients = ingredients;
-    }
-
-    public int[] getImage() {
-        return Image;
-    }
-
-    public void setImage(int[] image) {
-        Image = image;
     }
 }

@@ -2,25 +2,26 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.management.loading.PrivateClassLoader;
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
 @Table(name = "menus")
-public class Menu {
+public class Menu implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id")
     private int id;
 
-    @OneToMany(mappedBy="menu")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy="menu")
     private List<Meal> meals;
 
     public Menu(){
         this.meals = new ArrayList<>();
     }
 
-    void addMeal(Meal meal){
+    public void addMeal(Meal meal){
         meals.add(meal);
     }
 

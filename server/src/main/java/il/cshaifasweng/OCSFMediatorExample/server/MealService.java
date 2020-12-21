@@ -33,9 +33,9 @@ public class MealService {
     }
 
     public Meal findById(int id) {
-        mealDao.openCurrentSession();
-        mealDao.closeCurrentSessionwithTransaction();
+        mealDao.openCurrentSessionwithTransaction();
         Meal br = mealDao.findById(id);
+        mealDao.closeCurrentSessionwithTransaction();
         return br;
     }
 
@@ -48,7 +48,7 @@ public class MealService {
     }
 
     public List<Meal> findAll() {
-        mealDao.openCurrentSession();
+        mealDao.openCurrentSessionwithTransaction();
         List<Meal> meals = mealDao.findAll();
         mealDao.closeCurrentSessionwithTransaction();
         return meals;

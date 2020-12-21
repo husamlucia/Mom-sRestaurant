@@ -105,10 +105,8 @@ public class MealDao implements Dao<Meal> {
     @Override
     @SuppressWarnings("unchecked")
     public List<Meal> findAll() {
-        CriteriaBuilder builder = getCurrentSession().getCriteriaBuilder();
-        CriteriaQuery<Meal> query = builder.createQuery(Meal.class);
-        List<Meal> books = (List<Meal>) getCurrentSession().createQuery(query).list();
-        return books;
+        List<Meal> meals = (List<Meal>) getCurrentSession().createQuery("from Meal").list();
+        return meals;
     }
     @Override
     public void deleteAll() {

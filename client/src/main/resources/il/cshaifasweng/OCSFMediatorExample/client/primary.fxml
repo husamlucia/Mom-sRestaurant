@@ -26,6 +26,8 @@
             <Button mnemonicParsing="false" onAction="#sendWarning" text="Send me a warning!" />
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
+                  <Label text="Branch no." />
+                  <TextField fx:id="branchIDTF" />
                   <Button fx:id="menuBtn" mnemonicParsing="false" onAction="#requestMenu" text="Show Menu" />
                   <TableView fx:id="menuTable" prefHeight="200.0" prefWidth="200.0">
                     <columns>

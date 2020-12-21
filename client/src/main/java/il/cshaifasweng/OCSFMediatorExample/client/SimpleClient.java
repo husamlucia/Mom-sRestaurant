@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
+import il.cshaifasweng.OCSFMediatorExample.entities.MenuPOJO;
 import org.greenrobot.eventbus.EventBus;
 
 import il.cshaifasweng.OCSFMediatorExample.client.ocsf.AbstractClient;
@@ -22,6 +23,9 @@ public class SimpleClient extends AbstractClient {
 		}
 		else if(msg.getClass().equals(Menu.class)){
 			EventBus.getDefault().post(new MenuEvent((Menu) msg));
+		}
+		else if(msg.getClass().equals(MenuPOJO.class)){
+			EventBus.getDefault().post(new AllMealsEvent((MenuPOJO) msg));
 		}
 	}
 	

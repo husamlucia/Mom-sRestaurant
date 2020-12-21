@@ -59,4 +59,8 @@ public class Branch {
         this.closeHours = closeHours;
         this.menu = new Menu();
     }
+
+    public Branch(){
+
+    }
 }

@@ -33,9 +33,9 @@ public class MenuService {
     }
 
     public Menu findById(int id) {
-        menuDao.openCurrentSession();
-        menuDao.closeCurrentSessionwithTransaction();
+        menuDao.openCurrentSessionwithTransaction();
         Menu br = menuDao.findById(id);
+        menuDao.closeCurrentSessionwithTransaction();
         return br;
     }
 

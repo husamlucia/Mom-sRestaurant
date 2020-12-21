@@ -1,7 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
-import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
@@ -10,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
-import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 public class SimpleServer extends AbstractServer {
 
 	public SimpleServer(int port) {
@@ -30,17 +27,55 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
+		else if(msgString.startsWith("#updateMeal ")){
+			try {
+				String[] attributes = msgString.substring(12).split("\\s+");
+				int mealID = Integer.parseInt(attributes[0]);
+				String name = attributes[1];
+				Double price = Double.parseDouble(attributes[2]);
+				String[] ing = Arrays.copyOfRange(attributes, 3, attributes.length);
+				List<String> ingredients = Arrays.asList(ing);
+				for(String str: ingredients){
+					System.out.println(str);
+				}
+
+				MealService mService = new MealService();
+				Meal meal = mService.findById(mealID);
+				meal.setName(name);
+				meal.setPrice(price);
+				meal.setIngredients(ingredients);
+				mService.update(meal);
+
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+		else if(msgString.startsWith("#removeMeal ")){
+			int id = Integer.parseInt(msgString.substring(12));
+			MealService mService = new MealService();
+			MenuService menuService = new MenuService();
+
+			Meal meal = mService.findById(id);
+			Menu newMenu = meal.getMenu();
+			newMenu.getMeals().remove(meal);
+
+			//menuService.update(newMenu);
+			mService.delete(id);
+		}
 		else if(msgString.startsWith("#requestMenu ")){
 			int id = Integer.parseInt(msgString.substring(13));
 			//Should send to client list of Meals..
 
-			BranchDao brDao = new BranchDao();
-			brDao.openCurrentSession();
+			BranchServices brDao = new BranchServices();
 
-			Branch br = brDao.findById(id),
-					brGlobal = brDao.findById(1);
+			Branch br = brDao.findById(id);
+			Branch brGlobal = brDao.findById(1);
+
+
 			List<Meal> meals = new ArrayList<Meal>(br.getMenu().getMeals());
 			meals.addAll(brGlobal.getMenu().getMeals());
+
+
 			Menu menu = new Menu();
 			menu.setMeals(meals);
 			try {
@@ -50,7 +85,6 @@ public class SimpleServer extends AbstractServer {
 			 catch (IOException e){
 			e.printStackTrace();
 		}
-			brDao.closeCurrentSession();
 		}
 		else if(msgString.startsWith("#addBranch ")){
 			// #addBranch 17:00 20:00
@@ -60,7 +94,6 @@ public class SimpleServer extends AbstractServer {
 
 				BranchServices brDao = new BranchServices();
 				MenuService menuDao = new MenuService();
-
 				Branch newBranch = new Branch(open,close);
 				brDao.save(newBranch);
 			} catch (Exception e) {
@@ -69,24 +102,57 @@ public class SimpleServer extends AbstractServer {
 
 		}
 		else if(msgString.startsWith("#addMeal ")){
-			String[] attributes = msgString.substring(9).split("\\s+");
-			int branchID = Integer.parseInt(attributes[0]);
-			String name = attributes[1];
-			Double price = Double.parseDouble(attributes[2]);
-			String[] ing = Arrays.copyOfRange(attributes, 3, attributes.length);
-			List<String> ingredients = Arrays.asList(ing);
+
+			try {
+				String[] attributes = msgString.substring(9).split("\\s+");
+				int branchID = Integer.parseInt(attributes[0]);
+				String name = attributes[1];
+				Double price = Double.parseDouble(attributes[2]);
+				String[] ing = Arrays.copyOfRange(attributes, 3, attributes.length);
+				List<String> ingredients = Arrays.asList(ing);
+				for(String str: ingredients){
+					System.out.println(str);
+				}
+
+				Meal newMeal = new Meal(name,price, ingredients);
 
 
-			BranchServices brService = new BranchServices();
+				BranchServices brService = new BranchServices();
+				MealService mealService = new MealService();
 
-			Branch br = brService.findById(branchID);
+				Branch br = brService.findById(branchID);
+				Menu menu = br.getMenu();
 
+				newMeal.setMenu(menu);
+				mealService.save(newMeal);
+
+				menu.addMeal(newMeal);
+				System.out.println("Done.");
+
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			}
+
+		}
+		else if(msgString.startsWith("#getAllMeals")){
+			//Should send to client list of Meals..
+			System.out.println("1");
 			MealService mealService = new MealService();
+			System.out.println("1");
 
-			Meal newMeal = new Meal(name,price, ingredients);
-			newMeal.setMenu(br.getMenu());
-			mealService.save(newMeal);
-
+			List<Meal> meals = mealService.findAll();
+			System.out.println("1");
+			MenuPOJO menu = new MenuPOJO();
+			System.out.println("1");
+			menu.setMeals(meals);
+			System.out.println("1");
+			try {
+				client.sendToClient(menu);
+				System.out.format("Sent all meals to client %s\n", client.getInetAddress().getHostAddress());
+			}
+			catch (IOException e){
+				e.printStackTrace();
+			}
 		}
 	}
 

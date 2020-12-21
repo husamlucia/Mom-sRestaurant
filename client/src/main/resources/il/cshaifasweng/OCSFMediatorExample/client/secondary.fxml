@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="587.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="587.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.SecondaryController">
    <children>
       <Button layoutX="14.0" layoutY="24.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="54.0" text="&lt;" />
       <Button layoutX="431.0" layoutY="37.0" mnemonicParsing="false" onAction="#activateFields" prefHeight="25.0" prefWidth="132.0" text="Add Meal" />
@@ -20,15 +20,15 @@
       <TextField fx:id="ingredientsTF" disable="true" layoutX="431.0" layoutY="165.0" prefHeight="25.0" prefWidth="132.0" />
       <Text layoutX="440.0" layoutY="213.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price" />
       <TextField fx:id="priceTF" disable="true" layoutX="431.0" layoutY="217.0" prefHeight="25.0" prefWidth="132.0" />
-      <TableView layoutX="98.0" layoutY="106.0" prefHeight="252.0" prefWidth="317.0">
-        <columns>
-          <TableColumn prefWidth="87.19995880126953" text="Name" />
-          <TableColumn prefWidth="85.5999755859375" text="Ingredients" />
-            <TableColumn prefWidth="60.79998779296875" text="Price" />
-            <TableColumn prefWidth="84.79998779296875" />
-        </columns>
-      </TableView>
       <Text layoutX="436.0" layoutY="268.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Branch ID" wrappingWidth="59.6953125" />
       <TextField fx:id="branchIdTF" disable="true" layoutX="430.0" layoutY="279.0" prefHeight="25.0" prefWidth="132.0" />
+      <TableView fx:id="menuTable1" layoutX="106.0" layoutY="100.0" prefHeight="258.0" prefWidth="294.0">
+         <columns>
+            <TableColumn fx:id="menuColID1" prefWidth="25.5999755859375" text="ID" />
+            <TableColumn fx:id="menuColName1" prefWidth="50.39996337890625" text="Name" />
+            <TableColumn fx:id="menuColPrice1" prefWidth="40.79998779296875" text="Price" />
+            <TableColumn fx:id="menuColIng1" prefWidth="96.79997863769532" text="Ingredients" />
+         </columns>
+      </TableView>
    </children>
 </Pane>

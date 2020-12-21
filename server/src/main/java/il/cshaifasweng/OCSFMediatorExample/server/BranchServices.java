@@ -41,9 +41,9 @@ public class BranchServices {
     }
 
     public Branch findById(int id) {
-        brDao.openCurrentSession();
-        brDao.closeCurrentSessionwithTransaction();
+        brDao.openCurrentSessionwithTransaction();
         Branch br = brDao.findById(id);
+        brDao.closeCurrentSessionwithTransaction();
         return br;
     }
 
