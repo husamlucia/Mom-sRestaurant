@@ -52,21 +52,18 @@ public class SimpleServer extends AbstractServer {
 			brDao.closeCurrentSession();
 		}
 		else if(msgString.startsWith("#addBranch ")){
-			System.out.format("Hey");
 			// #addBranch 17:00 20:00
 			String open = msgString.substring(11,16);
 			String close = msgString.substring(17,22);
+
+			BranchServices brDao = new BranchServices();
+			MenuService menuDao = new MenuService();
+
 			Branch newBranch = new Branch(open,close);
+			newBranch.getMenu().setBranch(newBranch);
 
-			BranchDao brDao = new BranchDao();
-			brDao.openCurrentSessionwithTransaction();
 			brDao.save(newBranch);
-			brDao.closeCurrentSessionwithTransaction();
-
-			MenuDao mDao = new MenuDao();
-			mDao.openCurrentSessionwithTransaction();
-			mDao.save(newBranch.getMenu());
-			mDao.closeCurrentSessionwithTransaction();
+			menuDao.save(newBranch.getMenu());
 
 			System.out.format("Hey");
 		}

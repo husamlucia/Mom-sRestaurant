@@ -1,19 +1,18 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.List;
-import java.util.function.Consumer;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
+import org.hibernate.service.ServiceRegistry;
+
+import java.util.List;
+
 public class MenuDao implements Dao<Menu>{
     private static Session currentSession;
 
@@ -26,8 +25,11 @@ public class MenuDao implements Dao<Menu>{
         return currentSession;
     }
     public Session openCurrentSessionwithTransaction() {
+        System.out.println("2");
         currentSession = getSessionFactory().openSession();
+        System.out.println("2");
         currentTransaction = currentSession.beginTransaction();
+        System.out.println("2");
         return currentSession;
     }
 
@@ -40,12 +42,13 @@ public class MenuDao implements Dao<Menu>{
         currentSession.close();
     }
 
-    private static SessionFactory getSessionFactory() {
-        Configuration configuration = new Configuration().configure();
-        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-                .applySettings(configuration.getProperties());
-        SessionFactory sessionFactory = configuration.buildSessionFactory(builder.build());
-        return sessionFactory;
+    private static SessionFactory getSessionFactory() throws HibernateException {
+        Configuration configuration = new Configuration();
+        configuration.addAnnotatedClass(Menu.class);
+        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                .applySettings(configuration.getProperties())
+                .build();
+        return configuration.buildSessionFactory(serviceRegistry);
     }
 
     public Session getCurrentSession() {
@@ -64,6 +67,7 @@ public class MenuDao implements Dao<Menu>{
         this.currentTransaction = currentTransaction;
     }
 
+    @Override
     public void save(Menu entity) {
         getCurrentSession().save(entity);
     }
@@ -74,6 +78,7 @@ public class MenuDao implements Dao<Menu>{
     }
     @Override
     public Menu findById(int id) {
+
         Menu book = (Menu) getCurrentSession().get(Menu.class, id);
         return book;
     }

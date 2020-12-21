@@ -1,19 +1,19 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
-import java.util.*;
 
 
 @Entity
-@Table(name= "branch")
+@Table(name = "branches")
 public class Branch {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "applicationLockSequence")
     @Column(name = "id")
     private int id;
 
-    @OneToOne
+    @OneToOne(mappedBy = "branch")
+    @PrimaryKeyJoinColumn
     private Menu menu;
 
     @Column(name = "openh")

@@ -1,23 +1,32 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import org.dom4j.Branch;
-
 import javax.management.loading.PrivateClassLoader;
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "menu")
+@Table(name = "menus")
 public class Menu {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "branch_id")
     private int id;
 
-    @OneToMany
-    @Column(name = "meals")
+    @OneToMany(mappedBy="menu")
     private List<Meal> meals;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name="branch_id")
+    private Branch branch;
+
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch= branch;
+    }
 
     public Menu(){
         this.meals = new ArrayList<>();

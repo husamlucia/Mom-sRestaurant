@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -7,25 +8,37 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
+import org.hibernate.service.ServiceRegistry;
 
 import java.util.List;
 
-public class BranchDao implements Dao<Branch>{
+
+public class BranchDao implements Dao<Branch> {
     private static Session currentSession;
 
-    private Transaction currentTransaction;
+    private static Transaction currentTransaction;
 
-    public BranchDao(){ }
+    public BranchDao() {
+    }
 
     public Session openCurrentSession() {
         currentSession = getSessionFactory().openSession();
         return currentSession;
     }
+
     public Session openCurrentSessionwithTransaction() {
-        currentSession = getSessionFactory().openSession();
-        currentTransaction = currentSession.beginTransaction();
-        return currentSession;
+        try {
+            currentSession = getSessionFactory().openSession();
+            currentTransaction = currentSession.beginTransaction();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        finally{
+            return currentSession;
+        }
     }
+
+
 
     public void closeCurrentSession() {
         currentSession.close();
@@ -36,12 +49,13 @@ public class BranchDao implements Dao<Branch>{
         currentSession.close();
     }
 
-    private static SessionFactory getSessionFactory() {
-        Configuration configuration = new Configuration().configure();
-        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-                .applySettings(configuration.getProperties());
-        SessionFactory sessionFactory = configuration.buildSessionFactory(builder.build());
-        return sessionFactory;
+    private static SessionFactory getSessionFactory() throws HibernateException {
+        Configuration configuration = new Configuration();
+        configuration.addAnnotatedClass(Branch.class);
+        ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                .applySettings(configuration.getProperties())
+                .build();
+        return configuration.buildSessionFactory(serviceRegistry);
     }
 
     public Session getCurrentSession() {
@@ -61,7 +75,6 @@ public class BranchDao implements Dao<Branch>{
     }
 
     public void save(Branch entity) {
-
         getCurrentSession().save(entity);
     }
 
@@ -71,6 +84,7 @@ public class BranchDao implements Dao<Branch>{
     }
     @Override
     public Branch findById(int id) {
+
         Branch book = (Branch) getCurrentSession().get(Branch.class, id);
         return book;
     }
