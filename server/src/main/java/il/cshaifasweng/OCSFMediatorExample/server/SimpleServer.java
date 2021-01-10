@@ -15,6 +15,8 @@ public class SimpleServer extends AbstractServer {
 		super(port);
 	}
 
+
+
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		String msgString = msg.toString();
@@ -39,7 +41,7 @@ public class SimpleServer extends AbstractServer {
 					System.out.println(str);
 				}
 
-				MealService mService = new MealService();
+				Dao<Meal> mService = new Dao(Meal.class);
 				Meal meal = mService.findById(mealID);
 				meal.setName(name);
 				meal.setPrice(price);
@@ -52,8 +54,8 @@ public class SimpleServer extends AbstractServer {
 		}
 		else if(msgString.startsWith("#removeMeal ")){
 			int id = Integer.parseInt(msgString.substring(12));
-			MealService mService = new MealService();
-			MenuService menuService = new MenuService();
+			Dao<Meal> mService = new Dao(Meal.class);
+			Dao<Menu> menuService = new Dao(Menu.class);
 
 			Meal meal = mService.findById(id);
 			Menu newMenu = meal.getMenu();
@@ -66,7 +68,7 @@ public class SimpleServer extends AbstractServer {
 			int id = Integer.parseInt(msgString.substring(13));
 			//Should send to client list of Meals..
 
-			BranchServices brDao = new BranchServices();
+			Dao<Branch> brDao = new Dao(Branch.class);
 
 			Branch br = brDao.findById(id);
 			Branch brGlobal = brDao.findById(1);
@@ -92,8 +94,8 @@ public class SimpleServer extends AbstractServer {
 				String open = msgString.substring(11,16);
 				String close = msgString.substring(17,22);
 
-				BranchServices brDao = new BranchServices();
-				MenuService menuDao = new MenuService();
+				Dao<Branch> brDao = new Dao(Branch.class);
+				Dao<Menu> menuDao = new Dao(Menu.class);
 				Branch newBranch = new Branch(open,close);
 				brDao.save(newBranch);
 			} catch (Exception e) {
@@ -117,8 +119,8 @@ public class SimpleServer extends AbstractServer {
 				Meal newMeal = new Meal(name,price, ingredients);
 
 
-				BranchServices brService = new BranchServices();
-				MealService mealService = new MealService();
+				Dao<Branch> brService = new Dao(Branch.class);
+				Dao<Meal> mealService = new Dao(Meal.class);
 
 				Branch br = brService.findById(branchID);
 				Menu menu = br.getMenu();
@@ -127,7 +129,6 @@ public class SimpleServer extends AbstractServer {
 				mealService.save(newMeal);
 
 				menu.addMeal(newMeal);
-				System.out.println("Done.");
 
 			} catch (Exception e) {
 				System.out.println(e.getMessage());
@@ -136,16 +137,11 @@ public class SimpleServer extends AbstractServer {
 		}
 		else if(msgString.startsWith("#getAllMeals")){
 			//Should send to client list of Meals..
-			System.out.println("1");
-			MealService mealService = new MealService();
-			System.out.println("1");
-
+			Dao<Meal> mealService = new Dao(Meal.class);
 			List<Meal> meals = mealService.findAll();
-			System.out.println("1");
 			MenuPOJO menu = new MenuPOJO();
-			System.out.println("1");
 			menu.setMeals(meals);
-			System.out.println("1");
+
 			try {
 				client.sendToClient(menu);
 				System.out.format("Sent all meals to client %s\n", client.getInetAddress().getHostAddress());
