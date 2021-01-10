@@ -31,8 +31,9 @@ public class LoginController{
     }
 
     @FXML
-    void goBack(ActionEvent event) throws IOException {
+    void loadMain(ActionEvent event) throws IOException {
         App.setRoot("main");
     }
+
 
 }
