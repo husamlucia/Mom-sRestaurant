@@ -84,9 +84,18 @@ public class PrimaryController implements Initializable {
 			String message = "#addBranch " + open + ' ' + close;
 			SimpleClient.getClient().sendToServer(message);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
+	@FXML
+	void initiateWorkers(ActionEvent event) {
+		try {
+			SimpleClient.getClient().sendToServer("#addDefaultWorkers");
+		} catch (IOException e) {
+		e.printStackTrace();
+	}
+	}
+
 
 }

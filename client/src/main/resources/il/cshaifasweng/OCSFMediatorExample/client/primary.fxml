@@ -18,6 +18,7 @@
             <Label text="Closing hour:" />
             <TextField fx:id="textClose" />
             <Button mnemonicParsing="false" onAction="#addBranch" text="Add Branch" />
+            <Button mnemonicParsing="false" onAction="#initiateWorkers" text="InitiateWorkers" />
          </children>
       </VBox>
       <VBox alignment="CENTER" prefHeight="323.0" prefWidth="254.0" spacing="20.0">
