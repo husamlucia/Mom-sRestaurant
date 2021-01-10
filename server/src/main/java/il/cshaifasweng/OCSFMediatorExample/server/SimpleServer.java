@@ -72,8 +72,6 @@ public class SimpleServer extends AbstractServer {
 
 			Branch br = brDao.findById(id);
 
-
-
 			List<Meal> meals = new ArrayList<Meal>(br.getMenu().getMeals());
 			if (id > 1){
 				Branch brGlobal = brDao.findById(1);
@@ -157,6 +155,17 @@ public class SimpleServer extends AbstractServer {
 		else if(msgString.startsWith("#addDefaultWorkers")){
 			//Should send to client list of Meals..
 				initiateWorkers();
+		}
+		else if(msgString.startsWith("#getAllBranches")){
+			try{
+				Dao<Branch> branchService = new Dao(Branch.class);
+				List<Branch> branches = branchService.findAll();
+				BranchList ret = new BranchList(branches);
+				client.sendToClient(ret);
+			}
+			catch (IOException e){
+				e.printStackTrace();
+			}
 		}
 	}
 
