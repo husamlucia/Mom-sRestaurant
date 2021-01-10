@@ -17,6 +17,8 @@ public class Menu implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy="menu")
     private List<Meal> meals;
 
+
+
     public Menu(){
         this.meals = new ArrayList<>();
     }

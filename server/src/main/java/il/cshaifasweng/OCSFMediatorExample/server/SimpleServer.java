@@ -71,11 +71,14 @@ public class SimpleServer extends AbstractServer {
 			Dao<Branch> brDao = new Dao(Branch.class);
 
 			Branch br = brDao.findById(id);
-			Branch brGlobal = brDao.findById(1);
+
 
 
 			List<Meal> meals = new ArrayList<Meal>(br.getMenu().getMeals());
-			meals.addAll(brGlobal.getMenu().getMeals());
+			if (id > 1){
+				Branch brGlobal = brDao.findById(1);
+				meals.addAll(brGlobal.getMenu().getMeals());
+			}
 
 
 			Menu menu = new Menu();

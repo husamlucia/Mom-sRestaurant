@@ -118,10 +118,13 @@ public class Dao<T> {
     public List<T> findAll() {
         try{
             openCurrentSessionWithTransaction();
-            Criteria crit = getCurrentSession().createCriteria(type);
-            List<T> list = crit.list();
+            CriteriaBuilder builder = getCurrentSession().getCriteriaBuilder();
+            CriteriaQuery<T> query = builder.createQuery(type);
+            Root<T> tRoot = query.from(type);
+            query.select(tRoot);
+            List<T> books = (List<T>) getCurrentSession().createQuery(query).list();
             closeCurrentSessionWithTransaction();
-            return list;
+            return books;
         }
         catch(Exception e){
             System.out.println(e.getMessage());

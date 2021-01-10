@@ -17,13 +17,6 @@ public class Meal implements Serializable {
     @Column(name="id")
     private int id;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @ManyToOne
     @JoinColumn(name="menu_id", referencedColumnName = "menu_id")
@@ -42,6 +35,17 @@ public class Meal implements Serializable {
     public Meal(){
 
     }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
     public Meal(String name, double price, List<String> ingredients) {
         this.name = name;
         this.price = price;
