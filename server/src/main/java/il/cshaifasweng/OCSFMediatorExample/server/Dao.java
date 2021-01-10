@@ -3,16 +3,14 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class Dao<T> {
@@ -116,23 +114,21 @@ public class Dao<T> {
     }
 
     public List<T> findAll() {
-        System.out.println("Yo1");
-        openCurrentSessionWithTransaction();
-        System.out.println("Yo2");
-        CriteriaBuilder builder = getCurrentSession().getCriteriaBuilder();
-        System.out.println("Yo3");
-        CriteriaQuery<T> query = builder.createQuery(type);
-        System.out.println("Yo4");
-        List<T> books = (List<T>) getCurrentSession().createQuery(query).list();
-        System.out.println("Yo5");
-        closeCurrentSessionWithTransaction();
-        System.out.println("Done");
-        return books;
+        try{
+            openCurrentSessionWithTransaction();
+            Criteria crit = getCurrentSession().createCriteria(type);
+            List<T> list = crit.list();
+            closeCurrentSessionWithTransaction();
+            return list;
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
-    
     public void deleteAll() {
-        openCurrentSessionWithTransaction();
         List<T> entityList = findAll();
+        openCurrentSessionWithTransaction();
         for (T entity : entityList) {
             getCurrentSession().delete(entity);
         }
