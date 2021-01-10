@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.Branch">
+   <children>
+      <TableView layoutX="139.0" layoutY="51.0" prefHeight="337.0" prefWidth="300.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="Name" />
+          <TableColumn prefWidth="75.0" text="Ingredients" />
+            <TableColumn prefWidth="75.0" text="Picture" />
+            <TableColumn prefWidth="75.0" text="Price" />
+        </columns>
+      </TableView>
+      <Button layoutX="10.0" layoutY="64.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text="Edit" />
+      <Label layoutX="252.0" layoutY="14.0" prefHeight="25.0" prefWidth="159.0" text="Branch" />
+      <Button layoutX="467.0" layoutY="157.0" mnemonicParsing="false" onAction="#book" prefHeight="25.0" prefWidth="103.0" text="Book Place">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Button>
+      <Button layoutX="467.0" layoutY="111.0" mnemonicParsing="false" onAction="#order" prefHeight="25.0" prefWidth="103.0" text="Order">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Button>
+      <Button layoutX="467.0" layoutY="64.0" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="25.0" prefWidth="103.0" text="Cancel Order">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Button>
+      <Button layoutX="467.0" layoutY="200.0" mnemonicParsing="false" onAction="#complain" prefHeight="25.0" prefWidth="103.0" text="Complain">
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+      </Button>
+      <Button layoutX="10.0" layoutY="111.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text="Add Meal" />
+      <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text=" Back" />
+      <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text="Show Reports" />
+   </children>
+</AnchorPane>

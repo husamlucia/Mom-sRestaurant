@@ -15,47 +15,7 @@
    <children>
       <VBox prefHeight="400.0" prefWidth="116.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#goToLogin" prefHeight="25.0" prefWidth="103.0" text="Worker Login">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#viewMenu" prefHeight="25.0" prefWidth="103.0" text="View Menu">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#book" prefHeight="25.0" prefWidth="103.0" text="Book Place">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#order" prefHeight="25.0" prefWidth="103.0" text="Order">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#cancelOrder" prefHeight="25.0" prefWidth="103.0" text="Cancel Order">
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </VBox.margin>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#complain" prefHeight="25.0" prefWidth="103.0" text="Complain">
+            <Button mnemonicParsing="false" onAction="#goToLogin" prefHeight="25.0" prefWidth="103.0" text="Back">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
