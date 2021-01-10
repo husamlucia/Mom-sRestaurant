@@ -12,8 +12,9 @@ public class Worker {
 
     private int privilege;
 
-    @Column(unique = true)
+    @Column(name="govId", unique = true, nullable=false)
     private String govId;
+
     private String fullName;
     private String password;
 
