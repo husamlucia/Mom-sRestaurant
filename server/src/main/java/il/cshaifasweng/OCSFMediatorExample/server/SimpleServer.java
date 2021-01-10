@@ -150,6 +150,35 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
+
+		else if(msgString.startsWith("#addDefaultWorkers")){
+			//Should send to client list of Meals..
+				initiateWorkers();
+		}
 	}
+
+	void initiateWorkers(){
+
+		try{
+			Dao<Worker> workerDao = new Dao(Worker.class);
+			Worker[] workers = new Worker[5];
+
+			workers[0] = new Worker(5, "209146687", "Husam Lucia", "bestadmin123");
+			workers[1] = new Worker(4, "209050202", "Samer Kharouba", "lovesamer");
+			workers[2] = new Worker(3, "209146695", "Sahar Lucia", "sahar123");
+			workers[3] = new Worker(2, "206214785", "Loai Marei", "loainoob1");
+			workers[4] = new Worker(1, "209050203", "Dalia Khateb", "daliakhateb123");
+
+			for (Worker worker: workers){
+				workerDao.save(worker);
+			}
+			System.out.format("Done");
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+
+	}
+
 
 }

@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
+import il.cshaifasweng.OCSFMediatorExample.entities.Worker;
 import org.hibernate.*;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -20,7 +21,7 @@ public class Dao<T> {
 
     private static Transaction currentTransaction;
 
-    private Class<T> type;
+    private final Class<T> type;
 
     public Dao(Class<T> type) {
         //Must call constructor like this:
@@ -62,6 +63,7 @@ public class Dao<T> {
         configuration.addAnnotatedClass(Branch.class);
         configuration.addAnnotatedClass(Menu.class);
         configuration.addAnnotatedClass(Meal.class);
+        configuration.addAnnotatedClass(Worker.class);
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
                 .build();
