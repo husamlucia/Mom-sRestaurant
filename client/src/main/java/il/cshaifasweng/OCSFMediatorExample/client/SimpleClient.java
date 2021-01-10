@@ -27,6 +27,9 @@ public class SimpleClient extends AbstractClient {
 		else if(msg.getClass().equals(BranchList.class)){
 			EventBus.getDefault().post(new BranchEvent((BranchList) msg));
 		}
+		else if(msg.getClass().equals(Worker.class)){
+			EventBus.getDefault().post(new LoginEvent((Worker) msg));
+		}
 	}
 	
 	public static SimpleClient getClient() {
