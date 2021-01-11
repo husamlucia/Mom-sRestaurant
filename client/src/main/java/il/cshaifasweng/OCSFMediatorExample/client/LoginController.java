@@ -2,8 +2,10 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
@@ -36,4 +38,12 @@ public class LoginController{
     }
 
 
+    @Subscribe
+    void onLoginEvent(LoginEvent event) throws IOException {
+        int privilege = event.getWorker().getPrivilege();
+        BranchController branchController = new BranchController(privilege);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(branchController);
+        loader.load();
+    }
 }

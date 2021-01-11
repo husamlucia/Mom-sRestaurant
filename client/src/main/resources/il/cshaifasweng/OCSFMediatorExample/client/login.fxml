@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="158.0" prefWidth="366.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="158.0" prefWidth="366.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LoginController">
    <children>
       <Label>
          <VBox.margin>
@@ -22,7 +22,7 @@
       </Label>
       <TextField fx:id="id" />
       <Label text="Password:" />
-      <PasswordField />
+      <PasswordField fx:id="pass" />
       <HBox prefHeight="31.0" prefWidth="366.0">
          <VBox.margin>
             <Insets top="5.0" />
