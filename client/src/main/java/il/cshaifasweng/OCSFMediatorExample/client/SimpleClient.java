@@ -29,6 +29,7 @@ public class SimpleClient extends AbstractClient {
 		}
 		else if(msg.getClass().equals(Worker.class)){
 			EventBus.getDefault().post(new LoginEvent((Worker) msg));
+
 		}
 	}
 	
