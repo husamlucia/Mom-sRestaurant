@@ -10,7 +10,12 @@
 	</parent>
 	<groupId>il.cshaifasweng.OCSFMediatorExample</groupId>
 	<artifactId>client</artifactId>
-	<dependencies>
+	<dependencies><!-- https://mvnrepository.com/artifact/org.jfxtras/jfxtras-all -->
+		<dependency>
+			<groupId>org.jfxtras</groupId>
+			<artifactId>jfxtras-all</artifactId>
+			<version>10.0-r1</version>
+		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-base</artifactId>

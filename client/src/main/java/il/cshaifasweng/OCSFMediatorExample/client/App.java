@@ -64,21 +64,21 @@ public class App extends Application {
             );
             alert.show();
         });
-
     }
 
-    @Subscribe
-    public void onAllMealsEvent(AllMealsEvent event){
-        Platform.runLater(()->{
-          ObservableList<Meal> MealList = FXCollections.observableArrayList();
-          MealList.addAll(event.getMenu().getMeals());
-          TableView tbl = (TableView) scene.lookup("#menuTable1");
-          tbl.setItems(MealList);
-          System.out.println(MealList.size());
-        });
-    }
+// @Subscribe
+// public void onAllMealsEvent(AllMealsEvent event) {
+//     Platform.runLater(() -> {
+//         ObservableList<Meal> MealList = FXCollections.observableArrayList();
+//         MealList.addAll(event.getMenu().getMeals());
+//         TableView tbl = (TableView) scene.lookup("#menuTable1");
+//         tbl.setItems(MealList);
+//         System.out.println(MealList.size());
+//     });
+// }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
+
         launch();
     }
 
