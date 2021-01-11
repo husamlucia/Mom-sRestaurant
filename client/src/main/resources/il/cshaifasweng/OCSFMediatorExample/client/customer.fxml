@@ -10,14 +10,14 @@
 
 <AnchorPane prefHeight="500.0" prefWidth="651.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.CustomerController">
    <children>
-      <TableView layoutX="129.0" layoutY="51.0" prefHeight="94.0" prefWidth="351.0">
+      <TableView fx:id="brTable" layoutX="129.0" layoutY="51.0" prefHeight="94.0" prefWidth="351.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="BranchID" />
-          <TableColumn prefWidth="116.0" text="Open Hour" />
-            <TableColumn prefWidth="108.0" text="Closing Hour" />
+          <TableColumn fx:id="colBrId" prefWidth="75.0" text="BranchID" />
+          <TableColumn fx:id="colOpenH" prefWidth="116.0" text="Open Hour" />
+            <TableColumn fx:id="colCloseH" prefWidth="108.0" text="Closing Hour" />
         </columns>
       </TableView>
-      <Button fx:id="editMealBtn" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text="Show Menu" />
+      <Button fx:id="shoMenuBtn" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" onAction="#showMenu" prefHeight="25.0" prefWidth="103.0" text="Show Menu" />
       <Label layoutX="286.0" layoutY="14.0" prefHeight="25.0" prefWidth="159.0" text="MAIN PAGE FOR CLIENTS" />
       <Button fx:id="bookPlaceBtn" layoutX="198.0" layoutY="154.0" mnemonicParsing="false" onAction="#book" prefHeight="25.0" prefWidth="159.0" text="Book/Cancel Booking">
          <opaqueInsets>
@@ -40,13 +40,13 @@
          </opaqueInsets>
       </Button>
       <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text=" Back" />
-      <TableView layoutX="129.0" layoutY="207.0" prefHeight="163.0" prefWidth="351.0">
+      <TableView fx:id="menuTable" layoutX="129.0" layoutY="207.0" prefHeight="163.0" prefWidth="351.0">
          <columns>
-            <TableColumn prefWidth="40.0" text="Name" />
-            <TableColumn prefWidth="82.0" text="Ingredients" />
-            <TableColumn prefWidth="56.0" text="Picture" />
-            <TableColumn prefWidth="46.0" text="Price" />
-            <TableColumn prefWidth="126.0" text="Network Meal" />
+            <TableColumn fx:id="nameCol" prefWidth="40.0" text="Name" />
+            <TableColumn fx:id="ingredientsCol" prefWidth="82.0" text="Ingredients" />
+            <TableColumn fx:id="picCol" prefWidth="56.0" text="Picture" />
+            <TableColumn fx:id="priceCol" prefWidth="46.0" text="Price" />
+            <TableColumn fx:id="networkMealCol" prefWidth="126.0" text="Network Meal" />
          </columns>
       </TableView>
       <TextArea layoutX="504.0" layoutY="51.0" prefHeight="94.0" prefWidth="133.0" />
