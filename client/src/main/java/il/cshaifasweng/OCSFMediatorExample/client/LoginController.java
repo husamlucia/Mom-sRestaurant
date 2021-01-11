@@ -38,12 +38,15 @@ public class LoginController{
     }
 
 
+
+
     @Subscribe
     void onLoginEvent(LoginEvent event) throws IOException {
         int privilege = event.getWorker().getPrivilege();
-        BranchController branchController = new BranchController(privilege);
+        CustomerController branchController = new CustomerController(privilege);
         FXMLLoader loader = new FXMLLoader();
         loader.setController(branchController);
         loader.load();
+
     }
 }

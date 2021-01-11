@@ -25,7 +25,7 @@ public class Worker implements Serializable {
     }
 
     public int getPrivilege() {
-        return privilege;
+        return privilege;// 1-> hostess, 2-> dietnit, 3-> customerService, 4-> mainManager, 5-> branchMan
     }
 
     public void setPrivilege(int privilege) {
