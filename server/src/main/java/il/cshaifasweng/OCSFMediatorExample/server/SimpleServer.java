@@ -20,8 +20,38 @@ public class SimpleServer extends AbstractServer {
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		String msgString = msg.toString();
+
 		if (msgString.startsWith("#warning")) {
 			Warning warning = new Warning("Warning from server!");
+			try {
+				client.sendToClient(warning);
+				System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (msgString.startsWith("#login")){
+
+			String[] attributes = msgString.substring(7).split("\\s+");
+			String id = attributes[0];
+			String password = attributes[1];
+			Dao<Worker> dao = new Dao(Worker.class);
+			List<Worker> workers = dao.findAll();
+			System.out.println(id + ' ' + password);
+			for(Worker worker: workers){
+				String workerId = worker.getGovId();
+				String workerPw = worker.getPassword();
+				if(id.equals(workerId) && password.equals(workerPw)){
+					try {
+						client.sendToClient(worker);
+						return;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+
+			Warning warning = new Warning("Incorrect userId or password!");
 			try {
 				client.sendToClient(warning);
 				System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
@@ -167,36 +197,7 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
-		else if (msgString.startsWith("#login")){
 
-			String[] attributes = msgString.substring(7).split("\\s+");
-			String id = attributes[0];
-			String password = attributes[1];
-			Dao<Worker> dao = new Dao(Worker.class);
-			List<Worker> workers = dao.findAll();
-			System.out.println(id + ' ' + password);
-			for(Worker worker: workers){
-				if(id.equals(worker.getGovId())){
-					if(password.equals(worker.getPassword())){
-						//we should do login
-						try {
-							client.sendToClient(worker);
-							return;
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-			Warning warning = new Warning("Incorrect userId or password!");
-			try {
-				client.sendToClient(warning);
-				System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		}
 	}
 
 	void initiateWorkers(){
