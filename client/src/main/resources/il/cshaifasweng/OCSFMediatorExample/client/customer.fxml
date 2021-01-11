@@ -39,7 +39,7 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" text=" Back" />
+      <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="103.0" text=" Back" />
       <TableView fx:id="menuTable" layoutX="129.0" layoutY="207.0" prefHeight="163.0" prefWidth="351.0">
          <columns>
             <TableColumn fx:id="nameCol" prefWidth="40.0" text="Name" />
