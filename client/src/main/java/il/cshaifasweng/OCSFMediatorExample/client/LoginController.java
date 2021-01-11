@@ -1,15 +1,25 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class LoginController{
+public class LoginController implements Initializable {
 
 
 
@@ -39,11 +49,29 @@ public class LoginController{
 
 
     @Subscribe
-    void onLoginEvent(LoginEvent event) throws IOException {
-        int privilege = event.getWorker().getPrivilege();
-        BranchController branchController = new BranchController(privilege);
-        FXMLLoader loader = new FXMLLoader();
-        loader.setController(branchController);
-        loader.load();
+    public void onLoginEvent(LoginEvent event) throws IOException {
+
+        Platform.runLater(() -> {
+            int privilege = event.getWorker().getPrivilege();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("branch.fxml"));
+            Stage stage = new Stage(StageStyle.DECORATED);
+            try {
+                stage.setScene(new Scene(loader.load()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            BranchController branchController = loader.<BranchController>getController();
+            branchController.initialize2(privilege);
+            Stage prevStage = (Stage) id.getScene().getWindow();
+            prevStage.close();
+            stage.show();
+        });
+
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        EventBus.getDefault().register(this);
     }
 }

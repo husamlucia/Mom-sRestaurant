@@ -8,13 +8,7 @@ import javafx.fxml.Initializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class BranchController implements Initializable {
-
-    int privilege;
-
-    public BranchController(int privilege) {
-        this.privilege = privilege;
-    }
+public class BranchController{
 
     @FXML
     void book(ActionEvent event) {
@@ -36,8 +30,8 @@ public class BranchController implements Initializable {
 
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+    public void initialize2(int privilege) {
         if(privilege == 1) System.out.println("Hostess");
         if(privilege==2) System.out.println("Samer");
     }
