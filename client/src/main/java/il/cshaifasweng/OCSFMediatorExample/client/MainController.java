@@ -55,7 +55,6 @@ public class MainController implements Initializable {
             ObservableList<Branch> branchList = FXCollections.observableArrayList();
             branchList.addAll(event.getBranches().getBranches());
             table.setItems(branchList);
-            System.out.println("YO");
         });
     }
 
@@ -97,8 +96,4 @@ public class MainController implements Initializable {
         }
     }
 
-    @Subscribe
-    void onMenuEvent(MenuEvent event){
-
-    }
 }

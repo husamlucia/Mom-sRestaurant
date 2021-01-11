@@ -68,16 +68,7 @@ public class App extends Application {
     	
     }
     
-    @Subscribe
-    public void onMenuEvent(MenuEvent event){
-        Platform.runLater(()->{
-            //It has MenuEvent which has "Menu" as attribute. Now gotta transform it to "TableView"..
-            ObservableList<Meal> MealList = FXCollections.observableArrayList();
-            MealList.addAll(event.getMenu().getMeals());
-            TableView tbl = (TableView) scene.lookup("#menuTable");
-            tbl.setItems(MealList);
-        });
-    }
+
 
     @Subscribe
     public void onAllMealsEvent(AllMealsEvent event){

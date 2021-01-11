@@ -174,12 +174,14 @@ public class SimpleServer extends AbstractServer {
 			String password = attributes[1];
 			Dao<Worker> dao = new Dao(Worker.class);
 			List<Worker> workers = dao.findAll();
+			System.out.println(id + ' ' + password);
 			for(Worker worker: workers){
-				if(id.equals(worker.getId())){
+				if(id.equals(worker.getGovId())){
 					if(password.equals(worker.getPassword())){
 						//we should do login
 						try {
 							client.sendToClient(worker);
+							return;
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

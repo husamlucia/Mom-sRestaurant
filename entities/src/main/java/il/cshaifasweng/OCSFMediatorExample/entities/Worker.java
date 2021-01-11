@@ -1,10 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name="workers")
-public class Worker {
+public class Worker implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,5 +64,9 @@ public class Worker {
         this.govId = govId;
         this.fullName = fullName;
         this.password = password;
+    }
+
+    public Worker(){
+
     }
 }
