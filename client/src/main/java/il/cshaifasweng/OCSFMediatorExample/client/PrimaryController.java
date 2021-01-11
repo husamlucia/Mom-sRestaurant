@@ -54,6 +54,11 @@ public class PrimaryController implements Initializable {
 			menuColName.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
 			menuColPrice.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
 			menuColIng.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
+
+			menuColID.setCellValueFactory(new PropertyValueFactory<Meal, Integer>("id"));
+			menuColName.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
+			menuColPrice.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
+			menuColIng.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
 		}
 
 	@FXML

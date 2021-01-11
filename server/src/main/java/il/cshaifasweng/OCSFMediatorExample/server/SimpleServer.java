@@ -30,7 +30,7 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
-		else if (msgString.startsWith("#login")){
+		else if (msgString.startsWith("#login ")){
 
 			String[] attributes = msgString.substring(7).split("\\s+");
 			String id = attributes[0];
@@ -107,7 +107,6 @@ public class SimpleServer extends AbstractServer {
 				Branch brGlobal = brDao.findById(1);
 				meals.addAll(brGlobal.getMenu().getMeals());
 			}
-
 
 			Menu menu = new Menu();
 			menu.setMeals(meals);

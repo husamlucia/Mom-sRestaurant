@@ -44,7 +44,8 @@ public class LoginController implements Initializable {
 
     @FXML
     void loadMain(ActionEvent event) throws IOException {
-        App.setRoot("main");
+        App.setRoot("customer");
+        //
     }
 
 
