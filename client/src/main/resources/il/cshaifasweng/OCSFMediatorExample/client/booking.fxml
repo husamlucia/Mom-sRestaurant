@@ -7,33 +7,34 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.BookingController">
    <children>
-      <TextField layoutX="52.0" layoutY="49.0" />
-      <Text layoutX="14.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
-      <Text layoutX="15.0" layoutY="99.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
-      <TextField layoutX="52.0" layoutY="82.0" />
-      <Button layoutX="52.0" layoutY="124.0" mnemonicParsing="false" text="Inside" />
-      <Button layoutX="143.0" layoutY="124.0" mnemonicParsing="false" text="Outside" />
-      <Text layoutX="115.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OR" />
-      <Text layoutX="17.0" layoutY="178.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Num Of Customers" />
-      <TextField layoutX="131.0" layoutY="161.0" prefHeight="25.0" prefWidth="69.0" />
-      <Button layoutX="55.0" layoutY="200.0" mnemonicParsing="false" text="Book" />
-      <Button layoutX="131.0" layoutY="200.0" mnemonicParsing="false" text="Cancel Booking" />
-      <Text layoutX="107.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OR" />
-      <TableView layoutX="56.0" layoutY="250.0" prefHeight="111.0" prefWidth="135.0">
+      <TextField fx:id="BookingDateTF" layoutX="51.0" layoutY="48.0" />
+      <Text layoutX="14.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
+      <Text layoutX="14.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
+      <TextField fx:id="BookingTimeTF" layoutX="51.0" layoutY="89.0" />
+      <Button layoutX="16.0" layoutY="174.0" mnemonicParsing="false" onAction="#BookingGetInAvailable" text="Inside" />
+      <Button layoutX="132.0" layoutY="174.0" mnemonicParsing="false" onAction="#BookingGetOutAvailable" text="Outside" />
+      <Text layoutX="84.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OR" />
+      <Text layoutX="13.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Num Of Customers" />
+      <TextField fx:id="BookingNumCustomersTF" layoutX="126.0" layoutY="128.0" prefHeight="25.0" prefWidth="69.0" />
+      <Button fx:id="bookBtn" disable="true" layoutX="339.0" layoutY="276.0" mnemonicParsing="false" onAction="#BookingPushSelected" prefHeight="56.0" prefWidth="127.0" text="Book" />
+      <Button layoutX="10.0" layoutY="353.0" mnemonicParsing="false" onAction="#BookingCancel" text="Cancel Booking" />
+      <TableView fx:id="AvailableTimeTable" layoutX="16.0" layoutY="220.0" prefHeight="111.0" prefWidth="184.0">
         <columns>
-          <TableColumn prefWidth="134.0" text="Available Time" />
+          <TableColumn fx:id="colDate" prefWidth="56.0" text="Date" />
+            <TableColumn fx:id="colTime" prefWidth="53.60003662109375" text="Time" />
+            <TableColumn fx:id="colInOut" prefWidth="75.0" text="In/Out" />
         </columns>
       </TableView>
-      <TableView layoutX="335.0" layoutY="74.0" prefHeight="133.0" prefWidth="135.0">
-        <columns>
-          <TableColumn prefWidth="28.0" text="No." />
-          <TableColumn prefWidth="106.0" text="Name" />
-        </columns>
-      </TableView>
-      <Text layoutX="343.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Health Declaration:" />
-      <Button layoutX="335.0" layoutY="220.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="135.0" text="Declare" />
+      <Text layoutX="339.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Health Declaration:" wrappingWidth="148.79999999999995" />
+      <Button layoutX="335.0" layoutY="220.0" mnemonicParsing="false" onAction="#BookingDeclare" prefHeight="25.0" prefWidth="135.0" text="Declare" />
+      <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goToMain" prefHeight="26.0" prefWidth="42.0" text="Back" />
+      <TextField fx:id="BookingNameTF" layoutX="420.0" layoutY="115.0" />
+      <TextField fx:id="BookingIdTF" layoutX="420.0" layoutY="161.0" />
+      <Text layoutX="335.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="I declare that my body heat doesn't exceed 38 C, and that I don't cough or have breathing difficulties." wrappingWidth="214.936767578125" />
+      <Text layoutX="361.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
+      <Text layoutX="367.0" layoutY="178.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Id" wrappingWidth="31.693359375" />
+      <Text layoutX="483.0" layoutY="158.0" strokeType="OUTSIDE" strokeWidth="0.0" />
    </children>
 </AnchorPane>
