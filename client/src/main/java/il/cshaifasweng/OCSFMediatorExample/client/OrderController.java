@@ -77,7 +77,7 @@ public class OrderController implements Initializable {
     private CheckBox pickupCheckBox;
 
     @FXML
-    private TextField phoneTF;
+    private TextField recipientPhoneTF;
 
     @FXML
     private TableColumn<?, ?> picCol;
@@ -91,9 +91,6 @@ public class OrderController implements Initializable {
     @FXML
     private TextField customerNameTF;
 
-    @FXML
-    private TextField recipientPhoneTF;
-
 
     @FXML
     void goBack(ActionEvent event) throws IOException {
@@ -101,9 +98,9 @@ public class OrderController implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle rb) {
+        EventBus.getDefault().register(this);
         pickupChecked(false);
         differentChecked(false);
-        EventBus.getDefault().register(this);
         pickupCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
 
             @Override
@@ -132,22 +129,24 @@ public class OrderController implements Initializable {
 
 
     void pickupChecked(boolean newValue){
+        int deliveryCost = 10;
         //disabling or enabling buttons upon changing state of pickup checkbox
         //b == true -> pickup is checked
         if(newValue){
-
+            totalCost.setText(Integer.toString(Integer.parseInt(totalCost.getText()) +deliveryCost ));
             orderAddressTF.setDisable(true);
             recipientTF.setDisable(true);
-            phoneTF.setDisable(true);
+            recipientPhoneTF.setDisable(true);
             differentCheckBox.setDisable(true);
             // your checkbox has been ticked.
         }else{
 
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            orderAddressTF.setDisable(true);
+            totalCost.setText(Integer.toString(Integer.parseInt(totalCost.getText()) - deliveryCost ));
+            orderAddressTF.setDisable(false);
             recipientTF.setDisable(true);
-            phoneTF.setDisable(true);
+            recipientPhoneTF.setDisable(true);
             differentCheckBox.setDisable(false);
             differentCheckBox.setSelected(false);
         }
@@ -158,14 +157,14 @@ public class OrderController implements Initializable {
         //disabling or enabling buttons upon changing state of pickup checkbox
         //b == true -> pickup is checked
         if(newValue){
-            phoneTF.setDisable(false);
+            recipientPhoneTF.setDisable(false);
             recipientTF.setDisable(false);
             // your checkbox has been ticked.
         }else{
 
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            phoneTF.setDisable(true);
+            recipientPhoneTF.setDisable(true);
             recipientTF.setDisable(true);
         }
     }
@@ -187,6 +186,7 @@ public class OrderController implements Initializable {
         Double currCost = Double.parseDouble(totalCost.getText());
         Double toAdd = meal.getPrice();
         String newCost = Double.toString(currCost - toAdd);
+        if (cartTable.getItems().isEmpty()) newCost = "0";
         totalCost.setText(newCost);
     }
 
@@ -205,7 +205,7 @@ public class OrderController implements Initializable {
         List<Meal> meals = cartTable.getItems();
         String mealIds = "";
         for(Meal meal: meals){
-            mealIds += meal.getId() + ' ';
+            mealIds += meal.getId() + " ";
         }
 
         boolean pickup = pickupCheckBox.isSelected();
@@ -216,6 +216,7 @@ public class OrderController implements Initializable {
         String customerPhone = customerPhoneTF.getText();
         String creditCard = creditTF.getText();
         String recipientAddress = "";
+        String price = totalCost.getText();
         if(!pickup){
             recipientAddress = orderAddressTF.getText();
         }
@@ -225,17 +226,17 @@ public class OrderController implements Initializable {
         String recipientPhone = "";
         if(different){
             recipientName = recipientTF.getText();
-            recipientPhone = phoneTF.getText();
+            recipientPhone = recipientPhoneTF.getText();
         }
-        String message = "order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
-                creditCard + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
+        String message = "#order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
+                creditCard + ' ' + price + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
 
         try{
             SimpleClient.getClient().sendToServer(message);
         }catch (IOException e){
             e.printStackTrace();
         }
-        //String message = "#order pickup/delivery different date customername phonenumber creditcard optional:recipientname optional:recipientphone optional:address meals:
+        //String message = "#order pickup/delivery different date customername phonenumber creditcard price optional:recipientname optional:recipientphone optional:address meals:
         //substring=7
         //if pickup=1 -> offset = 6
         //if pickup=0 ->

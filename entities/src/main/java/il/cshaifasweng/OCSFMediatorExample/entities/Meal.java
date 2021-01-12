@@ -22,6 +22,10 @@ public class Meal implements Serializable {
     @JoinColumn(name="menu_id", referencedColumnName = "menu_id")
     private Menu menu;
 
+
+     @ManyToMany(mappedBy ="meals")
+    List<Order> orders;
+
     @Column(name = "name")
     private String name;
 
@@ -45,6 +49,10 @@ public class Meal implements Serializable {
         this.id = id;
     }
 
+
+//    public void addOrder(Order order){
+//        this.orders.add(order);
+//    }
 
     public Meal(String name, double price, List<String> ingredients) {
         this.name = name;
