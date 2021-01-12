@@ -17,6 +17,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -218,13 +219,15 @@ public class OrderController implements Initializable {
         if(!pickup){
             recipientAddress = orderAddressTF.getText();
         }
+        String date = orderDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
         String recipientName = "";
         String recipientPhone = "";
         if(different){
             recipientName = recipientTF.getText();
             recipientPhone = phoneTF.getText();
         }
-        String message = "order " + pickuptxt + ' ' + differenttxt + ' ' + customerName + ' ' + customerPhone + ' ' +
+        String message = "order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
                 creditCard + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
 
         try{
