@@ -41,7 +41,7 @@
       <Label layoutX="78.0" layoutY="228.0" text="Order Details:" />
       <DatePicker fx:id="orderDate" layoutX="114.0" layoutY="264.0" />
       <Label layoutX="78.0" layoutY="268.0" text="Date:" />
-      <CheckBox fx:id="checkBox" layoutX="78.0" layoutY="306.0" mnemonicParsing="false" text="Pick Up" />
+      <CheckBox fx:id="pickupCheckBox" layoutX="78.0" layoutY="306.0" mnemonicParsing="false" text="Pick Up" />
       <Label layoutX="87.0" layoutY="336.0" text="Address:" />
       <TextField fx:id="orderAddressTF" layoutX="140.0" layoutY="332.0" />
       <Label layoutX="79.0" layoutY="398.0" text="Recipient:" />
