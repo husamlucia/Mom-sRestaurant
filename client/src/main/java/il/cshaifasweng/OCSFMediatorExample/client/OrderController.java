@@ -136,7 +136,7 @@ public class OrderController implements Initializable {
             // clear the config file
             orderAddressTF.setDisable(true);
             recipientTF.setDisable(true);
-            phoneTF.setDisable(false);
+            phoneTF.setDisable(true);
             differentCheckBox.setDisable(false);
             differentCheckBox.setSelected(false);
         }
@@ -157,7 +157,6 @@ public class OrderController implements Initializable {
             phoneTF.setDisable(true);
             recipientTF.setDisable(true);
         }
-
     }
     @FXML
     void addToCart(ActionEvent event) {
@@ -191,5 +190,43 @@ public class OrderController implements Initializable {
 
     @FXML
     public void order(ActionEvent actionEvent) {
+
+        List<Meal> meals = cartTable.getItems();
+        String mealIds = "";
+        for(Meal meal: meals){
+            mealIds += meal.getId() + ' ';
+        }
+
+        boolean pickup = pickupCheckBox.isSelected();
+        String pickuptxt = pickup==true?"1":"0";
+        boolean different = differentCheckBox.isSelected();
+        String differenttxt = different==true?"1":"0";
+        String customerName =  customerNameTF.getText();
+        String customerPhone = customerPhoneTF.getText();
+        String creditCard = creditTF.getText();
+        String recipientAddress = "";
+        if(!pickup){
+            recipientAddress = orderAddressTF.getText();
+        }
+        String recipientName = "";
+        String recipientPhone = "";
+        if(different){
+            recipientName = recipientTF.getText();
+            recipientPhone = phoneTF.getText();
+        }
+        String message = "order " + pickuptxt + ' ' + differenttxt + ' ' + customerName + ' ' + customerPhone + ' ' +
+                creditCard + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
+
+        try{
+            SimpleClient.getClient().sendToServer(message);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //String message = "#order pickup/delivery different date customername phonenumber creditcard optional:recipientname optional:recipientphone optional:address meals:
+        //substring=7
+        //if pickup=1 -> offset = 6
+        //if pickup=0 ->
+        //  if different=0 -> offset = 7
+        //  if different -> offset = 9
     }
 }
