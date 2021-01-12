@@ -9,7 +9,7 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="Booking_id")
     private int id;
-
+////
     @Column(name = "Date")
     private String bookingDate;
 
