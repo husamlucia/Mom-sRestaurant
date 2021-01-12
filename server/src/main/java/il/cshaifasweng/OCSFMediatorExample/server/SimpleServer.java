@@ -196,25 +196,27 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
-		else if(msgString.startsWith("order ")){
+		else if(msgString.startsWith("#order ")){
 			String recipientName = "";
 			String recipientPhone = "";
-			String[] attributes = msgString.substring(9).split("\\s+");
+			String[] attributes = msgString.substring(7).split("\\s+");
+			System.out.print(msgString);
 			String pickup = attributes[0];
 			String different = attributes[1];
 			String date = attributes[2];
 			String customerName = attributes[3];
 			String phoneNumber = attributes[4];
 			String creditCard = attributes[5];
+			double price = Double.parseDouble(attributes[6]);
 			String address = "";
-			int mealOffset = 6;
+			int mealOffset = 7;
 			if(pickup.equals("0")){
-				address = attributes[6];
-				if(different.equals("0")) mealOffset = 7;
+				address = attributes[7];
+				if(different.equals("0")) mealOffset = 8;
 				else {
-					 recipientName = attributes[7];
-					 recipientPhone = attributes[8];
-					mealOffset = 9;
+					 recipientName = attributes[8];
+					 recipientPhone = attributes[9];
+					mealOffset = 10;
 				}
 			}
 			String[] mealIds = Arrays.copyOfRange(attributes, mealOffset, attributes.length);
@@ -225,9 +227,24 @@ public class SimpleServer extends AbstractServer {
 				meals.add(meal);
 			}
 
+
+			CustomerDetails details = new CustomerDetails(customerName, phoneNumber, creditCard);
+			Dao<CustomerDetails> detailsDao = new Dao(CustomerDetails.class);
+			detailsDao.save(details);
 			Dao<Order> orderDao = new Dao(Order.class);
-			Order order = new Order(meals, pickup, different, customerName, phoneNumber, creditCard, recipientName, recipientPhone, address);
+			Order order = new Order(meals, pickup, different, details, recipientName, recipientPhone, address, price);
 			orderDao.save(order);
+			int orderId = order.getId();
+			if (orderDao.findById(orderId) != null){
+				Warning warning = new Warning("Order complete! Order ID for cancelling order: " + orderId);
+				try {
+					client.sendToClient(warning);
+					System.out.format("Order %d added successfully\n", orderId);
+				}
+				catch (IOException e){
+					e.printStackTrace();
+				}
+			}
 
 			//String message = "#order pickup/delivery different date customername phonenumber creditcard optional:recipientname optional:recipientphone optional:address meals:
 			//substring=7
@@ -236,7 +253,6 @@ public class SimpleServer extends AbstractServer {
 			//  if different=0 -> offset = 7
 			//  if different -> offset = 9
 		}
-
 	}
 
 	void initiateWorkers(){

@@ -129,10 +129,11 @@ public class OrderController implements Initializable {
 
 
     void pickupChecked(boolean newValue){
+        int deliveryCost = 10;
         //disabling or enabling buttons upon changing state of pickup checkbox
         //b == true -> pickup is checked
         if(newValue){
-
+            totalCost.setText(Integer.toString(Integer.parseInt(totalCost.getText()) +deliveryCost ));
             orderAddressTF.setDisable(true);
             recipientTF.setDisable(true);
             recipientPhoneTF.setDisable(true);
@@ -142,6 +143,7 @@ public class OrderController implements Initializable {
 
             // your checkbox has been unticked. do stuff...
             // clear the config file
+            totalCost.setText(Integer.toString(Integer.parseInt(totalCost.getText()) - deliveryCost ));
             orderAddressTF.setDisable(false);
             recipientTF.setDisable(true);
             recipientPhoneTF.setDisable(true);
@@ -184,6 +186,7 @@ public class OrderController implements Initializable {
         Double currCost = Double.parseDouble(totalCost.getText());
         Double toAdd = meal.getPrice();
         String newCost = Double.toString(currCost - toAdd);
+        if (cartTable.getItems().isEmpty()) newCost = "0";
         totalCost.setText(newCost);
     }
 
@@ -202,7 +205,7 @@ public class OrderController implements Initializable {
         List<Meal> meals = cartTable.getItems();
         String mealIds = "";
         for(Meal meal: meals){
-            mealIds += meal.getId() + ' ';
+            mealIds += meal.getId() + " ";
         }
 
         boolean pickup = pickupCheckBox.isSelected();
@@ -213,6 +216,7 @@ public class OrderController implements Initializable {
         String customerPhone = customerPhoneTF.getText();
         String creditCard = creditTF.getText();
         String recipientAddress = "";
+        String price = totalCost.getText();
         if(!pickup){
             recipientAddress = orderAddressTF.getText();
         }
@@ -224,15 +228,15 @@ public class OrderController implements Initializable {
             recipientName = recipientTF.getText();
             recipientPhone = recipientPhoneTF.getText();
         }
-        String message = "order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
-                creditCard + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
+        String message = "#order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
+                creditCard + ' ' + price + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
 
         try{
             SimpleClient.getClient().sendToServer(message);
         }catch (IOException e){
             e.printStackTrace();
         }
-        //String message = "#order pickup/delivery different date customername phonenumber creditcard optional:recipientname optional:recipientphone optional:address meals:
+        //String message = "#order pickup/delivery different date customername phonenumber creditcard price optional:recipientname optional:recipientphone optional:address meals:
         //substring=7
         //if pickup=1 -> offset = 6
         //if pickup=0 ->

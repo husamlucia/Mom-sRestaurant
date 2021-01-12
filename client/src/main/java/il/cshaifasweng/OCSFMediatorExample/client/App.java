@@ -57,7 +57,7 @@ public class App extends Application {
     @Subscribe
     public void onWarningEvent(WarningEvent event) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(AlertType.WARNING,
+            Alert alert = new Alert(AlertType.INFORMATION,
                     String.format("Message: %s\nTimestamp: %s\n",
                             event.getWarning().getMessage(),
                             event.getWarning().getTime().toString())

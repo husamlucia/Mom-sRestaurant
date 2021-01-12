@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -10,11 +11,13 @@ public class CustomerDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private int id;
 
-    @OneToMany
+
+    @OneToMany(mappedBy = "customerDetails")
     List<Order> orders;
+
 
     private String name;
 
@@ -22,14 +25,16 @@ public class CustomerDetails {
 
     private String creditCard;
 
-    public CustomerDetails(List<Order> orders, String name, String phone, String creditCard) {
-        this.orders = orders;
+    public CustomerDetails(String name, String phone, String creditCard) {
+        this.orders = new ArrayList<>();
         this.name = name;
         this.phone = phone;
         this.creditCard = creditCard;
     }
 
-    public void addOrder(Order order){
+
+    public void addOrder(Order order) {
+
         this.orders.add(order);
     }
 
@@ -73,7 +78,8 @@ public class CustomerDetails {
         this.creditCard = creditCard;
     }
 
-    public CustomerDetails() {}
+    public CustomerDetails() {
+    }
 
 
 }
