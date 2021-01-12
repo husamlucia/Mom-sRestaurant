@@ -18,29 +18,37 @@ public class Order  implements Serializable {
 
     private LocalDate date;
 
-    private String type;//delivery or order
-
     private String address;
 
     private String Recipient;
 
-    private String Phone;
+    private String phoneNumber;
 
-    private String fullName;
+    private String customerName;
 
     private String recipientPhone;
 
+    private String different;
+
+    private String pickup;
+
+    private String creditCard;
+
+
+
     public Order(){}
 
-    public Order(List<Meal> meals, LocalDate date, String type, String address, String recipient, String phone, String fullName, String recipientPhone) {
+    public Order(List<Meal> meals, String pickup, String different,String customerName, String phoneNumber, String creditCard,String recipientName,String recipientPhone, String address) {
         this.meals = meals;
         this.date = date;
-        this.type = type;
+        this.different = different;
+        this.pickup = pickup;
         this.address = address;
-        Recipient = recipient;
-        Phone = phone;
-        this.fullName = fullName;
+        this.Recipient = recipientName;
+        this.phoneNumber = phoneNumber;
+        this.customerName = customerName;
         this.recipientPhone = recipientPhone;
+        this.creditCard = creditCard;
     }
 
     public int getId() {
@@ -67,14 +75,6 @@ public class Order  implements Serializable {
         this.date = date;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -91,20 +91,20 @@ public class Order  implements Serializable {
         Recipient = recipient;
     }
 
-    public String getPhone() {
-        return Phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone(String phone) {
-        Phone = phone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public String getRecipientPhone() {
@@ -113,5 +113,29 @@ public class Order  implements Serializable {
 
     public void setRecipientPhone(String recipientPhone) {
         this.recipientPhone = recipientPhone;
+    }
+
+    public String isDifferent() {
+        return different;
+    }
+
+    public void setDifferent(String different) {
+        this.different = different;
+    }
+
+    public String isPickup() {
+        return pickup;
+    }
+
+    public void setPickup(String pickup) {
+        this.pickup = pickup;
+    }
+
+    public String getCreditCard() {
+        return creditCard;
+    }
+
+    public void setCreditCard(String creditCard) {
+        this.creditCard = creditCard;
     }
 }

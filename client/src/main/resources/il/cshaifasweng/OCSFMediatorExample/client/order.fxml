@@ -55,6 +55,6 @@
       <TextField fx:id="creditTF" layoutX="388.0" layoutY="332.0" />
       <CheckBox fx:id="differentCheckBox" layoutX="80.0" layoutY="368.0" mnemonicParsing="false" text="Different Recipient" />
       <Label layoutX="47.0" layoutY="432.0" text="Recipient Phone:" />
-      <TextField fx:id="phoneTF" layoutX="139.0" layoutY="428.0" />
+      <TextField fx:id="recipientPhoneTF" layoutX="139.0" layoutY="428.0" />
    </children>
 </AnchorPane>
