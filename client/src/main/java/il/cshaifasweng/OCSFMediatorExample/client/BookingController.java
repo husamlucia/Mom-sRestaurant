@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.entities.Booking;
 import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -56,8 +57,16 @@ public class BookingController {
     private TextField BookingIdTF;
 
     @FXML
+    private TextField BookingCancel;
+
+    @FXML
+    private TextField BookingNumber; // reservation number (after reservation)
+
+
+    @FXML
     void BookingCancel(ActionEvent event) {
-        String message = "#removeBook " + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
+        int booking_num = Integer.parseInt(BookingCancel.getText());
+        String message = "#removeBook "  + " " + booking_num ;
         try{
             SimpleClient.getClient().sendToServer(message);
         } catch(IOException e){
@@ -95,11 +104,12 @@ public class BookingController {
             e.printStackTrace();
         }
     }
-            ////
+            ///
     @FXML
     void BookingPushSelected(ActionEvent event) {
-        Book book =  AvailableTimeTable.getSelectionModel().getSelectedItem();
-        String  msg = "#removeBook " + " " + book.getDate + " " + book.getTime + " " + book.getArea + " " + book.getCustomersNum;
+        // dont forget the id of the booking wesa mnshof kef mn3mlha
+        Booking book = (Booking) AvailableTimeTable.getSelectionModel().getSelectedItem();
+        String  msg = "#removeBook " + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
         try {
             SimpleClient.getClient().sendToServer(msg);
 

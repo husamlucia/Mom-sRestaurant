@@ -196,8 +196,11 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
+		else if(msgString.startsWith("#removeBook")){
 
+			}
 	}
+
 
 	void initiateWorkers(){
 

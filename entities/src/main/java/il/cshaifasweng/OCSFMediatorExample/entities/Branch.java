@@ -2,6 +2,8 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 
 @Entity
@@ -16,6 +18,10 @@ public class Branch implements Serializable {
     @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
     @JoinColumn(name="menu_id")
     private Menu menu;
+
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name = "Booking_id")
+    private List<Booking> bookingsList;         //table of branch bookings
 
     @Column(name = "openh")
     private String openHours;
