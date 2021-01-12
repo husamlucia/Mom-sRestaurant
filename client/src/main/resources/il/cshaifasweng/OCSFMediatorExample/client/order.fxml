@@ -48,9 +48,9 @@
       <TextField fx:id="recipientTF" layoutX="139.0" layoutY="394.0" />
       <Label layoutX="318.0" layoutY="228.0" text="Customer Details:" />
       <Label layoutX="318.0" layoutY="297.0" text="Phone:" />
-      <TextField fx:id="phoneTF1" layoutX="388.0" layoutY="293.0" />
+      <TextField fx:id="customerPhoneTF" layoutX="388.0" layoutY="293.0" />
       <Label layoutX="318.0" layoutY="268.0" text="Full Name:" />
-      <TextField fx:id="recipientTF1" layoutX="388.0" layoutY="264.0" prefHeight="26.0" prefWidth="149.0" />
+      <TextField fx:id="customerNameTF" layoutX="388.0" layoutY="264.0" prefHeight="26.0" prefWidth="149.0" />
       <Label layoutX="315.0" layoutY="336.0" text="Credit Card:" />
       <TextField fx:id="creditTF" layoutX="388.0" layoutY="332.0" />
       <CheckBox fx:id="differentCheckBox" layoutX="80.0" layoutY="368.0" mnemonicParsing="false" text="Different Recipient" />
