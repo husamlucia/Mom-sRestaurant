@@ -136,7 +136,7 @@ public class OrderController implements Initializable {
             // clear the config file
             orderAddressTF.setDisable(true);
             recipientTF.setDisable(true);
-            phoneTF.setDisable(false);
+            phoneTF.setDisable(true);
             differentCheckBox.setDisable(false);
             differentCheckBox.setSelected(false);
         }
