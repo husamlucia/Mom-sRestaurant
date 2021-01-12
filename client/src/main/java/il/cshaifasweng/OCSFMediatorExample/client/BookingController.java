@@ -9,6 +9,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import java.awt.event.ActionEvent;
+import java.awt.print.Book;
 import java.io.IOException;
 
 public class BookingController {
@@ -104,7 +105,6 @@ public class BookingController {
             e.printStackTrace();
         }
     }
-            ///
     @FXML
     void BookingPushSelected(ActionEvent event) {
         // dont forget the id of the booking wesa mnshof kef mn3mlha
@@ -117,7 +117,7 @@ public class BookingController {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-    }
+    
 
     @FXML
     void goToMain(ActionEvent event) throws IOException {

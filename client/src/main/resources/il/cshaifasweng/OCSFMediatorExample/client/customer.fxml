@@ -8,7 +8,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="500.0" prefWidth="651.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.CustomerController">
+<AnchorPane prefWidth="859.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.CustomerController">
    <children>
       <TableView fx:id="brTable" layoutX="129.0" layoutY="51.0" prefHeight="94.0" prefWidth="351.0">
         <columns>
@@ -24,31 +24,13 @@
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="orderBtn" layoutX="10.0" layoutY="207.0" mnemonicParsing="false" onAction="#order" prefHeight="25.0" prefWidth="103.0" text="Order">
+      <Button fx:id="complainBtn" layoutX="715.0" layoutY="154.0" mnemonicParsing="false" onAction="#complain" prefHeight="25.0" prefWidth="103.0" text="Complain">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="cancelOrderBtn" layoutX="10.0" layoutY="244.0" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="25.0" prefWidth="103.0" text="Cancel Order">
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </Button>
-      <Button fx:id="complainBtn" layoutX="519.0" layoutY="154.0" mnemonicParsing="false" onAction="#complain" prefHeight="25.0" prefWidth="103.0" text="Complain">
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </Button>
-      <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="103.0" text=" Back" />
-      <TableView fx:id="menuTable" layoutX="129.0" layoutY="207.0" prefHeight="163.0" prefWidth="351.0">
-         <columns>
-            <TableColumn fx:id="nameCol" prefWidth="40.0" text="Name" />
-            <TableColumn fx:id="ingredientsCol" prefWidth="82.0" text="Ingredients" />
-            <TableColumn fx:id="picCol" prefWidth="56.0" text="Picture" />
-            <TableColumn fx:id="priceCol" prefWidth="46.0" text="Price" />
-            <TableColumn fx:id="networkMealCol" prefWidth="126.0" text="Network Meal" />
-         </columns>
-      </TableView>
-      <TextArea layoutX="504.0" layoutY="51.0" prefHeight="94.0" prefWidth="133.0" />
+      <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="103.0" text="Back" />
+      <TextArea layoutX="685.0" layoutY="42.0" prefHeight="94.0" prefWidth="133.0" />
+
    </children>
 </AnchorPane>
