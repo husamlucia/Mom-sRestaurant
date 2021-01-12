@@ -3,6 +3,8 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -73,7 +75,10 @@ public class OrderController implements Initializable {
     private TextField creditTF;
 
     @FXML
-    private CheckBox sameCheckBox;
+    private CheckBox differentCheckBox;
+
+    @FXML
+    private CheckBox pickupCheckBox;
 
     @FXML
     private TextField phoneTF;
@@ -85,7 +90,25 @@ public class OrderController implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle rb) {
+        pickupChecked(false);
+        differentChecked(false);
         EventBus.getDefault().register(this);
+        pickupCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // TODO Auto-generated method stub
+                pickupChecked(newValue);
+            }
+        });
+        differentCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
+
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                // TODO Auto-generated method stub
+                differentChecked(newValue);
+            }
+        });
         buyMessage = "order ";
         buyPrice = 0;
         nameCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
@@ -97,6 +120,44 @@ public class OrderController implements Initializable {
     }
 
 
+    void pickupChecked(boolean newValue){
+        //disabling or enabling buttons upon changing state of pickup checkbox
+        //b == true -> pickup is checked
+        if(newValue){
+
+            orderAddressTF.setDisable(true);
+            recipientTF.setDisable(true);
+            phoneTF.setDisable(true);
+            differentCheckBox.setDisable(true);
+            // your checkbox has been ticked.
+        }else{
+
+            // your checkbox has been unticked. do stuff...
+            // clear the config file
+            orderAddressTF.setDisable(false);
+            recipientTF.setDisable(false);
+            phoneTF.setDisable(false);
+            differentCheckBox.setDisable(false);
+        }
+
+    }
+
+    void differentChecked(boolean newValue){
+        //disabling or enabling buttons upon changing state of pickup checkbox
+        //b == true -> pickup is checked
+        if(newValue){
+            phoneTF.setDisable(false);
+            recipientTF.setDisable(false);
+            // your checkbox has been ticked.
+        }else{
+
+            // your checkbox has been unticked. do stuff...
+            // clear the config file
+            phoneTF.setDisable(true);
+            recipientTF.setDisable(true);
+        }
+
+    }
     @FXML
     void addToCart(ActionEvent event) {
         Meal meal = menuTable.getSelectionModel().getSelectedItem();
