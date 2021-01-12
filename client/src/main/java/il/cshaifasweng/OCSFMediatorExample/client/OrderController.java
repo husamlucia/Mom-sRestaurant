@@ -65,11 +65,6 @@ public class OrderController implements Initializable {
     @FXML
     private TextField recipientTF;
 
-    @FXML
-    private TextField phoneTF1;
-
-    @FXML
-    private TextField recipientTF1;
 
     @FXML
     private TextField creditTF;
@@ -82,6 +77,21 @@ public class OrderController implements Initializable {
 
     @FXML
     private TextField phoneTF;
+
+    @FXML
+    private TableColumn<?, ?> picCol;
+
+    @FXML
+    private TableColumn<?, ?> networkMealCol;
+
+    @FXML
+    private TextField customerPhoneTF;
+
+    @FXML
+    private TextField customerNameTF;
+
+    @FXML
+    private TextField recipientPhoneTF;
 
 
     @FXML
