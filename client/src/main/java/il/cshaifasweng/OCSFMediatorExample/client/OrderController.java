@@ -86,7 +86,6 @@ public class OrderController implements Initializable {
 
     public void initialize(URL url, ResourceBundle rb) {
         EventBus.getDefault().register(this);
-        sameCheckBox.selectedProperty().addListener();
         buyMessage = "order ";
         buyPrice = 0;
         nameCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
