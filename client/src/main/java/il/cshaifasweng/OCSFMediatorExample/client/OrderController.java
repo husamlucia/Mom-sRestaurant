@@ -134,10 +134,11 @@ public class OrderController implements Initializable {
 
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            orderAddressTF.setDisable(false);
-            recipientTF.setDisable(false);
+            orderAddressTF.setDisable(true);
+            recipientTF.setDisable(true);
             phoneTF.setDisable(false);
             differentCheckBox.setDisable(false);
+            differentCheckBox.setSelected(false);
         }
 
     }
