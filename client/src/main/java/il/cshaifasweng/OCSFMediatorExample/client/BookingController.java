@@ -8,6 +8,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 import java.awt.event.ActionEvent;
+import java.awt.print.Book;
 import java.io.IOException;
 
 public class BookingController {
@@ -96,18 +97,18 @@ public class BookingController {
         }
     }
             ////
-    @FXML
-    void BookingPushSelected(ActionEvent event) {
-        Book book =  AvailableTimeTable.getSelectionModel().getSelectedItem();
-        String  msg = "#removeBook " + " " + book.getDate + " " + book.getTime + " " + book.getArea + " " + book.getCustomersNum;
-        try {
-            SimpleClient.getClient().sendToServer(msg);
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+//    @FXML
+//    void BookingPushSelected(ActionEvent event) {
+////        Book book =  AvailableTimeTable.getSelectionModel().getSelectedItem();
+////        String  msg = "#removeBook " + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
+//        try {
+////            SimpleClient.getClient().sendToServer(msg);
+//
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
 
     @FXML
     void goToMain(ActionEvent event) throws IOException {
