@@ -196,6 +196,46 @@ public class SimpleServer extends AbstractServer {
 				e.printStackTrace();
 			}
 		}
+		else if(msgString.startsWith("order ")){
+			String recipientName = "";
+			String recipientPhone = "";
+			String[] attributes = msgString.substring(9).split("\\s+");
+			String pickup = attributes[0];
+			String different = attributes[1];
+			String date = attributes[2];
+			String customerName = attributes[3];
+			String phoneNumber = attributes[4];
+			String creditCard = attributes[5];
+			String address = "";
+			int mealOffset = 6;
+			if(pickup.equals("0")){
+				address = attributes[6];
+				if(different.equals("0")) mealOffset = 7;
+				else {
+					 recipientName = attributes[7];
+					 recipientPhone = attributes[8];
+					mealOffset = 9;
+				}
+			}
+			String[] mealIds = Arrays.copyOfRange(attributes, mealOffset, attributes.length);
+			List<Meal> meals = new ArrayList<>();
+			Dao<Meal> daoMeals = new Dao(Meal.class);
+			for(String id: mealIds){
+				Meal meal = daoMeals.findById(Integer.parseInt(id));
+				meals.add(meal);
+			}
+
+			Dao<Order> orderDao = new Dao(Order.class);
+			Order order = new Order(meals, pickup, different, customerName, phoneNumber, creditCard, recipientName, recipientPhone, address);
+			orderDao.save(order);
+
+			//String message = "#order pickup/delivery different date customername phonenumber creditcard optional:recipientname optional:recipientphone optional:address meals:
+			//substring=7
+			//if pickup=1 -> offset = 6
+			//if pickup=0 ->
+			//  if different=0 -> offset = 7
+			//  if different -> offset = 9
+		}
 
 	}
 
