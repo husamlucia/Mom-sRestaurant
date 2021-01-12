@@ -77,7 +77,7 @@ public class OrderController implements Initializable {
     private CheckBox pickupCheckBox;
 
     @FXML
-    private TextField phoneTF;
+    private TextField recipientPhoneTF;
 
     @FXML
     private TableColumn<?, ?> picCol;
@@ -91,9 +91,6 @@ public class OrderController implements Initializable {
     @FXML
     private TextField customerNameTF;
 
-    @FXML
-    private TextField recipientPhoneTF;
-
 
     @FXML
     void goBack(ActionEvent event) throws IOException {
@@ -101,9 +98,9 @@ public class OrderController implements Initializable {
     }
 
     public void initialize(URL url, ResourceBundle rb) {
+        EventBus.getDefault().register(this);
         pickupChecked(false);
         differentChecked(false);
-        EventBus.getDefault().register(this);
         pickupCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
 
             @Override
@@ -138,16 +135,16 @@ public class OrderController implements Initializable {
 
             orderAddressTF.setDisable(true);
             recipientTF.setDisable(true);
-            phoneTF.setDisable(true);
+            recipientPhoneTF.setDisable(true);
             differentCheckBox.setDisable(true);
             // your checkbox has been ticked.
         }else{
 
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            orderAddressTF.setDisable(true);
+            orderAddressTF.setDisable(false);
             recipientTF.setDisable(true);
-            phoneTF.setDisable(true);
+            recipientPhoneTF.setDisable(true);
             differentCheckBox.setDisable(false);
             differentCheckBox.setSelected(false);
         }
@@ -158,14 +155,14 @@ public class OrderController implements Initializable {
         //disabling or enabling buttons upon changing state of pickup checkbox
         //b == true -> pickup is checked
         if(newValue){
-            phoneTF.setDisable(false);
+            recipientPhoneTF.setDisable(false);
             recipientTF.setDisable(false);
             // your checkbox has been ticked.
         }else{
 
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            phoneTF.setDisable(true);
+            recipientPhoneTF.setDisable(true);
             recipientTF.setDisable(true);
         }
     }
@@ -225,7 +222,7 @@ public class OrderController implements Initializable {
         String recipientPhone = "";
         if(different){
             recipientName = recipientTF.getText();
-            recipientPhone = phoneTF.getText();
+            recipientPhone = recipientPhoneTF.getText();
         }
         String message = "order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
                 creditCard + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
