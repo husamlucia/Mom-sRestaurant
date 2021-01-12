@@ -5,11 +5,12 @@ import javax.persistence.*;
 @Entity
 @Table(name = "bookings")// create table of bookings in database
 public class Booking {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="Booking_id")
     private int id;
-////
+
     @Column(name = "Date")
     private String bookingDate;
 
@@ -22,9 +23,9 @@ public class Booking {
     @Column(name = "CustomersNum")
     private int customerNum;
 
-    @ManyToOne
-    @JoinColumn(name="id", referencedColumnName = "id")
-    private Branch Branch;
+    @OneToMany
+    private Branch branch;
+
 
     public int getId() {
         return id;
@@ -45,10 +46,10 @@ public class Booking {
     public int getCustomersNum() {
         return customerNum;
     }
-
-    public Branch getBranch() {
-        return Branch;
-    }
+//
+//    public Branch getBranch() {
+//        return Branch;
+//    }
 
     public Booking(int id, String bookingDate, String time, String area, int customerNum) {
         this.id = id;

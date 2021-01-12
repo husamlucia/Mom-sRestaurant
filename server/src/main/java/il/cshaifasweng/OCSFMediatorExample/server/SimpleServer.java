@@ -253,6 +253,12 @@ public class SimpleServer extends AbstractServer {
 			//  if different=0 -> offset = 7
 			//  if different -> offset = 9
 		}
+		// String message = "#checkBooking " + Integer.toString(branchID) + ' ' + datetime + ' ' + "both" + ' ' +  '1';
+		//	String msg = "#saveBooking " + " " +  brId + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
+
+		else if(msgString.startsWith("#booking ")){
+
+		}
 	}
 
 

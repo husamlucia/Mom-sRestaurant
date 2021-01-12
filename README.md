@@ -1,5 +1,6 @@
 # Mom's Restaurant
 
+
 ## Structure
 Built using three modules:
 1. **client** - a simple client built using JavaFX and OCSF. We use EventBus (which implements the mediator pattern) in order to pass events between classes (in this case: between SimpleClient and PrimaryController.

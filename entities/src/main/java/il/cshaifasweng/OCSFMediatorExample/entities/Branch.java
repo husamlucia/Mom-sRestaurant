@@ -19,9 +19,9 @@ public class Branch implements Serializable {
     @JoinColumn(name="menu_id")
     private Menu menu;
 
-    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    @JoinColumn(name = "Booking_id")
-    private List<Booking> bookingsList;         //table of branch bookings
+//    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+//    @JoinColumn(name = "Booking_id")
+//    private List<Booking> bookingsList;         //table of branch bookings
 
     @Column(name = "openh")
     private String openHours;
