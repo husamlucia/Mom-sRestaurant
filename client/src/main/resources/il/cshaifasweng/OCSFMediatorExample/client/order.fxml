@@ -10,9 +10,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="451.0" prefWidth="742.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
+<AnchorPane prefHeight="476.0" prefWidth="742.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
    <children>
-      <Button fx:id="orderBtn" layoutX="611.0" layoutY="398.0" mnemonicParsing="false" onAction="#order" prefHeight="42.0" prefWidth="114.0" text="Order">
+      <Button fx:id="orderBtn" layoutX="611.0" layoutY="417.0" mnemonicParsing="false" onAction="#order" prefHeight="42.0" prefWidth="114.0" text="Order">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
@@ -41,20 +41,20 @@
       <Label layoutX="78.0" layoutY="228.0" text="Order Details:" />
       <DatePicker fx:id="orderDate" layoutX="114.0" layoutY="264.0" />
       <Label layoutX="78.0" layoutY="268.0" text="Date:" />
-      <CheckBox layoutX="78.0" layoutY="306.0" mnemonicParsing="false" text="Delivery" />
-      <Label layoutX="78.0" layoutY="336.0" text="Address:" />
+      <CheckBox fx:id="checkBox" layoutX="78.0" layoutY="306.0" mnemonicParsing="false" text="Pick Up" />
+      <Label layoutX="87.0" layoutY="336.0" text="Address:" />
       <TextField fx:id="orderAddressTF" layoutX="140.0" layoutY="332.0" />
-      <Label layoutX="80.0" layoutY="372.0" text="Recipient:" />
-      <TextField fx:id="recipientTF" layoutX="140.0" layoutY="368.0" />
+      <Label layoutX="79.0" layoutY="398.0" text="Recipient:" />
+      <TextField fx:id="recipientTF" layoutX="139.0" layoutY="394.0" />
       <Label layoutX="318.0" layoutY="228.0" text="Customer Details:" />
       <Label layoutX="318.0" layoutY="297.0" text="Phone:" />
       <TextField fx:id="phoneTF1" layoutX="388.0" layoutY="293.0" />
       <Label layoutX="318.0" layoutY="268.0" text="Full Name:" />
       <TextField fx:id="recipientTF1" layoutX="388.0" layoutY="264.0" prefHeight="26.0" prefWidth="149.0" />
-      <Label layoutX="314.0" layoutY="345.0" text="Credit Card:" />
-      <TextField fx:id="creditTF" layoutX="388.0" layoutY="345.0" />
-      <CheckBox fx:id="sameCheckBox" layoutX="419.0" layoutY="323.0" mnemonicParsing="false" text="Same as Recipient" />
-      <Label layoutX="78.0" layoutY="406.0" text="Phone:" />
-      <TextField fx:id="phoneTF" layoutX="140.0" layoutY="402.0" />
+      <Label layoutX="315.0" layoutY="336.0" text="Credit Card:" />
+      <TextField fx:id="creditTF" layoutX="388.0" layoutY="332.0" />
+      <CheckBox fx:id="differentCheckBox" layoutX="80.0" layoutY="368.0" mnemonicParsing="false" text="Different Recipient" />
+      <Label layoutX="47.0" layoutY="432.0" text="Recipient Phone:" />
+      <TextField fx:id="phoneTF" layoutX="139.0" layoutY="428.0" />
    </children>
 </AnchorPane>
