@@ -83,6 +83,7 @@ public class SimpleServer extends AbstractServer {
                 }
 
                 Dao<Meal> mService = new Dao(Meal.class);
+
                 Meal meal = mService.findById(mealID);
                 meal.setName(name);
                 meal.setPrice(price);
@@ -95,14 +96,14 @@ public class SimpleServer extends AbstractServer {
         } else if (msgString.startsWith("#removeMeal ")) {
             int id = Integer.parseInt(msgString.substring(12));
             Dao<Meal> mService = new Dao(Meal.class);
-            Dao<Menu> menuService = new Dao(Menu.class);
+            Dao<WaitingMenu> WaitingMenuService = new Dao(WaitingMenu.class);
 
             Meal meal = mService.findById(id);
-            Menu newMenu = meal.getMenu();
-            newMenu.getMeals().remove(meal);
+            meal.setStatus(2);
+            WaitingMenu newWaitingMenu = meal.getWaitingMenu();
+            newWaitingMenu.getMeals().add(meal);
+            WaitingMenuService.update(newWaitingMenu);//HUSSSSSSSSSSSam
 
-            //menuService.update(newMenu);
-            mService.delete(id);
         } else if (msgString.startsWith("#requestMenu ")) {
             int id = Integer.parseInt(msgString.substring(13));
             //Should send to client list of Meals..
@@ -153,19 +154,22 @@ public class SimpleServer extends AbstractServer {
                 }
 
 
-                Meal newMeal = new Meal(name, price, ingredients);
+                Meal newMeal = new Meal(name, price, ingredients,1);
 
 
                 Dao<Branch> brService = new Dao(Branch.class);
                 Dao<Meal> mealService = new Dao(Meal.class);
+                Dao<WaitingMenu> waitingMenuService=new Dao(WaitingMenu.class);//we added this
+                //we need a fucking explanation!!!!!! Where the fuck are you husam
 
                 Branch br = brService.findById(branchID);
-                Menu menu = br.getMenu();
+                WaitingMenu waitingMenu = br.getWaitingMenu();
 
-                newMeal.setMenu(menu);
+                newMeal.setWaitingMenu(waitingMenu);
                 mealService.save(newMeal);
 
-                menu.addMeal(newMeal);
+                waitingMenu.addMeal(newMeal);
+                waitingMenuService.update(waitingMenu);
 
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -289,6 +293,7 @@ public class SimpleServer extends AbstractServer {
         else if (msgString.startsWith("#createmapswithtables")) {
             create_branches_with_maps_and_tables();
         }
+
     }
 
 
