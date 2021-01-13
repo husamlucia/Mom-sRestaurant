@@ -27,6 +27,18 @@ public class Branch implements Serializable {
     @JoinColumn(name="menu_id")
     private Menu menu;
 
+    public WaitingMenu getWaitingMenu() {
+        return waitingMenu;
+    }
+
+    public void setWaitingMenu(WaitingMenu waitingMenu) {
+        this.waitingMenu = waitingMenu;
+    }
+
+    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="WaitingMenu_id")
+    private WaitingMenu waitingMenu;
+
 
     @OneToMany(mappedBy = "customerDetails",cascade=CascadeType.ALL)
     List<Order> orders;
