@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -146,6 +147,8 @@ public class SimpleServer extends AbstractServer {
 					System.out.println(str);
 				}
 
+
+
 				Meal newMeal = new Meal(name,price, ingredients);
 
 
@@ -253,8 +256,30 @@ public class SimpleServer extends AbstractServer {
 			//  if different=0 -> offset = 7
 			//  if different -> offset = 9
 		}
-	}
 
+
+		// String message = "#checkBooking " + Integer.toString(branchID) + ' ' + datetime + ' ' + "both" + ' ' +  '1';
+		//	String msg = "#saveBooking " + " " +  brId + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
+		else if(msgString.startsWith("#checkBooking ")){
+			String[] attributes = msgString.substring(14).split("\\s+");
+			//offset = 14
+			Dao<Branch> branchDao = new Dao(Branch.class);
+			int brId = Integer.parseInt(attributes[0]);
+			//update
+			String date = attributes[1];
+			String time = attributes[2];//get date and format it
+			String area = attributes[3];
+			int persons = Integer.parseInt(attributes[4]);
+			Branch br = branchDao.findById(brId);
+			List<Booking> availableBookings = checkAvailable(br, date, time,persons, area);
+		}
+		else if(msgString.startsWith("#booking ")){
+
+		}
+	}
+	List<Booking> checkAvailable(Branch br, String date, String time, int persons, String area){
+
+	}
 
 	void initiateWorkers(){
 

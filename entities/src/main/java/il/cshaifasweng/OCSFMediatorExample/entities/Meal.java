@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.*;
 
 import javax.persistence.*;
+import javax.persistence.Table;
 
 
 @Entity

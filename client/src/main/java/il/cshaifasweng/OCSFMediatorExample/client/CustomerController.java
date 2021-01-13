@@ -19,6 +19,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -96,8 +98,29 @@ public class CustomerController implements Initializable {
 
 
     @FXML
-    void book(ActionEvent event) {
+    void book(ActionEvent event) throws IOException {
+        try {
+            //Assume we need a table of 1 at least.
+            //"#getAvailableHours " + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
 
+            Branch br = brTable.getSelectionModel().getSelectedItem();
+
+            if(br==null) return;
+            int branchID = br.getId();
+
+            String datetime;
+            //dd-MM-yyyy
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+            LocalDateTime now = LocalDateTime.now();
+            datetime = dtf.format(now);
+
+            //"#getAvailableHours " + branchId + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
+            String message = "#checkBooking " + Integer.toString(branchID) + ' ' + datetime + ' ' + "both" + ' ' +  '1';
+            SimpleClient.getClient().sendToServer(message);
+            App.setRoot("booking");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

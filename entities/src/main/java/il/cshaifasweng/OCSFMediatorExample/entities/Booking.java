@@ -1,15 +1,17 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "bookings")// create table of bookings in database
-public class Booking {
+public class Booking implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="Booking_id")
     private int id;
-////
+
     @Column(name = "Date")
     private String bookingDate;
 
@@ -23,38 +25,46 @@ public class Booking {
     private int customerNum;
 
     @ManyToOne
-    @JoinColumn(name="id", referencedColumnName = "id")
-    private Branch Branch;
+    private Branch branch;
 
-    public int getId() {
-        return id;
+
+    public String getBookingDate() {
+        return bookingDate;
     }
 
-    public String getDate() {
-        return bookingDate;
+    public void setBookingDate(String bookingDate) {
+        this.bookingDate = bookingDate;
     }
 
     public String getTime() {
         return time;
     }
 
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public String getArea() {
         return area;
     }
 
-    public int getCustomersNum() {
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public int getCustomerNum() {
         return customerNum;
     }
 
-    public Branch getBranch() {
-        return Branch;
+    public void setCustomerNum(int customerNum) {
+        this.customerNum = customerNum;
     }
 
-    public Booking(int id, String bookingDate, String time, String area, int customerNum) {
-        this.id = id;
-        this.bookingDate = bookingDate;
-        this.time = time;
-        this.area = area;
-        this.customerNum = customerNum;
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 }

@@ -161,7 +161,6 @@ public class OrderController implements Initializable {
             recipientTF.setDisable(false);
             // your checkbox has been ticked.
         }else{
-
             // your checkbox has been unticked. do stuff...
             // clear the config file
             recipientPhoneTF.setDisable(true);
@@ -230,7 +229,7 @@ public class OrderController implements Initializable {
         }
         String message = "#order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
                 creditCard + ' ' + price + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
-
+        //#order pickup different date customer_name customer_phone credit_Card price recipientName recipientPhone recipientAddress MealIDs
         try{
             SimpleClient.getClient().sendToServer(message);
         }catch (IOException e){
