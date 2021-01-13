@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalTime;
 
 public class Warning implements Serializable {
-//hi
+
 	/**
 	 * 
 	 */

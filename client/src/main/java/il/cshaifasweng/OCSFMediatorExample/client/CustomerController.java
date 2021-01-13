@@ -91,7 +91,6 @@ public class CustomerController implements Initializable {
             e.printStackTrace();
         }
     }
-
     @FXML
     void goBack(ActionEvent event) throws IOException {
         App.setRoot("login");
