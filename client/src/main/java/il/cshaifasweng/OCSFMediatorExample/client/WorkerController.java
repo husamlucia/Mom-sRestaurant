@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,22 +19,20 @@ public class WorkerController implements Initializable {
     @FXML
     private CheckBox newMealCheckBox;
 
-
-
     @FXML
     private TableView<Branch> branchesTable;
 
     @FXML
-    private TableColumn<?, ?> brIdBranchesCol;
+    private TableColumn<Branch, Integer> brIdBranchesCol;
 
     @FXML
-    private TableColumn<?, ?> openHourBranchesCol;
+    private TableColumn<Branch, String> openHourBranchesCol;
 
     @FXML
-    private TableColumn<?, ?> CloseHourBranchesCol;
+    private TableColumn<Branch, String> CloseHourBranchesCol;
 
     @FXML
-    private TableView<?> menuTable;
+    private TableView<Meal> menuTable;
 
 
     @FXML
@@ -48,8 +47,6 @@ public class WorkerController implements Initializable {
     @FXML
     private TableColumn<?, ?> picMenuCol;
 
-    @FXML
-    private TableColumn<?, ?> networkMealMenuCol;
 
     @FXML
     private TableColumn<Meal, Double> priceMenuCol;
@@ -137,6 +134,17 @@ public class WorkerController implements Initializable {
 
     @FXML
     void approveMeal(ActionEvent event) {
+        Meal meal = menuTable.getSelectionModel().getSelectedItem();
+        int mealId = meal.getId();
+        String  msg = "#approveMeal " + mealId;
+        try {
+            SimpleClient.getClient().sendToServer(msg);
+            getAllMeals();
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -144,6 +152,17 @@ public class WorkerController implements Initializable {
 
     @FXML
     void denyMeal(ActionEvent event) {
+        Meal meal = menuTable.getSelectionModel().getSelectedItem();
+        int mealId = meal.getId();
+        String  msg = "#denyMeal " + mealId;
+        try {
+            SimpleClient.getClient().sendToServer(msg);
+            getAllMeals();
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
@@ -170,6 +189,7 @@ public class WorkerController implements Initializable {
     @FXML
     void goToLockdownInstructions(ActionEvent event) {
 
+        // App.setRoot("lockDown");
     }
 
     @FXML
@@ -195,6 +215,13 @@ public class WorkerController implements Initializable {
     @FXML
     void requestComplaints(ActionEvent event) {
 
+        try {
+            String message = "#requestComplaints " + branchesTable.getSelectionModel().getSelectedItem().getId();
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -211,6 +238,13 @@ public class WorkerController implements Initializable {
     @FXML
     void requestRestaurantMap(ActionEvent event) {
 
+        try {
+            String message = "#requestMap " + branchesTable.getSelectionModel().getSelectedItem().getId();
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -258,13 +292,18 @@ public class WorkerController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        EventBus.getDefault().register(this);
         //each cellValueFactory has been set according to the member variables of your entity class
-        idMenuCol.setCellValueFactory(new PropertyValueFactory<Meal, Integer>("id"));
-        nameMenuCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
-        priceMenuCol.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
-        ingredientsMenuCol.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
+        brIdBranchesCol.setCellValueFactory(new PropertyValueFactory<Branch, Integer>("id"));
+        openHourBranchesCol.setCellValueFactory(new PropertyValueFactory<Branch, String>("openHours"));
+        CloseHourBranchesCol.setCellValueFactory(new PropertyValueFactory<Branch, String>("closeHours"));
 
-        getAllMeals();
+
+        try{
+            SimpleClient.getClient().sendToServer("#getAllBranches");
+        }catch(IOException e){
+            e.printStackTrace();
+        }
 
 
     }
