@@ -14,5 +14,16 @@ public class Tablee {
     @Column(name="id")
     private int id;
 
-    
+    @ManyToOne
+    private Branch branch;
+
+    private int capacity;
+    Map<String, Booking> bookings;
+
+
+
+    public void addBooking(Booking booking){
+        String date = booking.getBookingDate();
+        bookings.put(date, booking);
+        }
 }
