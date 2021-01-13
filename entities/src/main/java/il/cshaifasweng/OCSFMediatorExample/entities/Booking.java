@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "bookings")// create table of bookings in database
@@ -12,11 +13,12 @@ public class Booking implements Serializable {
     @Column(name="Booking_id")
     private int id;
 
+
     @Column(name = "Date")
     private String bookingDate;
 
     @Column(name = "Time")
-    private  String time;
+    private String time;
 
     @Column(name = "Area")
     private String area;
@@ -25,14 +27,34 @@ public class Booking implements Serializable {
     private int customerNum;
 
     @ManyToOne
+    @JoinColumn(name="branch_id")
     private Branch branch;
 
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name="booking_tables",
+            joinColumns = {@JoinColumn(name="booking_id")},
+            inverseJoinColumns = {@JoinColumn(name="table_id")})
+    private List<Tablee> tables;
 
-    public String getBookingDate() {
+
+    public Booking(String bookingDate, String time, String area, int customerNum, Branch branch, List<Tablee> tables) {
+        this.bookingDate = bookingDate;
+        this.time = time;
+        this.area = area;
+        this.customerNum = customerNum;
+        this.branch = branch;
+        this.tables = tables;
+    }
+
+    public Booking(){
+
+    }
+
+    public String getDate() {
         return bookingDate;
     }
 
-    public void setBookingDate(String bookingDate) {
+    public void setDate(String bookingDate) {
         this.bookingDate = bookingDate;
     }
 
@@ -66,5 +88,13 @@ public class Booking implements Serializable {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

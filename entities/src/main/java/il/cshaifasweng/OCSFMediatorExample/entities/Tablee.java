@@ -1,29 +1,113 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 @Entity
-@Table(name="tables")
-public class Tablee {
+@Table(name = "tables")
+public class Tablee implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private int id;
 
-    @ManyToOne
-    private Branch branch;
-
     private int capacity;
-    Map<String, Booking> bookings;
+
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "map_id")
+    private Mapp map;
+
+
+    @ManyToMany(mappedBy = "tables",cascade=CascadeType.ALL)
+    List<Booking> bookings;
 
 
 
-    public void addBooking(Booking booking){
-        String date = booking.getBookingDate();
-        bookings.put(date, booking);
+    public Tablee(int capacity, Mapp map) {
+        this.capacity = capacity;
+        this.map = map;
+        this.bookings = new ArrayList<>();
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void addBooking(Booking booking) {
+        bookings.add(booking);
+    }
+
+    public void removeBooking(Booking booking){
+        bookings.remove(booking);
+    }
+
+    //hour = 14:00
+    //can't have reservation from 12:15 to 15:59
+
+
+    public boolean compare_date_for_booking(Date newHour, Date existingHour){
+        Calendar upperBound = Calendar.getInstance();
+        upperBound.setTime(newHour);
+        upperBound.add(Calendar.HOUR_OF_DAY, 1);
+        upperBound.add(Calendar.MINUTE, 59);
+
+        Calendar lowerBound = Calendar.getInstance();
+        lowerBound.setTime(newHour);
+        lowerBound.add(Calendar.HOUR_OF_DAY, -1);
+        lowerBound.add(Calendar.HOUR_OF_DAY, -59);
+
+        Calendar existingHourCal = Calendar.getInstance();
+        existingHourCal.setTime(existingHour);
+
+        if ( existingHourCal.before(lowerBound) && existingHourCal.after(upperBound)) return true;
+        return false;
+    }
+
+    public int checkAvailable(String date, String hour) throws ParseException {
+
+        SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
+        Date hour2 = parser.parse(hour);
+
+
+        System.out.println("Checking availability for: " + date + ' ' + hour);
+        for(Booking book: bookings){
+            if(book.getDate().equals(date)){
+                Date bookHour = parser.parse(book.getTime());
+                if(!compare_date_for_booking(hour2, bookHour)) return 0;
+            }
         }
+        return this.getCapacity();
+    }
+
+
+
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public Mapp getMap() {
+        return map;
+    }
+
+    public Tablee(){
+
+    }
+
+    public void setMap(Mapp map) {
+        this.map = map;
+    }
+
 }

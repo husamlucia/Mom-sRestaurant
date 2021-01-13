@@ -1,9 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 @Entity
@@ -15,25 +16,35 @@ public class Branch implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    @JoinColumn(name="menu_id")
-    private Menu menu;
-
-
-    @OneToMany(mappedBy = "customerDetails")
-    List<Order> orders;
-
-    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER, mappedBy =)
-    @JoinColumn(name = "booking_id")
-    private List<Booking> bookingsList;         //table of branch bookings
-
-
-
     @Column(name = "openh")
     private String openHours;
 
     @Column(name = "closeh")
     private String closeHours;
+
+
+    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="menu_id")
+    private Menu menu;
+
+
+    @OneToMany(mappedBy = "customerDetails",cascade=CascadeType.ALL)
+    List<Order> orders;
+
+    @OneToMany(mappedBy = "branch",cascade=CascadeType.ALL)
+    List<Mapp> map;
+
+    public Mapp getMap(String area){
+
+        if(area.equals("inside")) return map.get(0);
+        else return map.get(1);
+
+    }
+
+
+    public void setMap(String area, Mapp map2){
+       map.add(map2);
+    }
 
     public int getId() {
         return id;
@@ -71,6 +82,7 @@ public class Branch implements Serializable {
         this.openHours = openHours;
         this.closeHours = closeHours;
         this.menu = new Menu();
+        this.map = new ArrayList<>();
     }
 
     public Branch(){

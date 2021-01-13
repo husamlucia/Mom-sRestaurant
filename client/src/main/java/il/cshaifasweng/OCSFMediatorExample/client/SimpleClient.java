@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.client.events.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import org.greenrobot.eventbus.EventBus;
 
@@ -30,6 +31,9 @@ public class SimpleClient extends AbstractClient {
 		else if(msg.getClass().equals(Worker.class)){
 			EventBus.getDefault().post(new LoginEvent((Worker) msg));
 
+		}else if(msg.getClass().equals(BookingEvent.class)){
+			EventBus.getDefault().post(msg);
+			System.out.println("Done");
 		}
 	}
 	
