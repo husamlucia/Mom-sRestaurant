@@ -1,5 +1,12 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.client.events.BookingControllerLoaded;
+import il.cshaifasweng.OCSFMediatorExample.entities.BookingEvent;
+import il.cshaifasweng.OCSFMediatorExample.entities.Booking;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,6 +32,37 @@ public class BookingController {
         this.bookingArea = area;
         this.bookingNumOfCustomers = number;
     }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        EventBus.getDefault().register(this);
+
+        colDate.setCellValueFactory(new PropertyValueFactory<Booking, String>("date"));
+        colTime.setCellValueFactory(new PropertyValueFactory<Booking, String>("time"));
+        colInOut.setCellValueFactory(new PropertyValueFactory<Booking, String>("area"));
+    }
+
+    @Subscribe
+    public void onBookingControllerLoaded(BookingControllerLoaded event){
+        Platform.runLater(()->{
+            branchID = event.getBranch().getId();
+        });
+    }
+
+    @Subscribe
+    public void onBookingEvent(BookingEvent event){
+        //Called when selecting branch to book to: shows options from 1 hour forward of current date and hour.
+        //Also called when showing available options for booking time or suggestions.
+        //BookingEvent contains List<Booking> that we set to the table.
+        Platform.runLater(()->{
+            ObservableList<Booking> bookingList = FXCollections.observableArrayList();
+            bookingList.addAll(event.getBookings());
+            AvailableTimeTable.setItems(bookingList);
+        });
+
+    }
+
+
 
     @FXML
     private Button bookBtn;
@@ -76,6 +114,24 @@ public class BookingController {
 
     @FXML
     void BookingGetInAvailable(ActionEvent event) {
+
+        checkAvailability("inside");
+    }
+
+    @FXML
+    void BookingGetOutAvailable(ActionEvent event) {
+        checkAvailability("outside");
+
+    }
+
+
+    void checkAvailability(String location){
+        init(BookingDateTF.getText(), BookingTimeTF.getText(), location, Integer.parseInt(BookingNumCustomersTF.getText()));
+        //        String msg = "#checkBooking " + " " +  brId + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
+        String message = "#checkBooking " + branchID + ' ' + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
+        //Checking for availability of Bookings in the bookingDate and bookingTime we present.
+        //We also need to send Branch ID of the branch we're accessing.
+        try {
         init(BookingDateTF.getText(),BookingTimeTF.getText(),"inside",Integer.parseInt(BookingNumCustomersTF.getText()));
         String message = "#getAvailableHours " + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
         try{
@@ -85,34 +141,24 @@ public class BookingController {
         }
     }
 
-    @FXML
-    void BookingGetOutAvailable(ActionEvent event) {
-        init(BookingDateTF.getText(),BookingTimeTF.getText(),"outside",Integer.parseInt(BookingNumCustomersTF.getText()));
 
-        String message = "#getAvailableHours " + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
-        try{
-            SimpleClient.getClient().sendToServer(message);
-        } catch(IOException e){
+     @FXML
+    void BookingPushSelected(ActionEvent event) {
+        // dont forget the id of the booking wesa mnshof kef mn3mlha
+        countDeclare = 0;
+        bookBtn.setDisable(true);
+        Booking book = (Booking) AvailableTimeTable.getSelectionModel().getSelectedItem();
+        try {
+            SimpleClient.getClient().sendToServer(book);
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-            ////
-//    @FXML
-//    void BookingPushSelected(ActionEvent event) {
-////        Book book =  AvailableTimeTable.getSelectionModel().getSelectedItem();
-////        String  msg = "#removeBook " + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
-//        try {
-////            SimpleClient.getClient().sendToServer(msg);
-//
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    }
 
     @FXML
     void goToMain(ActionEvent event) throws IOException {
-        App.setRoot("main");
+        App.setRoot("customer");
     }
 
 }

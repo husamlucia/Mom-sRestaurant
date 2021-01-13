@@ -1,8 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 
+import il.cshaifasweng.OCSFMediatorExample.client.events.BookingControllerLoaded;
+import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
+import il.cshaifasweng.OCSFMediatorExample.client.events.WarningEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
-import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
+import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -21,7 +23,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
@@ -118,6 +119,7 @@ public class CustomerController implements Initializable {
             String message = "#checkBooking " + Integer.toString(branchID) + ' ' + datetime + ' ' + "both" + ' ' +  '1';
             SimpleClient.getClient().sendToServer(message);
             App.setRoot("booking");
+            EventBus.getDefault().post(new BookingControllerLoaded((Branch) br));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -140,4 +142,13 @@ public class CustomerController implements Initializable {
         });
     }
 
+    @FXML
+    void createMaps(ActionEvent event) {
+        try {
+            String message = "#createmapswithtables";
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

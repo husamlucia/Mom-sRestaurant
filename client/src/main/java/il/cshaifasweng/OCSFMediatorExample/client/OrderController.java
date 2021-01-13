@@ -1,6 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
+import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
