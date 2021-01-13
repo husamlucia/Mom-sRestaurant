@@ -39,6 +39,8 @@ public class LoginController implements Initializable {
         } catch(IOException e){
             e.printStackTrace();
         }
+        //if logined successfully then go to workerfxml
+        //App.setRoot("worker");
     }
 
     @FXML
@@ -65,6 +67,8 @@ public class LoginController implements Initializable {
             Stage prevStage = (Stage) id.getScene().getWindow();
             prevStage.close();
             stage.show();
+
+
         });
 
     }

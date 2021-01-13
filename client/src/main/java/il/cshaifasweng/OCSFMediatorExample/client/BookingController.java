@@ -7,28 +7,26 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
+import java.awt.event.ActionEvent;
+import java.awt.print.Book;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
-public class BookingController implements Initializable {
-
-
-    private int branchID;
-    private String bookingDate;
-    private String bookingTime;
-    private String bookingArea;
-    private int bookingNumOfCustomers;
+public class BookingController {
+    private String bookingDate ;
+    private String bookingTime ;
+    private String bookingArea ;
+    private int bookingNumOfCustomers ;
     private int countDeclare = 0;
 
-    void init(String date, String time, String area, int number) {
+
+    void init(String date,String time,String area, int number){
         this.bookingDate = date;
         this.bookingTime = time;
         this.bookingArea = area;
@@ -79,16 +77,16 @@ public class BookingController implements Initializable {
     private TextField BookingNumCustomersTF;
 
     @FXML
-    private TableView<Booking> AvailableTimeTable;
+    private TableView<?> AvailableTimeTable;
 
     @FXML
-    private TableColumn colDate;
+    private TableColumn<?, ?> colDate;
 
     @FXML
-    private TableColumn colTime;
+    private TableColumn<?, ?> colTime;
 
     @FXML
-    private TableColumn colInOut;
+    private TableColumn<?, ?> colInOut;
 
     @FXML
     private TextField BookingNameTF;
@@ -97,21 +95,11 @@ public class BookingController implements Initializable {
     private TextField BookingIdTF;
 
     @FXML
-    private TextField BookingCancel;
-
-    @FXML
-    private TextField BookingNumber; // reservation number (after reservation)
-
-    @FXML
-    private Label availabilityLabel;
-
-    @FXML
     void BookingCancel(ActionEvent event) {
-        int booking_num = Integer.parseInt(BookingCancel.getText());
-        String message = "#removeBook " + " " + booking_num;
-        try {
+        String message = "#removeBook " + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
+        try{
             SimpleClient.getClient().sendToServer(message);
-        } catch (IOException e) {
+        } catch(IOException e){
             e.printStackTrace();
         }
     }
@@ -119,7 +107,7 @@ public class BookingController implements Initializable {
     @FXML
     void BookingDeclare(ActionEvent event) {
         countDeclare++;
-        if (countDeclare == this.bookingNumOfCustomers) {
+        if(countDeclare == this.bookingNumOfCustomers){
             bookBtn.setDisable(false);
         }
     }
@@ -144,14 +132,17 @@ public class BookingController implements Initializable {
         //Checking for availability of Bookings in the bookingDate and bookingTime we present.
         //We also need to send Branch ID of the branch we're accessing.
         try {
+        init(BookingDateTF.getText(),BookingTimeTF.getText(),"inside",Integer.parseInt(BookingNumCustomersTF.getText()));
+        String message = "#getAvailableHours " + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
+        try{
             SimpleClient.getClient().sendToServer(message);
-        } catch (IOException e) {
+        } catch(IOException e){
             e.printStackTrace();
         }
     }
 
 
-    @FXML
+     @FXML
     void BookingPushSelected(ActionEvent event) {
         // dont forget the id of the booking wesa mnshof kef mn3mlha
         countDeclare = 0;
@@ -165,9 +156,9 @@ public class BookingController implements Initializable {
         }
     }
 
-
     @FXML
     void goToMain(ActionEvent event) throws IOException {
         App.setRoot("customer");
     }
+
 }
