@@ -22,7 +22,6 @@ public class SimpleServer extends AbstractServer {
         String msgString = msg.toString();
 
         if(msg.getClass().equals(Booking.class)){
-
             try {
                 Booking book = (Booking) msg;
                 Dao<Booking> bookDao = new Dao(Booking.class);
@@ -39,6 +38,70 @@ public class SimpleServer extends AbstractServer {
                 client.sendToClient(warning);
                 System.out.format("Order %d added successfully\n", bookId);
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else if(msg.getClass().equals(MealUpdate.class)){
+            MealUpdate mealUpdate = (MealUpdate) msg;
+            String status = mealUpdate.getStatus();
+            System.out.println("Status: " + status);
+
+            if(status.equals("Awaiting")){
+                Dao<Branch> branchDao = new Dao(Branch.class);
+                Dao<MealUpdate> mealUpdateDao = new Dao(MealUpdate.class);
+                Branch br = branchDao.findById(mealUpdate.getNewBranchId());
+                br.getMealUpdates().add(mealUpdate);
+                mealUpdateDao.save(mealUpdate);
+            }
+            else if(status.equals("Approved")){//recheck
+                Meal oldMeal = mealUpdate.getOldMeal();
+                Meal newMeal = mealUpdate.getNewMeal();
+                Branch br = mealUpdate.getBr();
+                Menu menu = br.getMenu();
+                Dao<Meal> mealDao = new Dao(Meal.class);
+                if(oldMeal == null){
+                    mealDao.save(newMeal);
+                    menu.addMeal(newMeal);
+                }
+                else if(newMeal == null){
+                    menu.removeMeal(oldMeal);
+                    mealDao.delete(oldMeal.getId());
+                }
+                else{
+                    int oldMealBranch = oldMeal.getMenu().getId();
+                    int newMealBranch = mealUpdate.getNewBranchId();
+                    if(oldMealBranch != newMealBranch){
+                        menu.removeMeal(oldMeal);
+                        Dao<Menu> menuDao = new Dao(Menu.class);
+                        menu = menuDao.findById(newMealBranch);
+                        menu.addMeal(newMeal);
+                        mealDao.delete(oldMeal.getId());
+                        mealDao.save(newMeal);
+                    }
+                    else{
+                        oldMeal.setName(newMeal.getName());
+                        oldMeal.setPrice(newMeal.getPrice());
+                        oldMeal.setIngredients(newMeal.getIngredients());
+                        mealDao.update(oldMeal);
+                    }
+                }
+            }
+            else{
+                Dao<MealUpdate> mealUpdateDao = new Dao(MealUpdate.class);
+                mealUpdateDao.delete(mealUpdate.getId());
+            }
+        } else if (msgString.startsWith("#requestUpdates ")){
+
+             try {
+                 int id = Integer.parseInt(msgString.substring(16));
+                 System.out.println(msgString);
+                 Dao<Branch> branchDao = new Dao(Branch.class);
+
+                 Branch br = branchDao.findById(id);
+                 System.out.println(br.getMealUpdates().size());
+                 MealUpdateEvent updateEvent = new MealUpdateEvent(br.getMealUpdates());
+                 client.sendToClient(updateEvent);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -102,30 +165,17 @@ public class SimpleServer extends AbstractServer {
                 System.out.println(e.getMessage());
             }
         } else if (msgString.startsWith("#removeMeal ")) {
-            int id = Integer.parseInt(msgString.substring(12));
-            Dao<Meal> mService = new Dao(Meal.class);
-            Dao<WaitingMenu> WaitingMenuService = new Dao(WaitingMenu.class);
-
-            Meal meal = mService.findById(id);
-            meal.setStatus(2);
-            WaitingMenu newWaitingMenu = meal.getWaitingMenu();
-            newWaitingMenu.getMeals().add(meal);
-            WaitingMenuService.update(newWaitingMenu);//HUSSSSSSSSSSSam
 
         } else if (msgString.startsWith("#requestMenu ")) {
             int id = Integer.parseInt(msgString.substring(13));
             //Should send to client list of Meals..
-
             Dao<Branch> brDao = new Dao(Branch.class);
-
             Branch br = brDao.findById(id);
-
             List<Meal> meals = new ArrayList<Meal>(br.getMenu().getMeals());
             if (id > 1) {
                 Branch brGlobal = brDao.findById(1);
                 meals.addAll(brGlobal.getMenu().getMeals());
             }
-
             Menu menu = new Menu();
             menu.setMeals(meals);
             try {
@@ -148,55 +198,7 @@ public class SimpleServer extends AbstractServer {
                 System.out.println(e.getMessage());
             }
 
-        } else if (msgString.startsWith("#addMeal ")) {
-
-            try {
-                String[] attributes = msgString.substring(9).split("\\s+");
-                int branchID = Integer.parseInt(attributes[0]);
-                String name = attributes[1];
-                Double price = Double.parseDouble(attributes[2]);
-                String[] ing = Arrays.copyOfRange(attributes, 3, attributes.length);
-                List<String> ingredients = Arrays.asList(ing);
-                for (String str : ingredients) {
-                    System.out.println(str);
-                }
-
-
-                Meal newMeal = new Meal(name, price, ingredients,1);
-
-
-                Dao<Branch> brService = new Dao(Branch.class);
-                Dao<Meal> mealService = new Dao(Meal.class);
-                Dao<WaitingMenu> waitingMenuService=new Dao(WaitingMenu.class);//we added this
-                //we need a fucking explanation!!!!!! Where the fuck are you husam
-
-                Branch br = brService.findById(branchID);
-                WaitingMenu waitingMenu = br.getWaitingMenu();
-
-                newMeal.setWaitingMenu(waitingMenu);
-                mealService.save(newMeal);
-
-                waitingMenu.addMeal(newMeal);
-                waitingMenuService.update(waitingMenu);
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-
-        } else if (msgString.startsWith("#getAllMeals")) {
-            //Should send to client list of Meals..
-            Dao<Meal> mealService = new Dao(Meal.class);
-            List<Meal> meals = mealService.findAll();
-            MenuPOJO menu = new MenuPOJO();
-            menu.setMeals(meals);
-
-            try {
-                client.sendToClient(menu);
-                System.out.format("Sent all meals to client %s\n", client.getInetAddress().getHostAddress());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (msgString.startsWith("#addDefaultWorkers")) {
+        }else if (msgString.startsWith("#addDefaultWorkers")) {
             //Should send to client list of Meals..
             initiateWorkers();
         } else if (msgString.startsWith("#getAllBranches")) {
@@ -256,13 +258,6 @@ public class SimpleServer extends AbstractServer {
                     e.printStackTrace();
                 }
             }
-
-            //String message = "#order pickup/delivery different date customername phonenumber creditcard optional:recipientname optional:recipientphone optional:address meals:
-            //substring=7
-            //if pickup=1 -> offset = 6
-            //if pickup=0 ->
-            //  if different=0 -> offset = 7
-            //  if different -> offset = 9
         }
 
 
@@ -293,70 +288,8 @@ public class SimpleServer extends AbstractServer {
         else if (msgString.startsWith("#createmapswithtables")) {
             create_branches_with_maps_and_tables();
         }
-
     }
 
-
-    List<Booking> checkAvailable(Branch br, String date, String time, int persons, String area) throws ParseException {
-
-        List<Booking> bookings = new ArrayList<>();
-        Booking booking = checkBookingAvailable(br, date, time, persons, area);
-        if (booking != null) {
-            bookings.add(booking);
-        } else {
-            //Check other hours.
-
-
-//            String open = br.getOpenHours();
-//            String close = br.getCloseHours();
-//
-//            SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
-//            Date openH = parser.parse(open);
-//            Date closeH = parser.parse(close);
-//
-//            Calendar openHour = Calendar.getInstance(),
-//                    closeHour = Calendar.getInstance();
-//
-//            openHour.setTime(openH);
-//            openHour.add(Calendar.MINUTE, 15);
-//            closeHour.setTime(closeH);
-//            closeHour.add(Calendar.MINUTE, -59);
-//            System.out.println(openHour.toString() + ' ' + closeHour.toString());
-//            while (openHour.before(closeHour)) {
-//                String currHour = parser.format(openHour);
-//                openHour.add(Calendar.MINUTE, 15);
-//                bookings.add(checkBookingAvailable(br, date, currHour, persons, area));
-//            }
-        }
-        return bookings;
-    }
-
-
-    Booking checkBookingAvailable(Branch br, String date, String time, int persons, String area) throws ParseException {
-
-        Mapp map = br.getMap(area);
-        List<Tablee> tablesInMap = map.getTables();
-        tablesInMap.sort(Comparator.comparing(Tablee::getCapacity).reversed());
-        List<Tablee> freeTables = new ArrayList<>();
-
-        int countAvailable = 0;
-        //tablesInMap = tables I may or may not reserve
-        for (Tablee table : tablesInMap) {
-            if (table.checkAvailable(date, time) > 0) {
-                //I have a table I can reserve
-                freeTables.add(table);
-                countAvailable += table.getCapacity();
-                if (countAvailable >= persons) {
-                    Booking booking = new Booking(date, time, area, persons, br, freeTables);
-                    return booking;
-                }
-            }
-            else{
-                System.out.println("Table " + table.getId() + " not available");
-            }
-        }
-        return null;
-    }
 
     void initiateWorkers() {
 

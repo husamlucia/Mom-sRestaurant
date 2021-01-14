@@ -66,6 +66,7 @@ public class Dao<T> {
         configuration.addAnnotatedClass(Mapp.class);
         configuration.addAnnotatedClass(Tablee.class);
         configuration.addAnnotatedClass(Booking.class);
+        configuration.addAnnotatedClass(MealUpdate.class);
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties())
                 .build();

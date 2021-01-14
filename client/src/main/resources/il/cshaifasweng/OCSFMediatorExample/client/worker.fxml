@@ -8,63 +8,100 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="856.0" prefWidth="1019.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.WorkerController">
-   <children>
-      <Button layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
-      <TableView fx:id="branchesTable" layoutX="68.0" layoutY="100.0" prefHeight="164.0" prefWidth="226.0">
-        <columns>
-          <TableColumn fx:id="brIdBranchesCol" prefWidth="75.0" text="BrID" />
-          <TableColumn fx:id="openHourBranchesCol" prefWidth="75.0" text="Open Hour" />
-            <TableColumn fx:id="CloseHourBranchesCol" prefWidth="75.0" text="Close Hour" />
-        </columns>
-      </TableView>
-      <TableView fx:id="menuTable" layoutX="69.0" layoutY="316.0" prefHeight="134.0" prefWidth="699.0">
-        <columns>
-            <TableColumn fx:id="idMenuCol" prefWidth="43.0" text="ID" />
-          <TableColumn fx:id="nameMenuCol" prefWidth="84.0" text="Name" />
-          <TableColumn fx:id="ingredientsMenuCol" prefWidth="98.0" text="Ingredients" />
-            <TableColumn fx:id="picMenuCol" prefWidth="31.0" text="pic" />
-            <TableColumn fx:id="networkMealMenuCol" prefWidth="119.0" text="Network Meal" />
-            <TableColumn fx:id="priceMenuCol" prefWidth="75.0" text="Price" />
-            <TableColumn fx:id="waitingApprovalMenuCol" prefWidth="162.0" text="Waiting approval" />
-        </columns>
-      </TableView>
-      <Button fx:id="showMenuBtn" layoutX="69.0" layoutY="281.0" mnemonicParsing="false" onAction="#requestMenu" prefHeight="25.0" prefWidth="173.0" text="Show Menu" />
-      <Button fx:id="showComplaintsBtn" layoutX="550.0" layoutY="537.0" mnemonicParsing="false" onAction="#requestComplaints" prefHeight="25.0" prefWidth="135.0" text="Show Complaints" />
-      <TableView fx:id="complaintsTable" layoutX="548.0" layoutY="573.0" prefHeight="257.0" prefWidth="298.0">
-        <columns>
-          <TableColumn fx:id="numOfComplainComplaintsCol" prefWidth="37.0" text="No." />
-          <TableColumn fx:id="descriptionComplaintsCol" prefWidth="204.0" text="Description" />
-        </columns>
-      </TableView>
-      <Button fx:id="lockdownInstructionBtn" layoutX="846.0" layoutY="26.0" mnemonicParsing="false" onAction="#goToLockdownInstructions" text="Lockdown Instructions" />
-      <Button fx:id="refundBtn" layoutX="860.0" layoutY="805.0" mnemonicParsing="false" onAction="#refund" prefHeight="25.0" prefWidth="135.0" text="Refund" />
-      <Button fx:id="sendMessageBtn" layoutX="860.0" layoutY="772.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="25.0" prefWidth="135.0" text="Send Message" />
-      <Text layoutX="860.0" layoutY="739.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The complain has been taken care of, Thank you" wrappingWidth="134.9999999999999" />
-      <Button fx:id="approveBtn" layoutX="788.0" layoutY="425.0" mnemonicParsing="false" onAction="#approveMeal" prefHeight="25.0" prefWidth="94.0" text="Approve" />
-      <Button fx:id="addMealBtn" layoutX="229.0" layoutY="459.0" mnemonicParsing="false" onAction="#addMeal" prefHeight="25.0" prefWidth="132.0" text="Add Meal" />
-      <Button fx:id="removeMealBtn" layoutX="397.0" layoutY="459.0" mnemonicParsing="false" onAction="#removeMeal" prefHeight="25.0" prefWidth="132.0" text="Remove Meal" />
-      <Button fx:id="editMealBtn" layoutX="69.0" layoutY="459.0" mnemonicParsing="false" onAction="#editMeal" prefHeight="25.0" prefWidth="132.0" text="Edit Meal" />
-      <Button fx:id="saveBtn" layoutX="68.0" layoutY="805.0" mnemonicParsing="false" onAction="#saveMeal" prefHeight="25.0" prefWidth="132.0" text="Save" />
-      <TextField fx:id="nameTF" disable="true" layoutX="68.0" layoutY="524.0" prefHeight="25.0" prefWidth="132.0" />
-      <Text layoutX="66.0" layoutY="511.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="74.93667602539062" />
-      <Text layoutX="510.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ingredients" />
-      <TextField fx:id="ingredientsTF" disable="true" layoutX="68.0" layoutY="690.0" prefHeight="76.0" prefWidth="298.0" />
-      <Text layoutX="78.0" layoutY="569.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price" />
-      <TextField fx:id="priceTF" disable="true" layoutX="69.0" layoutY="573.0" prefHeight="25.0" prefWidth="60.0" />
-      <Text layoutX="74.0" layoutY="624.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Branch ID" wrappingWidth="59.6953125" />
-      <TextField fx:id="branchIdTF" disable="true" layoutX="68.0" layoutY="635.0" prefHeight="25.0" prefWidth="60.0" />
-      <Button fx:id="denyBtn" layoutX="788.0" layoutY="383.0" mnemonicParsing="false" onAction="#denyMeal" prefHeight="25.0" prefWidth="94.0" text="Deny" />
-      <Button fx:id="showRestaurantMapBtn" layoutX="338.0" layoutY="64.0" mnemonicParsing="false" onAction="#requestRestaurantMap" text="Show Restaurant Map" />
-      <TableView fx:id="retaurantMapTable" layoutX="337.0" layoutY="103.0" prefHeight="164.0" prefWidth="644.0">
-        <columns>
-          <TableColumn fx:id="tableNumberMapCol" prefWidth="121.0" text="Table No." />
-          <TableColumn fx:id="numOfSeatsMapCol" prefWidth="216.0" text="Number Of Seats" />
-            <TableColumn fx:id="reservationsMapCol" prefWidth="306.0" text="Reservations" />
-        </columns>
-      </TableView>
-      <Text layoutX="73.0" layoutY="684.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ingredients" />
-      <CheckBox fx:id="newMealCheckBox" disable="true" layoutX="73.0" layoutY="776.0" mnemonicParsing="false" text="New Meal" />
-   </children>
+<AnchorPane prefHeight="1024.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.WorkerController">
+    <children>
+        <Button layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
+        <TableView fx:id="branchesTable" layoutX="68.0" layoutY="100.0" prefHeight="164.0" prefWidth="226.0">
+            <columns>
+                <TableColumn fx:id="brIdBranchesCol" prefWidth="75.0" text="BrID" />
+                <TableColumn fx:id="openHourBranchesCol" prefWidth="75.0" text="Open Hour" />
+                <TableColumn fx:id="CloseHourBranchesCol" prefWidth="75.0" text="Close Hour" />
+            </columns>
+        </TableView>
+        <Button fx:id="showMenuBtn" layoutX="311.0" layoutY="170.0" mnemonicParsing="false" onAction="#requestMenu" prefHeight="25.0" prefWidth="94.0" text="Show Menu" />
+        <Button fx:id="showRestaurantMapBtn" layoutX="311.0" layoutY="131.0" mnemonicParsing="false" onAction="#requestRestaurantMap" prefHeight="25.0" prefWidth="92.0" text="Show Map" />
+        <TableView fx:id="retaurantMapTable" layoutX="448.0" layoutY="88.0" prefHeight="164.0" prefWidth="265.0">
+            <columns>
+                <TableColumn fx:id="tableNumberMapCol" prefWidth="74.60003662109375" text="Table No." />
+                <TableColumn fx:id="numOfSeatsMapCol" prefWidth="126.0" text="Number Of Seats" />
+                <TableColumn fx:id="reservationsMapCol" minWidth="0.0" prefWidth="60.0" text="Reserved" />
+            </columns>
+        </TableView>
+        <AnchorPane fx:id="paneDietitian" layoutX="23.0" layoutY="642.0" prefHeight="368.0" prefWidth="439.0">
+            <children>
+                <Button fx:id="saveBtn" layoutX="6.0" layoutY="343.0" mnemonicParsing="false" onAction="#saveMeal" prefHeight="25.0" prefWidth="132.0" text="Save" />
+                <TextField fx:id="nameTF" disable="true" layoutX="6.0" layoutY="62.0" prefHeight="25.0" prefWidth="132.0" />
+                <Text layoutX="4.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="74.93667602539062" />
+                <TextField fx:id="ingredientsTF" disable="true" layoutX="6.0" layoutY="228.0" prefHeight="76.0" prefWidth="298.0" />
+                <Text layoutX="16.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price" />
+                <TextField fx:id="priceTF" disable="true" layoutX="7.0" layoutY="111.0" prefHeight="25.0" prefWidth="60.0" />
+                <Text layoutX="12.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Branch ID" wrappingWidth="59.6953125" />
+                <TextField fx:id="branchIdTF" disable="true" layoutX="6.0" layoutY="173.0" prefHeight="25.0" prefWidth="60.0" />
+                <Text layoutX="11.0" layoutY="222.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ingredients" />
+                <CheckBox fx:id="newMealCheckBox" disable="true" layoutX="11.0" layoutY="314.0" mnemonicParsing="false" text="New Meal" />
+                <Button fx:id="editMealBtn" layoutX="204.0" layoutY="98.0" mnemonicParsing="false" onAction="#editMeal" prefHeight="25.0" prefWidth="132.0" text="Edit Meal" />
+                <Button fx:id="addMealBtn" layoutX="204.0" layoutY="62.0" mnemonicParsing="false" onAction="#addMeal" prefHeight="25.0" prefWidth="132.0" text="Add Meal" />
+                <Button fx:id="removeMealBtn" layoutX="204.0" layoutY="136.0" mnemonicParsing="false" onAction="#removeMeal" prefHeight="25.0" prefWidth="132.0" text="Remove Meal" />
+                <Text layoutX="181.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dietitian" />
+            </children>
+        </AnchorPane>
+        <AnchorPane layoutX="6.0" layoutY="313.0" prefHeight="164.0" prefWidth="798.0">
+            <children>
+                <TableView fx:id="menuTable" layoutX="65.0" layoutY="13.0" prefHeight="134.0" prefWidth="679.0">
+                    <columns>
+                        <TableColumn fx:id="idMenuCol" prefWidth="43.0" text="ID" />
+                        <TableColumn fx:id="picMenuCol" prefWidth="85.0" text="pic" />
+                        <TableColumn fx:id="nameMenuCol" prefWidth="108.0" text="Name" />
+                        <TableColumn fx:id="ingredientsMenuCol" prefWidth="98.0" text="Ingredients" />
+                        <TableColumn fx:id="networkMealMenuCol" prefWidth="127.0" text="Network Meal" />
+                        <TableColumn fx:id="priceMenuCol" minWidth="0.0" prefWidth="217.0" text="Price" />
+                    </columns>
+                </TableView>
+            </children>
+        </AnchorPane>
+        <AnchorPane fx:id="paneCustomerService" layoutX="440.0" layoutY="662.0" prefHeight="348.0" prefWidth="566.0">
+            <children>
+                <Button fx:id="showComplaintsBtn" layoutX="68.0" layoutY="49.0" mnemonicParsing="false" onAction="#requestComplaints" prefHeight="25.0" prefWidth="135.0" text="Show Complaints" />
+                <TableView fx:id="complaintsTable" layoutX="68.0" layoutY="84.0" prefHeight="229.0" prefWidth="298.0">
+                    <columns>
+                        <TableColumn fx:id="numOfComplainComplaintsCol" prefWidth="37.0" text="No." />
+                        <TableColumn fx:id="descriptionComplaintsCol" prefWidth="204.0" text="Description" />
+                    </columns>
+                </TableView>
+                <Button fx:id="refundBtn" layoutX="380.0" layoutY="250.0" mnemonicParsing="false" onAction="#refund" prefHeight="25.0" prefWidth="135.0" text="Refund" />
+                <Button fx:id="sendMessageBtn" layoutX="380.0" layoutY="193.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="25.0" prefWidth="135.0" text="Send Message" />
+                <Text layoutX="381.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The complain has been taken care of, Thank you" wrappingWidth="134.9999999999999" />
+                <Button fx:id="lockdownInstructionBtn" layoutX="231.0" layoutY="49.0" mnemonicParsing="false" onAction="#goToLockdownInstructions" text="Lockdown Instructions" />
+                <Text layoutX="220.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Service" />
+            </children>
+        </AnchorPane>
+        <AnchorPane fx:id="paneManager1" layoutX="804.0" layoutY="267.0" prefHeight="200.0" prefWidth="135.0">
+            <children>
+                <Button fx:id="showReportsBtn" layoutX="24.0" layoutY="53.0" mnemonicParsing="false" onAction="#showReports" prefHeight="25.0" prefWidth="94.0" text="Show Reports" />
+                <Text layoutX="56.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Maneger" />
+            </children>
+        </AnchorPane>
+      <AnchorPane fx:id="paneManager2" layoutX="14.0" layoutY="462.0" prefHeight="200.0" prefWidth="821.0">
+         <children>
+            <TableView fx:id="mealUpdatesTable" layoutX="62.0" layoutY="35.0" prefHeight="151.0" prefWidth="679.0">
+              <columns>
+                <TableColumn fx:id="mealUpdatesID" prefWidth="68.0" text="MealID" />
+                <TableColumn fx:id="mealUpdatesOldName" prefWidth="82.0" text="OldName" />
+                  <TableColumn fx:id="mealUpdatesNewName" prefWidth="75.0" text="newName" />
+                  <TableColumn fx:id="mealUpdatesOldPrice" prefWidth="75.0" text="oldPrice" />
+                  <TableColumn fx:id="mealUpdatesNewPrice" prefWidth="75.0" text="newPrice" />
+                  <TableColumn fx:id="mealUpdatesOldPic" prefWidth="75.0" text="oldPic" />
+                  <TableColumn fx:id="MealUpdatesNewPic" prefWidth="75.0" text="newPic" />
+                  <TableColumn fx:id="mealUpdatesOldBranch" prefWidth="75.0" text="oldBranch" />
+                  <TableColumn fx:id="mealUpdatesNewBranch" prefWidth="75.0" text="newBranch" />
+              </columns>
+            </TableView>
+            <Text layoutX="14.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Meal Updates" />
+                <Button fx:id="approveBtn" layoutX="742.0" layoutY="59.0" mnemonicParsing="false" onAction="#approveMeal" prefHeight="25.0" prefWidth="94.0" text="Approve" />
+                <Button fx:id="denyBtn" layoutX="757.0" layoutY="89.0" mnemonicParsing="false" onAction="#denyMeal" prefHeight="25.0" prefWidth="94.0" text="Deny" />
+         </children>
+      </AnchorPane>
+          <Button fx:id="viewUpdatesBtn" layoutX="310.0" layoutY="224.0" mnemonicParsing="false" onAction="#viewUpdates" prefHeight="25.0" prefWidth="94.0" text="Show Updates" />
+      <Text layoutX="444.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Map" />
+    </children>
 </AnchorPane>

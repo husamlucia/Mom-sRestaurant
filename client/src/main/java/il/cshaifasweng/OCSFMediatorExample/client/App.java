@@ -28,7 +28,7 @@ public class App extends Application {
         EventBus.getDefault().register(this);
         client = SimpleClient.getClient();
         client.openConnection();
-        scene = new Scene(loadFXML("login"), 640, 480);
+        scene = new Scene(loadFXML("worker"), 640, 480);
         stage.setScene(scene);
         stage.show();
     }
@@ -72,6 +72,8 @@ public class App extends Application {
 //         System.out.println(MealList.size());
 //     });
 // }
+
+
 
     public static void main(String[] args) {
 

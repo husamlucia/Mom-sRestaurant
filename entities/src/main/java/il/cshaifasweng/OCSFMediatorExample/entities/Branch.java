@@ -23,49 +23,46 @@ public class Branch implements Serializable {
     @Column(name = "closeh")
     private String closeHours;
 
-
-    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    @JoinColumn(name="menu_id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    public WaitingMenu getWaitingMenu() {
-        return waitingMenu;
-    }
 
-    public void setWaitingMenu(WaitingMenu waitingMenu) {
-        this.waitingMenu = waitingMenu;
-    }
-
-    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-    @JoinColumn(name="WaitingMenu_id")
-    private WaitingMenu waitingMenu;
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL)
+    private List<MealUpdate> mealUpdates;
 
 
-
-    @OneToMany(mappedBy = "customerDetails",cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "customerDetails", cascade = CascadeType.ALL)
     List<Order> orders;
 
-    @OneToMany(mappedBy = "branch",cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL)
     List<Mapp> map;
 
-    public Mapp getMap(String area){
+    public Mapp getMap(String area) {
 
-        if(area.equals("inside")) return map.get(0);
+        if (area.equals("inside")) return map.get(0);
         else return map.get(1);
 
     }
 
+    public List<MealUpdate> getMealUpdates() {
+        return mealUpdates;
+    }
+
+    public void setMealUpdates(List<MealUpdate> mealUpdates) {
+        this.mealUpdates = mealUpdates;
+    }
 
     public List<Booking> book(String date, String time, String area, int persons) throws ParseException {
         Mapp map = this.getMap(area);
-        if(map != null ){
+        if (map != null) {
             return map.getPossibleBookings(date, time, persons);
         }
         return null;
     }
 
-    public void setMap(String area, Mapp map2){
-       map.add(map2);
+    public void setMap(String area, Mapp map2) {
+        map.add(map2);
     }
 
     public int getId() {
@@ -105,9 +102,10 @@ public class Branch implements Serializable {
         this.closeHours = closeHours;
         this.menu = new Menu();
         this.map = new ArrayList<>();
+        this.mealUpdates = new ArrayList<>();
     }
 
-    public Branch(){
+    public Branch() {
 
     }
 }
