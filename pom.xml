@@ -21,7 +21,7 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
-			`<dependency>
+			<dependency>
 				<groupId>il.cshaifasweng.OCSFMediatorExample</groupId>
 				<artifactId>entities</artifactId>
 				<version>${project.version}</version>

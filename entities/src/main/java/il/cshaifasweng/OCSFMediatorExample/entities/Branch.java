@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class Branch implements Serializable {
     private WaitingMenu waitingMenu;
 
 
+
     @OneToMany(mappedBy = "customerDetails",cascade=CascadeType.ALL)
     List<Order> orders;
 
@@ -53,6 +55,14 @@ public class Branch implements Serializable {
 
     }
 
+
+    public List<Booking> book(String date, String time, String area, int persons) throws ParseException {
+        Mapp map = this.getMap(area);
+        if(map != null ){
+            return map.getPossibleBookings(date, time, persons);
+        }
+        return null;
+    }
 
     public void setMap(String area, Mapp map2){
        map.add(map2);
