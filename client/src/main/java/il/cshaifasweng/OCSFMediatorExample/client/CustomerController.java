@@ -117,7 +117,7 @@ public class CustomerController implements Initializable {
 
             //"#getAvailableHours " + branchId + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
             String message = "#checkBooking " + Integer.toString(branchID) + ' ' + datetime + ' ' + "both" + ' ' +  '1';
-            SimpleClient.getClient().sendToServer(message);
+            //SimpleClient.getClient().sendToServer(message);
             App.setRoot("booking");
             EventBus.getDefault().post(new BookingControllerLoaded((Branch) br));
         } catch (IOException e) {

@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client;
 import il.cshaifasweng.OCSFMediatorExample.client.events.BookingControllerLoaded;
 import il.cshaifasweng.OCSFMediatorExample.entities.BookingEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Booking;
+import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -23,13 +25,21 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BookingController implements Initializable {
+
+    /* Reminder:
+    * Booking is working fine. Got to update so it limits time from 15 minutes of opening hour
+    * and 1 hour before closing.*/
     private int branchID;
+    private boolean branchHasInside;
+    private boolean branchHasOutside;
+
     private String bookingDate;
     private String bookingTime;
     private String bookingArea;
     private int bookingNumOfCustomers;
     private int countDeclare = 0;
 
+    AnchorPane anchorpane;
 
     void init(String date, String time, String area, int number) {
         this.bookingDate = date;
@@ -45,12 +55,16 @@ public class BookingController implements Initializable {
         colDate.setCellValueFactory(new PropertyValueFactory<Booking, String>("date"));
         colTime.setCellValueFactory(new PropertyValueFactory<Booking, String>("time"));
         colInOut.setCellValueFactory(new PropertyValueFactory<Booking, String>("area"));
+        colCustomersNum.setCellValueFactory(new PropertyValueFactory<Booking, String>("customerNum"));
     }
 
     @Subscribe
     public void onBookingControllerLoaded(BookingControllerLoaded event) {
         Platform.runLater(() -> {
-            branchID = event.getBranch().getId();
+            Branch br = event.getBranch();
+            branchID = br.getId();
+            if(br.getMap("inside") == null) insideButton.setDisable(true);
+            if(br.getMap("outside") == null) outsideButton.setDisable(true);
         });
     }
 
@@ -67,6 +81,11 @@ public class BookingController implements Initializable {
 
     }
 
+    @FXML
+    private Button insideButton;
+
+    @FXML
+    private Button outsideButton;
 
     @FXML
     private Button bookBtn;
@@ -91,6 +110,9 @@ public class BookingController implements Initializable {
 
     @FXML
     private TableColumn colInOut;
+
+    @FXML
+    private TableColumn colCustomersNum;
 
     @FXML
     private TextField BookingNameTF;
