@@ -12,15 +12,15 @@ public class MealUpdate implements Serializable {
     @Column(name = "id")
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
             @JoinColumn(name="oldMeal_id",referencedColumnName = "id")
     Meal oldMeal;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name="newMeal_id",referencedColumnName = "id")
     Meal newMeal;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "branch_id", referencedColumnName = "id")
     Branch branch;
 

@@ -198,14 +198,21 @@ public class WorkerController implements Initializable {
 
     @Subscribe
     public void onMealUpdateEvent(MealUpdateEvent event) {
+
         Platform.runLater(() -> {
+
+        try{
             ObservableList<MealUpdate> updatesList = FXCollections.observableArrayList();
             List<MealUpdate> meals = event.getMealUpdates();
             updatesList.addAll(meals);
             mealUpdatesTable.setItems(updatesList);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
         });
     }
-
 
 
     @Subscribe
@@ -245,7 +252,8 @@ public class WorkerController implements Initializable {
                 Double.toString(cellData.getValue().getOldMeal()!=null?cellData.getValue().getOldMeal().getPrice():0)));
         mealUpdatesNewPrice.setCellValueFactory(cellData -> new SimpleStringProperty(
                 Double.toString(cellData.getValue().getNewMeal()!=null?cellData.getValue().getNewMeal().getPrice():0)));
-        mealUpdatesOldBranch.setCellValueFactory(cellData -> new SimpleStringProperty(Integer.toString(cellData.getValue().getBranch().getId())));
+        mealUpdatesOldBranch.setCellValueFactory(cellData -> new SimpleStringProperty(Integer.toString(
+                cellData.getValue().getBranch()!=null?cellData.getValue().getBranch().getId():0)));
         mealUpdatesNewBranch.setCellValueFactory(cellData -> new SimpleStringProperty(Integer.toString(cellData.getValue().getNewBranchId())));
 
 

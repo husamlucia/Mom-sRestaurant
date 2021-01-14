@@ -53,7 +53,7 @@ public class SimpleServer extends AbstractServer {
                 br.getMealUpdates().add(mealUpdate);
                 mealUpdateDao.save(mealUpdate);
             }
-            else if(status.equals("Approved")){
+            else if(status.equals("Approved")){//recheck
                 Meal oldMeal = mealUpdate.getOldMeal();
                 Meal newMeal = mealUpdate.getNewMeal();
                 Branch br = mealUpdate.getBr();
@@ -98,9 +98,9 @@ public class SimpleServer extends AbstractServer {
                  Dao<Branch> branchDao = new Dao(Branch.class);
 
                  Branch br = branchDao.findById(id);
+                 System.out.println(br.getMealUpdates().size());
                  MealUpdateEvent updateEvent = new MealUpdateEvent(br.getMealUpdates());
                  client.sendToClient(updateEvent);
-                System.out.println("Done");
             } catch (Exception e) {
                 e.printStackTrace();
             }
