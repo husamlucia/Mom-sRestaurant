@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.*;
 @Entity
 @Table(name = "tables")
@@ -87,7 +89,25 @@ public class Tablee implements Serializable {
         return this.getCapacity();
     }
 
+    public boolean checkTimeIntersect(String hour, String bookingHour){
+        LocalTime first = LocalTime.parse(hour);
+        LocalTime second = LocalTime.parse(bookingHour);
+        Duration duration = Duration.between( first, second );
+        long diff = duration.getSeconds()/60;
+        boolean intersect = (diff<120 && diff > -120);
+        return intersect;
+    }
 
+    public boolean isAvailable(String date, String hour){
+        for(Booking booking: bookings){
+            String bookingDate = booking.getDate();
+            if(!bookingDate.equals(date)) continue;
+            String bookingHour = booking.getTime();
+            boolean intersect = checkTimeIntersect(hour, bookingHour);
+            if (intersect == true) return false;
+        }
+        return true;
+    }
 
 
     public int getCapacity() {

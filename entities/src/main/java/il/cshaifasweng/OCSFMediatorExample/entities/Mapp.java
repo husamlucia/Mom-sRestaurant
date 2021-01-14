@@ -3,23 +3,29 @@ package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name="maps")
+@Table(name = "maps")
 public class Mapp implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="map_id")
+    @Column(name = "map_id")
     private int id;
 
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name="branch_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "branch_id")
     private Branch branch;
 
-    @OneToMany(mappedBy = "map",cascade=CascadeType.ALL)
+    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL)
     private List<Tablee> tables;
 
     private String area;
@@ -31,11 +37,11 @@ public class Mapp implements Serializable {
         this.branch = br;
         this.tables = new ArrayList<>();
         this.area = area;
-        this.maxCapacity=0;
+        this.maxCapacity = 0;
         br.setMap(area, this);
     }
 
-    public Mapp(){
+    public Mapp() {
 
     }
 
@@ -55,7 +61,7 @@ public class Mapp implements Serializable {
         this.branch = branch;
     }
 
-    public void addTable(Tablee table){
+    public void addTable(Tablee table) {
         this.tables.add(table);
         maxCapacity += table.getCapacity();
     }
@@ -83,5 +89,48 @@ public class Mapp implements Serializable {
 
     public void setMaxCapacity(int maxCapacity) {
         this.maxCapacity = maxCapacity;
+    }
+
+
+    public List<Booking> getPossibleBookings(String date, String hour, int persons) throws ParseException {
+        List<Booking> availableBookings = new ArrayList<>();
+        LocalTime currHour = LocalTime.parse(hour);
+        LocalTime closeHour = LocalTime.parse(this.branch.getCloseHours());
+        Booking booking = tryBooking(date, hour, persons);
+        if(booking != null){
+            availableBookings.add(booking);
+            return availableBookings;
+        }
+        while(Duration.between(currHour, closeHour).getSeconds()/60 < 0){
+            System.out.println(Duration.between(currHour, closeHour).getSeconds()/60);
+            currHour = currHour.plusMinutes(15);
+            String currHourString = currHour.toString();
+            System.out.println("currhourString = " + currHourString);
+            booking = tryBooking(date, currHourString, persons);
+            availableBookings.add(booking);
+            if(booking != null){
+                availableBookings.add(booking);
+            }
+        }
+        return availableBookings;
+    }
+
+    public Booking tryBooking(String date, String hour, int persons) {
+
+        List<Booking> availableBookings = new ArrayList<>();
+        tables.sort(Comparator.comparing(Tablee::getCapacity).reversed());
+        List<Tablee> freeTables = new ArrayList<>();
+        int countAvailableSeats = 0;
+        for (Tablee table : tables) {
+            if (table.isAvailable(date, hour)) {
+                freeTables.add(table);
+                countAvailableSeats += table.getCapacity();
+                if (countAvailableSeats >= persons) {
+                    Booking booking = new Booking(date, hour, area, persons, branch, freeTables);
+                    return booking;
+                }
+            }
+        }
+        return null;
     }
 }

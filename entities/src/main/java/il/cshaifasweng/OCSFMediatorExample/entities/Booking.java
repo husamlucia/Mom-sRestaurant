@@ -97,4 +97,12 @@ public class Booking implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
+    public List<Tablee> getTables() {
+        return tables;
+    }
+
+    public void setTables(List<Tablee> tables) {
+        this.tables = tables;
+    }
 }

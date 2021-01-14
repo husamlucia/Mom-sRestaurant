@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -20,11 +21,12 @@
       <TextField fx:id="BookingNumCustomersTF" layoutX="126.0" layoutY="128.0" prefHeight="25.0" prefWidth="69.0" />
       <Button fx:id="bookBtn" disable="true" layoutX="339.0" layoutY="276.0" mnemonicParsing="false" onAction="#BookingPushSelected" prefHeight="56.0" prefWidth="127.0" text="Book" />
       <Button layoutX="10.0" layoutY="353.0" mnemonicParsing="false" onAction="#BookingCancel" text="Cancel Booking" />
-      <TableView fx:id="AvailableTimeTable" layoutX="16.0" layoutY="220.0" prefHeight="111.0" prefWidth="184.0">
+      <TableView fx:id="AvailableTimeTable" layoutX="12.0" layoutY="221.0" prefHeight="111.0" prefWidth="225.0">
         <columns>
-          <TableColumn fx:id="colDate" prefWidth="56.0" text="Date" />
-            <TableColumn fx:id="colTime" prefWidth="53.60003662109375" text="Time" />
-            <TableColumn fx:id="colInOut" prefWidth="75.0" text="In/Out" />
+          <TableColumn fx:id="colDate" prefWidth="86.0" text="Date" />
+            <TableColumn fx:id="colTime" prefWidth="44.0" text="Time" />
+            <TableColumn fx:id="colInOut" prefWidth="41.0" text="Area" />
+            <TableColumn fx:id="colCustomersNum" minWidth="-1.0" prefWidth="53.0" text="People" />
         </columns>
       </TableView>
       <Text layoutX="339.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Health Declaration:" wrappingWidth="148.79999999999995" />
@@ -36,5 +38,6 @@
       <Text layoutX="361.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" />
       <Text layoutX="367.0" layoutY="178.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Id" wrappingWidth="31.693359375" />
       <Text layoutX="483.0" layoutY="158.0" strokeType="OUTSIDE" strokeWidth="0.0" />
+      <ComboBox layoutX="212.0" layoutY="89.0" prefHeight="25.0" prefWidth="9.0" />
    </children>
 </AnchorPane>

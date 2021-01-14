@@ -5,6 +5,7 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 public class BookingControllerLoaded {
     private Branch branch;
 
+    boolean inside, outside;
     public BookingControllerLoaded(Branch branch) {
         this.branch = branch;
     }

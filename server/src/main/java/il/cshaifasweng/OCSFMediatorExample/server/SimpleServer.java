@@ -22,12 +22,20 @@ public class SimpleServer extends AbstractServer {
         String msgString = msg.toString();
 
         if(msg.getClass().equals(Booking.class)){
-            Booking book = (Booking) msg;
-            Dao<Booking> bookDao = new Dao(Booking.class);
-            bookDao.save(book);
-            int bookId = book.getId();
-            Warning warning = new Warning("Booking complete! Booking ID for cancelling booking: " + bookId);
+
             try {
+                Booking book = (Booking) msg;
+                Dao<Booking> bookDao = new Dao(Booking.class);
+                System.out.println("Saving booking");
+                try{
+                    bookDao.save(book);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+                int bookId = book.getId();
+                Warning warning = new Warning("Booking complete! Booking ID for cancelling booking: " + bookId);
+
                 client.sendToClient(warning);
                 System.out.format("Order %d added successfully\n", bookId);
             } catch (IOException e) {
@@ -262,28 +270,20 @@ public class SimpleServer extends AbstractServer {
         //	String msg = "#saveBooking " + " " +  brId + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
         else if (msgString.startsWith("#checkBooking ")) {
             try {
-                String[] attributes = msgString.substring(14).split("\\s+");
-                //offset = 14
+
                 Dao<Branch> branchDao = new Dao(Branch.class);
+
+                String[] attributes = msgString.substring(14).split("\\s+");
                 int brId = Integer.parseInt(attributes[0]);
-                //update
                 String date = attributes[1];
                 String time = attributes[2];//get date and format it
                 String area = attributes[3];
                 int persons = Integer.parseInt(attributes[4]);
+
                 Branch br = branchDao.findById(brId);
-                if(br == null) System.out.println("Error");
+                Mapp map = br.getMap(area);
 
-
-
-                List<Booking> bookings = new ArrayList<>();
-                if(area.equals("both")){
-                    bookings.addAll(checkAvailable(br, date, time, persons, "inside"));
-                    bookings.addAll(checkAvailable(br, date, time, persons, "outside"));
-                }
-                else{
-                    bookings.addAll(checkAvailable(br, date, time, persons, area));
-                }
+                List<Booking> bookings = br.book(date, time, area, persons);
                 BookingEvent availableBookings = new BookingEvent(bookings);
                 client.sendToClient(availableBookings);
             } catch (Exception e) {
