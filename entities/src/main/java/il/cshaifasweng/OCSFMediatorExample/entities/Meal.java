@@ -15,51 +15,28 @@ public class Meal implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private int id;
 
-
     @ManyToOne
-    @JoinColumn(name="menu_id", referencedColumnName = "menu_id")
+    @JoinColumn(name = "menu_id", referencedColumnName = "menu_id")
     private Menu menu;
 
-    private int status; //0 edit, 1 add, 2 remove,3 upDated
-
-    @ManyToOne
-    @JoinColumn(name="WaitingMenu_id", referencedColumnName = "WaitingMenu_id")
-    private WaitingMenu WaitingMenu;
-
-
-     @ManyToMany(mappedBy ="meals")
+    @ManyToMany(mappedBy = "meals")
     List<Order> orders;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "price")
-    private double price;
+    private Double price;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> ingredients;
 
 
-    public Meal(){
+    public Meal() {
 
-    }
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public WaitingMenu getWaitingMenu() {
-        return WaitingMenu;
-    }
-
-    public void setWaitingMenu(WaitingMenu waitingMenu) {
-        WaitingMenu = waitingMenu;
     }
 
     public int getId() {
@@ -71,15 +48,14 @@ public class Meal implements Serializable {
     }
 
 
-//    public void addOrder(Order order){
-//        this.orders.add(order);
-//    }
+    public void addOrder(Order order){
+        this.orders.add(order);
+    }
 
-    public Meal(String name, double price, List<String> ingredients,int status) {
+    public Meal(String name, double price, List<String> ingredients) {
         this.name = name;
         this.price = price;
         this.ingredients = ingredients;
-        this.status=status;
     }
 
     public Menu getMenu() {

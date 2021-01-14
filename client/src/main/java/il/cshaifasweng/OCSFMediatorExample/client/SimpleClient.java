@@ -33,7 +33,8 @@ public class SimpleClient extends AbstractClient {
 
 		}else if(msg.getClass().equals(BookingEvent.class)){
 			EventBus.getDefault().post(msg);
-			System.out.println("Done");
+		}else if(msg.getClass().equals(MealUpdateEvent.class)){
+			EventBus.getDefault().post(msg);
 		}
 	}
 	

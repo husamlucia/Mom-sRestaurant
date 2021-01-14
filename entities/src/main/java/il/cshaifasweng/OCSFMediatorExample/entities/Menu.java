@@ -14,17 +14,21 @@ public class Menu implements Serializable {
     @Column(name = "menu_id")
     private int id;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy="menu")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
     private List<Meal> meals;
 
 
-
-    public Menu(){
+    public Menu() {
         this.meals = new ArrayList<>();
     }
 
-    public void addMeal(Meal meal){
+    public void addMeal(Meal meal) {
+
         meals.add(meal);
+    }
+
+    public void removeMeal(Meal meal) {
+        meals.remove(meal);
     }
 
     public int getId() {
