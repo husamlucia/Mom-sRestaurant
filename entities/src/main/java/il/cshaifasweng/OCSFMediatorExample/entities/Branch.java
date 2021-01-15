@@ -108,4 +108,14 @@ public class Branch implements Serializable {
     public Branch() {
 
     }
+
+    public void addMeal(Meal meal){
+        this.getMenu().addMeal(meal);
+        meal.setMenu(this.getMenu());
+    }
+
+    public void removeMeal(Meal meal){
+        this.getMenu().removeMeal(meal);
+        meal.setMenu(null);
+    }
 }

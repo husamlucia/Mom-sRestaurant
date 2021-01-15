@@ -111,9 +111,14 @@ public class Dao<T> {
         return book;
     }
 
+    public T findById2(int id, Session session) {
+        T book = (T) session.get(type, id);
+        return book;
+    }
+
     public void delete(int id) {
         openCurrentSessionWithTransaction();
-        T entity = findById(id);
+        T entity = findById2(id,getCurrentSession());
         getCurrentSession().delete(entity);
         closeCurrentSessionWithTransaction();
     }
