@@ -44,51 +44,66 @@ public class SimpleServer extends AbstractServer {
         else if(msg.getClass().equals(MealUpdate.class)){
             MealUpdate mealUpdate = (MealUpdate) msg;
             String status = mealUpdate.getStatus();
-            System.out.println("Status: " + status);
+            int branchId;
+            Dao<Branch> branchDao = new Dao(Branch.class);
+            Dao<MealUpdate> mealUpdateDao = new Dao(MealUpdate.class);
+            Dao<Menu> menuDao = new Dao(Menu.class);
+
+            branchId = mealUpdate.getNewBranchId();
+            Branch oldBranch = mealUpdate.getBranch();
+            Branch newBranch = branchDao.findById(branchId);
 
             if(status.equals("Awaiting")){
-                Dao<Branch> branchDao = new Dao(Branch.class);
-                Dao<MealUpdate> mealUpdateDao = new Dao(MealUpdate.class);
-                Branch br = branchDao.findById(mealUpdate.getNewBranchId());
-                br.getMealUpdates().add(mealUpdate);
-                mealUpdateDao.save(mealUpdate);
+                    if(mealUpdate.getOldMeal() != null && mealUpdate.getNewMeal()==null){
+                        System.out.println("Delete update");
+                    }
+                    newBranch.getMealUpdates().add(mealUpdate);
+                    mealUpdateDao.save(mealUpdate);
+
             }
             else if(status.equals("Approved")){//recheck
-                Meal oldMeal = mealUpdate.getOldMeal();
-                Meal newMeal = mealUpdate.getNewMeal();
-                Branch br = mealUpdate.getBr();
-                Menu menu = br.getMenu();
-                Dao<Meal> mealDao = new Dao(Meal.class);
-                if(oldMeal == null){
-                    mealDao.save(newMeal);
-                    menu.addMeal(newMeal);
-                }
-                else if(newMeal == null){
-                    menu.removeMeal(oldMeal);
-                    mealDao.delete(oldMeal.getId());
-                }
-                else{
-                    int oldMealBranch = oldMeal.getMenu().getId();
-                    int newMealBranch = mealUpdate.getNewBranchId();
-                    if(oldMealBranch != newMealBranch){
-                        menu.removeMeal(oldMeal);
-                        Dao<Menu> menuDao = new Dao(Menu.class);
-                        menu = menuDao.findById(newMealBranch);
-                        menu.addMeal(newMeal);
-                        mealDao.delete(oldMeal.getId());
-                        mealDao.save(newMeal);
+                try{
+                    Meal oldMeal = mealUpdate.getOldMeal();
+                    Meal newMeal = mealUpdate.getNewMeal();
+                    Branch br = mealUpdate.getBr();
+                    Menu menu = br.getMenu();
+                    Dao<Meal> mealDao = new Dao(Meal.class);
+                    if(oldMeal == null){
+                        //newMeal != null -> we need to add newMeal to branch menu.
+                        newBranch.addMeal(newMeal);
+                        branchDao.update(newBranch);
+                        mealUpdateDao.update(mealUpdate);
+                    }
+                    else if(newMeal == null){;
+                        mealUpdateDao.update(mealUpdate);
+                        System.out.println("Deleting meal...");
+                        newBranch.removeMeal(oldMeal);
+                        branchDao.update(newBranch);
+                        mealDao.update(oldMeal);
                     }
                     else{
+                        mealUpdateDao.update(mealUpdate);
+
                         oldMeal.setName(newMeal.getName());
                         oldMeal.setPrice(newMeal.getPrice());
                         oldMeal.setIngredients(newMeal.getIngredients());
+
+                        int oldMealBranch = oldBranch.getId();
+                        int newMealBranch = newBranch.getId();
+                        if(oldMealBranch != newMealBranch){
+                            oldBranch.removeMeal(oldMeal);
+                            newBranch.addMeal(oldMeal);
+                        }
                         mealDao.update(oldMeal);
                     }
                 }
+                catch(Exception e){
+                    e.printStackTrace();
+                }
+
             }
-            else{
-                Dao<MealUpdate> mealUpdateDao = new Dao(MealUpdate.class);
-                mealUpdateDao.delete(mealUpdate.getId());
+            else if(status.equals("Denied")){
+                mealUpdateDao.update(mealUpdate);
             }
         } else if (msgString.startsWith("#requestUpdates ")){
 
@@ -99,7 +114,12 @@ public class SimpleServer extends AbstractServer {
 
                  Branch br = branchDao.findById(id);
                  System.out.println(br.getMealUpdates().size());
-                 MealUpdateEvent updateEvent = new MealUpdateEvent(br.getMealUpdates());
+                 List<MealUpdate> updates = br.getMealUpdates();
+                 List<MealUpdate> toSend = new ArrayList<>();
+                 for(MealUpdate update: updates){
+                     if (update.getStatus().equals("Awaiting")) toSend.add(update);
+                 }
+                 MealUpdateEvent updateEvent = new MealUpdateEvent(toSend);
                  client.sendToClient(updateEvent);
             } catch (Exception e) {
                 e.printStackTrace();

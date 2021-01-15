@@ -339,7 +339,7 @@ public class WorkerController implements Initializable {
         nameTF.setDisable(false);
         ingredientsTF.setDisable(false);
         priceTF.setDisable(false);
-        branchIdTF.setDisable(true);
+        branchIdTF.setDisable(false);
 
 
         Meal meal = (Meal) menuTable.getSelectionModel().getSelectedItem();
@@ -347,7 +347,7 @@ public class WorkerController implements Initializable {
         nameTF.setText(meal.getName());
         ingredientsTF.setText(meal.getIngredients().toString());
         priceTF.setText(Double.toString(meal.getPrice()));
-        branchIdTF.setText(Integer.toString(meal.getId()));
+        branchIdTF.setText(Integer.toString(branch.getId()));
         mealUpdateType = "edit";
         mealToUpdate = meal;
     }
@@ -357,7 +357,7 @@ public class WorkerController implements Initializable {
         Meal meal = (Meal) menuTable.getSelectionModel().getSelectedItem();
         mealUpdateType = "remove";
         mealToUpdate = meal;
-        int brId = meal.getId();
+        int brId = branch.getId();
         MealUpdate mealUpdate = new MealUpdate(meal, null, branch, brId);
           try {
               SimpleClient.getClient().sendToServer(mealUpdate);
@@ -431,18 +431,15 @@ public class WorkerController implements Initializable {
     @FXML
     void requestMenu(ActionEvent event) {
         this.branch = branchesTable.getSelectionModel().getSelectedItem();
-        ObservableList<Meal> mealList = FXCollections.observableArrayList();
-        mealList.addAll(branch.getMenu().getMeals());
-        menuTable.setItems(mealList);
 
-//        int id = branch.getId();
-//        try {
-//            String message = "#requestMenu " + Integer.toString(id);
-//            SimpleClient.getClient().sendToServer(message);
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
+        int id = branch.getId();
+        try {
+            String message = "#requestMenu " + Integer.toString(id);
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @FXML
