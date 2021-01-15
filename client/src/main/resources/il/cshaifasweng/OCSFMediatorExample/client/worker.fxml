@@ -18,8 +18,8 @@
                 <TableColumn fx:id="CloseHourBranchesCol" prefWidth="75.0" text="Close Hour" />
             </columns>
         </TableView>
-        <Button fx:id="showMenuBtn" layoutX="311.0" layoutY="170.0" mnemonicParsing="false" onAction="#requestMenu" prefHeight="25.0" prefWidth="94.0" text="Show Menu" />
-        <Button fx:id="showRestaurantMapBtn" layoutX="311.0" layoutY="131.0" mnemonicParsing="false" onAction="#requestRestaurantMap" prefHeight="25.0" prefWidth="92.0" text="Show Map" />
+        <Button fx:id="showMenuBtn" layoutX="310.0" layoutY="192.0" mnemonicParsing="false" onAction="#requestMenu" prefHeight="25.0" prefWidth="94.0" text="Show Menu" />
+        <Button fx:id="showRestaurantMapBtn" layoutX="311.0" layoutY="158.0" mnemonicParsing="false" onAction="#requestRestaurantMap" prefHeight="25.0" prefWidth="92.0" text="Show Map" />
         <TableView fx:id="retaurantMapTable" layoutX="448.0" layoutY="88.0" prefHeight="164.0" prefWidth="265.0">
             <columns>
                 <TableColumn fx:id="tableNumberMapCol" prefWidth="74.60003662109375" text="Table No." />
@@ -75,12 +75,6 @@
                 <Text layoutX="220.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Service" />
             </children>
         </AnchorPane>
-        <AnchorPane fx:id="paneManager1" layoutX="804.0" layoutY="267.0" prefHeight="200.0" prefWidth="135.0">
-            <children>
-                <Button fx:id="showReportsBtn" layoutX="24.0" layoutY="53.0" mnemonicParsing="false" onAction="#showReports" prefHeight="25.0" prefWidth="94.0" text="Show Reports" />
-                <Text layoutX="56.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Maneger" />
-            </children>
-        </AnchorPane>
       <AnchorPane fx:id="paneManager2" layoutX="14.0" layoutY="462.0" prefHeight="200.0" prefWidth="821.0">
          <children>
             <TableView fx:id="mealUpdatesTable" layoutX="62.0" layoutY="35.0" prefHeight="151.0" prefWidth="679.0">
@@ -97,11 +91,17 @@
               </columns>
             </TableView>
             <Text layoutX="14.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Meal Updates" />
-                <Button fx:id="approveBtn" layoutX="742.0" layoutY="59.0" mnemonicParsing="false" onAction="#approveMeal" prefHeight="25.0" prefWidth="94.0" text="Approve" />
-                <Button fx:id="denyBtn" layoutX="757.0" layoutY="89.0" mnemonicParsing="false" onAction="#denyMeal" prefHeight="25.0" prefWidth="94.0" text="Deny" />
+                <Button fx:id="approveBtn" layoutX="763.0" layoutY="64.0" mnemonicParsing="false" onAction="#approveMeal" prefHeight="25.0" prefWidth="94.0" text="Approve" />
+                <Button fx:id="denyBtn" layoutX="763.0" layoutY="100.0" mnemonicParsing="false" onAction="#denyMeal" prefHeight="25.0" prefWidth="94.0" text="Deny" />
          </children>
       </AnchorPane>
           <Button fx:id="viewUpdatesBtn" layoutX="310.0" layoutY="224.0" mnemonicParsing="false" onAction="#viewUpdates" prefHeight="25.0" prefWidth="94.0" text="Show Updates" />
       <Text layoutX="444.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Map" />
+        <AnchorPane fx:id="paneManager1" layoutX="805.0" layoutY="234.0" prefHeight="200.0" prefWidth="135.0">
+            <children>
+                <Button fx:id="showReportsBtn" layoutX="24.0" layoutY="53.0" mnemonicParsing="false" onAction="#showReports" prefHeight="25.0" prefWidth="94.0" text="Show Reports" />
+                <Text layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manager" />
+            </children>
+        </AnchorPane>
     </children>
 </AnchorPane>

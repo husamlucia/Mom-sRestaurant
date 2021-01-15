@@ -34,9 +34,9 @@ public class LoginController implements Initializable {
         String workerId = id.getText();
         String password = pass.getText();
         String message = "#login " + workerId + ' ' + password;
-        try{
+        try {
             SimpleClient.getClient().sendToServer(message);
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         //if logined successfully then go to workerfxml
@@ -54,7 +54,7 @@ public class LoginController implements Initializable {
 
         Platform.runLater(() -> {
             int privilege = event.getWorker().getPrivilege();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("branch.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("worker.fxml"));
             Stage stage = new Stage(StageStyle.DECORATED);
             try {
                 stage.setScene(new Scene(loader.load()));
@@ -62,12 +62,11 @@ public class LoginController implements Initializable {
                 e.printStackTrace();
             }
 
-           // BranchController branchController = loader.<BranchController>getController();
-           // branchController.initialize2(privilege);
+            WorkerController workerController = loader.<WorkerController>getController();
+            workerController.initialize2(privilege);
             Stage prevStage = (Stage) id.getScene().getWindow();
             prevStage.close();
             stage.show();
-
 
         });
 
