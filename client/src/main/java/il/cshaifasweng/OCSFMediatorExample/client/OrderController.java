@@ -12,9 +12,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -80,7 +84,7 @@ public class OrderController implements Initializable {
     private TextField recipientPhoneTF;
 
     @FXML
-    private TableColumn<?, ?> picCol;
+    private TableColumn<Meal, Image> picCol;
 
     @FXML
     private TableColumn<?, ?> networkMealCol;
@@ -125,6 +129,29 @@ public class OrderController implements Initializable {
 
         cartColName.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
         cartColPrice.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
+
+        picCol.setCellFactory(new Callback<TableColumn<Meal, Image>,TableCell<Meal,Image>>(){
+
+            @Override
+            public TableCell<Meal,Image> call(TableColumn<Meal,Image> param) {
+                final ImageView imageview = new ImageView();
+                imageview.setFitHeight(150);
+                imageview.setFitWidth(150);
+                TableCell<Meal,Image> cell = new TableCell<Meal, Image>(){
+                    public void updateItem(Meal item, boolean empty) {
+                        if(item!=null){
+                            byte[] byteImg = item.getImage();
+                            imageview.setImage(new Image(new ByteArrayInputStream(byteImg)));
+                        }
+                    }
+
+                };
+                cell.setGraphic(imageview);
+                return cell;
+            }
+
+        });
+
     }
 
 
