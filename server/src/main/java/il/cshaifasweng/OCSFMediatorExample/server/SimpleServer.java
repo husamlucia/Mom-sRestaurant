@@ -62,8 +62,25 @@ public class SimpleServer extends AbstractServer {
         } else if (msgString.startsWith("#createmapswithtables")) {
             create_branches_with_maps_and_tables();
         }
-    }
+        else if(msg.getClass().equals(Complaint.class)){
+            Complaint complaint=(Complaint)msg;
+            addNewComplaint(complaint);
+        }
 
+    }
+    void addNewComplaint(Complaint complaint){
+        Dao<Complaint> complaintDao=new Dao<>(Complaint.class);
+        Dao<Branch> branchDao=new Dao<>(Branch.class);
+        Branch branch=complaint.getBranch();
+        branch.addComplaint(complaint);
+        try{
+            branchDao.update(complaint.getBranch());
+            complaintDao.save(complaint);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     void checkAvailableBooking(String[] attributes, ConnectionToClient client){
         try {
             Dao<Branch> branchDao = new Dao(Branch.class);
