@@ -11,7 +11,7 @@ public class Complaint {
     private int id;
 
     @Column(name = "date")
-    private String date;
+    private String datetime;
 
     @Column(name = "complaint")
     private String complaint;
@@ -20,8 +20,8 @@ public class Complaint {
     @JoinColumn(name="customer_id")
     CustomerDetails customerDetails;
 
-    public Complaint(String date, String complaint,CustomerDetails customerDetails) {
-        this.date = date;
+    public Complaint(String datetime, String complaint,CustomerDetails customerDetails) {
+        this.datetime = datetime;
         this.complaint = complaint;
         this.customerDetails=customerDetails;
 
@@ -39,11 +39,11 @@ public class Complaint {
     }
 
     public String getDate() {
-        return date;
+        return datetime;
     }
 
     public void setDate(String date) {
-        this.date = date;
+        this.datetime = date;
     }
 
     public String getComplaint() {
