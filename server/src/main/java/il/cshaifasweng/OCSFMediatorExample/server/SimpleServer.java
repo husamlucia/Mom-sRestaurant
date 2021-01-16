@@ -306,9 +306,6 @@ public class SimpleServer extends AbstractServer {
         else if (msgString.startsWith("#createmapswithtables")) {
             create_branches_with_maps_and_tables();
         }
-        else if(msgString.startsWith("#saveComplaint")){
-
-        }
     }
 
 
