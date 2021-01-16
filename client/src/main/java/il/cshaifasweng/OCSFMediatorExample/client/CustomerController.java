@@ -5,6 +5,8 @@ import il.cshaifasweng.OCSFMediatorExample.client.events.BookingControllerLoaded
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.events.WarningEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
+import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
+import il.cshaifasweng.OCSFMediatorExample.entities.CustomerDetails;
 import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -12,17 +14,17 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
@@ -63,6 +65,17 @@ public class CustomerController implements Initializable {
     @FXML
     private Button showReportsBtn;
 
+    @FXML
+    private TextField complaintTF;
+
+    @FXML
+    private TextField customerPhoneTF;
+
+    @FXML
+    private TextField customerNameTF;
+
+    @FXML
+    private TextField creditTF;
 
     public void initialize(URL url, ResourceBundle rb) {
         EventBus.getDefault().register(this);
@@ -127,6 +140,28 @@ public class CustomerController implements Initializable {
 
     @FXML
     void complain(ActionEvent event) {
+
+        String name=customerNameTF.getText();
+        String phone=customerPhoneTF.getText();
+        String credit=creditTF.getText();
+        CustomerDetails customerDetails=new CustomerDetails(name,phone,credit);
+
+        String complaintMsg=complaintTF.getText();
+        String datetime;
+        //dd-MM-yyyy
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime now = LocalDateTime.now();
+        datetime = dtf.format(now);
+        Complaint complaint=new Complaint(datetime,complaintMsg,customerDetails);
+
+        //Branch br = brTable.getSelectionModel().getSelectedItem();
+        //int branchID = br!=null?br.getId():0;
+
+        try {
+            SimpleClient.getClient().sendToServer(complaint);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

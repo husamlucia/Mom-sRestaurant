@@ -1,7 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
 import javax.persistence.*;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -38,12 +37,24 @@ public class Branch implements Serializable {
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL)
     List<Mapp> map;
 
+    @OneToMany(mappedBy = "customerDetails",cascade = CascadeType.ALL)//Ask hussam
+    List<Complaint> complaints;
+
+    public List<Complaint> getComplaints() {
+        return complaints;
+    }
+
+    public void setComplaints(List<Complaint> complaints) {
+        this.complaints = complaints;
+    }
+
     public Mapp getMap(String area) {
 
         if (area.equals("inside")) return map.get(0);
         else return map.get(1);
 
     }
+
 
     public List<MealUpdate> getMealUpdates() {
         return mealUpdates;

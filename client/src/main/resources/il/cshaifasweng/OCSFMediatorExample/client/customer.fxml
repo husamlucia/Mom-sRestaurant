@@ -5,33 +5,44 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="197.0" prefWidth="859.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.CustomerController">
+<AnchorPane prefHeight="473.0" prefWidth="888.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.CustomerController">
    <children>
-      <TableView fx:id="brTable" layoutX="129.0" layoutY="51.0" prefHeight="94.0" prefWidth="351.0">
+      <TableView fx:id="brTable" layoutX="57.0" layoutY="169.0" prefHeight="163.0" prefWidth="424.0">
         <columns>
-          <TableColumn fx:id="colBrId" prefWidth="75.0" text="BranchID" />
-          <TableColumn fx:id="colOpenH" prefWidth="116.0" text="Open Hour" />
-            <TableColumn fx:id="colCloseH" prefWidth="108.0" text="Closing Hour" />
+          <TableColumn fx:id="colBrId" prefWidth="95.55558776855469" text="BranchID" />
+          <TableColumn fx:id="colOpenH" prefWidth="127.77769470214844" text="Open Hour" />
+            <TableColumn fx:id="colCloseH" prefWidth="127.33334350585938" text="Closing Hour" />
         </columns>
       </TableView>
       <Button fx:id="shoMenuBtn" layoutX="10.0" layoutY="64.0" mnemonicParsing="false" onAction="#showMenu" prefHeight="25.0" prefWidth="103.0" text="Show Menu" />
-      <Label layoutX="286.0" layoutY="14.0" prefHeight="25.0" prefWidth="159.0" text="MAIN PAGE FOR CLIENTS" />
-      <Button fx:id="bookPlaceBtn" layoutX="198.0" layoutY="154.0" mnemonicParsing="false" onAction="#book" prefHeight="25.0" prefWidth="159.0" text="Book/Cancel Booking">
+      <Label layoutX="286.0" layoutY="14.0" prefHeight="35.0" prefWidth="301.0" text="MAIN PAGE FOR CLIENTS" textFill="#232223">
+         <font>
+            <Font name="Bold Italic Art" size="22.0" />
+         </font></Label>
+      <Button fx:id="bookPlaceBtn" layoutX="216.0" layoutY="382.0" mnemonicParsing="false" onAction="#book" prefHeight="25.0" prefWidth="159.0" text="Book/Cancel Booking">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </Button>
-      <Button fx:id="complainBtn" layoutX="715.0" layoutY="154.0" mnemonicParsing="false" onAction="#complain" prefHeight="25.0" prefWidth="103.0" text="Complain">
+      <Button fx:id="complainBtn" layoutX="716.0" layoutY="383.0" mnemonicParsing="false" onAction="#complain" prefHeight="25.0" prefWidth="103.0" text="Complain">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </Button>
       <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="103.0" text="Back" />
-      <TextArea layoutX="685.0" layoutY="42.0" prefHeight="94.0" prefWidth="133.0" />
-      <Button layoutX="14.0" layoutY="154.0" mnemonicParsing="false" onAction="#createMaps" text="Create Maps with Tables" />
+      <Button layoutX="36.0" layoutY="380.0" mnemonicParsing="false" onAction="#createMaps" text="Create Maps with Tables" />
+      <TextField fx:id="complaintTF" layoutX="658.0" layoutY="219.0" prefHeight="120.0" prefWidth="194.0" />
+      <Label layoutX="600.0" layoutY="58.0" text="Customer Details:" />
+      <Label layoutX="600.0" layoutY="127.0" text="Phone:" />
+      <TextField fx:id="customerPhoneTF" layoutX="670.0" layoutY="123.0" />
+      <Label layoutX="600.0" layoutY="98.0" text="Full Name:" />
+      <TextField fx:id="customerNameTF" layoutX="670.0" layoutY="94.0" prefHeight="26.0" prefWidth="149.0" />
+      <Label layoutX="597.0" layoutY="166.0" text="Credit Card:" />
+      <TextField fx:id="creditTF" layoutX="670.0" layoutY="162.0" />
 
    </children>
 </AnchorPane>

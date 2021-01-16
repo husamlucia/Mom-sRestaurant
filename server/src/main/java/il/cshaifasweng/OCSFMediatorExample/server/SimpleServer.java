@@ -6,8 +6,6 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class SimpleServer extends AbstractServer {
@@ -307,6 +305,9 @@ public class SimpleServer extends AbstractServer {
         }
         else if (msgString.startsWith("#createmapswithtables")) {
             create_branches_with_maps_and_tables();
+        }
+        else if(msgString.startsWith("#saveComplaint")){
+
         }
     }
 
