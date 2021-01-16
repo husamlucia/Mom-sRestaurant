@@ -114,10 +114,19 @@ public class Branch implements Serializable {
         this.menu = new Menu();
         this.map = new ArrayList<>();
         this.mealUpdates = new ArrayList<>();
+        this.complaints=new ArrayList<>();
     }
 
     public Branch() {
 
+    }
+
+    public void addComplaint(Complaint complaint){
+        this.complaints.add(complaint);
+    }
+
+    public void deleteComplaint(Complaint complaint){
+        this.complaints.remove(complaint);
     }
 
     public void addMeal(Meal meal){

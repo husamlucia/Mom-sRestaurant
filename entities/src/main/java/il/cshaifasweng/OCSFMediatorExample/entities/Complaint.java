@@ -16,14 +16,27 @@ public class Complaint {
     @Column(name = "complaint")
     private String complaint;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="customer_id")
     CustomerDetails customerDetails;
 
-    public Complaint(String datetime, String complaint,CustomerDetails customerDetails) {
+    public Branch getBranch() {
+        return branch;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
+
+    @ManyToOne
+    @JoinColumn(name="branch_id")
+    Branch branch;
+
+    public Complaint(String datetime, String complaint,CustomerDetails customerDetails,Branch branch) {
         this.datetime = datetime;
         this.complaint = complaint;
         this.customerDetails=customerDetails;
+        this.branch=branch;
 
     }
     public Complaint() {

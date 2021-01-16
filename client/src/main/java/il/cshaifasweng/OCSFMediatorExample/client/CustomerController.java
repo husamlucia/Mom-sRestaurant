@@ -152,10 +152,9 @@ public class CustomerController implements Initializable {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         LocalDateTime now = LocalDateTime.now();
         datetime = dtf.format(now);
-        Complaint complaint=new Complaint(datetime,complaintMsg,customerDetails);
-
-        //Branch br = brTable.getSelectionModel().getSelectedItem();
+        Branch br = brTable.getSelectionModel().getSelectedItem();
         //int branchID = br!=null?br.getId():0;
+        Complaint complaint=new Complaint(datetime,complaintMsg,customerDetails,br);
 
         try {
             SimpleClient.getClient().sendToServer(complaint);
