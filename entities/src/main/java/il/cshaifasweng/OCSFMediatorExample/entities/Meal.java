@@ -4,6 +4,7 @@ import org.hibernate.annotations.CollectionId;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.List;
 
 import javax.persistence.*;
 import javax.persistence.Table;
@@ -35,8 +36,31 @@ public class Meal implements Serializable {
     private List<String> ingredients;
 
 
+    @OneToOne
+    @JoinColumn(name="image_id")
+    ImageInfo image;
+
     public Meal() {
 
+    }
+
+    public Meal(String name, double price, List<String> ingredients, ImageInfo image) {
+        this.name = name;
+        this.price = price;
+        this.ingredients = ingredients;
+        this.image = image;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public ImageInfo getImage() {
+        return image;
+    }
+
+    public void setImage(ImageInfo image) {
+        this.image = image;
     }
 
     public int getId() {
@@ -47,15 +71,8 @@ public class Meal implements Serializable {
         this.id = id;
     }
 
-
     public void addOrder(Order order){
         this.orders.add(order);
-    }
-
-    public Meal(String name, double price, List<String> ingredients) {
-        this.name = name;
-        this.price = price;
-        this.ingredients = ingredients;
     }
 
     public Menu getMenu() {
