@@ -19,6 +19,8 @@ public class CustomerDetails implements Serializable {
     @OneToMany(mappedBy = "customerDetails")
     List<Order> orders;
 
+    @OneToMany(mappedBy = "customerDetails")
+    List<Complaint> complaints;
 
     private String name;
 
@@ -33,6 +35,14 @@ public class CustomerDetails implements Serializable {
         this.creditCard = creditCard;
     }
 
+
+    public List<Complaint> getComplaints() {
+        return complaints;
+    }
+
+    public void setComplaints(List<Complaint> complaints) {
+        this.complaints = complaints;
+    }
 
     public void addOrder(Order order) {
 
