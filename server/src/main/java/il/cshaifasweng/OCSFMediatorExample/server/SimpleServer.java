@@ -75,7 +75,7 @@ public class SimpleServer extends AbstractServer {
         branch.addComplaint(complaint);
         try{
             branchDao.update(complaint.getBranch());
-           // complaintDao.save(complaint);
+           // complaintDao.save(complaint);kjkjk
         }
         catch (Exception e){
             e.printStackTrace();
