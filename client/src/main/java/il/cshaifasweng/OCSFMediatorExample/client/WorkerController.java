@@ -1,11 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
-import il.cshaifasweng.OCSFMediatorExample.entities.MealUpdateEvent;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
-import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
-import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
-import il.cshaifasweng.OCSFMediatorExample.entities.MealUpdate;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,9 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelFormat;
+import javafx.scene.image.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.Callback;
@@ -31,19 +26,16 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class WorkerController implements Initializable {
 
-    private String mealUpdateType;
     private Meal mealToUpdate;
     private Branch branch;
     private int privilege;
-
-    @FXML
-    private CheckBox newMealCheckBox;
 
     @FXML
     private TableView<Branch> branchTable;
@@ -74,14 +66,8 @@ public class WorkerController implements Initializable {
     private TableColumn<Meal, Double> mealPriceCol;
 
     @FXML
-    private TableColumn<Meal, Image> mealImageCol;
+    private TableColumn<Meal, ImageInfo> mealImageCol;
 
-
-    @FXML
-    private Button showMenuBtn;
-
-    @FXML
-    private Button showComplaintsBtn;
 
 
     @FXML
@@ -180,10 +166,10 @@ public class WorkerController implements Initializable {
     private TableColumn<MealUpdate, String> mealUpdatesNewBranch;
 
     @FXML
-    private TableColumn<MealUpdate, Image> mealUpdatesOldImage;
+    private TableColumn<MealUpdate, Meal> mealUpdatesOldImage;
 
     @FXML
-    private TableColumn<MealUpdate, Image> mealUpdatesNewImage;
+    private TableColumn<MealUpdate, Meal> mealUpdatesNewImage;
 
     @FXML
     private AnchorPane paneMealUpdates;
@@ -250,6 +236,8 @@ public class WorkerController implements Initializable {
         mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
 
 
+
+
         mealUpdatesID.setCellValueFactory(cellData -> new SimpleStringProperty(
                 Integer.toString(cellData.getValue().getOldMeal() != null ? cellData.getValue().getOldMeal().getId() : 0)));
 
@@ -267,95 +255,70 @@ public class WorkerController implements Initializable {
                 cellData.getValue().getBranch() != null ? cellData.getValue().getBranch().getId() : 0)));
         mealUpdatesNewBranch.setCellValueFactory(cellData -> new SimpleStringProperty(Integer.toString(cellData.getValue().getNewBranchId())));
 
-        mealImageCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Meal, Image>, ObservableValue<Image>>() {
+
+        mealImageCol.setCellValueFactory(new PropertyValueFactory<Meal, ImageInfo>("image"));
+
+        mealImageCol.setCellFactory(param -> new TableCell<Meal, ImageInfo>() {
+
+            private final ImageView imageView = new ImageView();
+
             @Override
-            public ObservableValue<Image> call(TableColumn.CellDataFeatures<Meal, Image> data) {
-                return new ReadOnlyObjectWrapper<Image>(getImageFromByte(data.getValue().getImage()));
+            protected void updateItem(ImageInfo item, boolean empty) {
+                super.updateItem(item, empty);
+                imageView.setFitHeight(150);
+                imageView.setFitWidth(150);
+                if (item == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    imageView.setImage(byteArrayToImage(item));
+                    setGraphic(imageView);
+                }
+                this.setItem(item);
             }
         });
 
-        mealImageCol.setCellFactory(new Callback<TableColumn<Meal, Image>, TableCell<Meal, Image>>() {
+        mealUpdatesOldImage.setCellValueFactory(new PropertyValueFactory<MealUpdate, Meal>("oldMeal"));
+        mealUpdatesOldImage.setCellFactory(param -> new TableCell<MealUpdate, Meal>() {
+
+            private final ImageView imageView = new ImageView();
+
             @Override
-            public TableCell<Meal, Image> call(TableColumn<Meal, Image> param) {
-                final ImageView imageview = new ImageView();
-                imageview.setFitHeight(150);
-                imageview.setFitWidth(150);
-                TableCell<Meal, Image> cell = new TableCell<Meal, Image>() {
-                    public void updateItem(Image item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                                imageview.setImage(item);
-                            }
-                        }
-                };
-                cell.setGraphic(imageview);
-                return cell;
+            protected void updateItem(Meal item, boolean empty) {
+                super.updateItem(item, empty);
+                imageView.setFitHeight(150);
+                imageView.setFitWidth(150);
+                if (item == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    imageView.setImage(byteArrayToImage(item.getImage()));
+                    setGraphic(imageView);
+                }
+                this.setItem(item);
             }
         });
 
+        mealUpdatesNewImage.setCellValueFactory(new PropertyValueFactory<MealUpdate, Meal>("newMeal"));
+        mealUpdatesNewImage.setCellFactory(param -> new TableCell<MealUpdate, Meal>() {
 
-        mealUpdatesOldImage.setCellFactory(new Callback<TableColumn<MealUpdate, Image>, TableCell<MealUpdate, Image>>() {
-                @Override
-                public TableCell<MealUpdate, Image> call(TableColumn<MealUpdate, Image> param) {
-                    final ImageView imageview = new ImageView();
-                    imageview.setFitHeight(150);
-                    imageview.setFitWidth(150);
-                    TableCell<MealUpdate, Image> cell = new TableCell<MealUpdate, Image>() {
-                        public void updateItem(MealUpdate item, boolean empty) {
-                            if (item != null) {
-                                if (item.getOldMeal() != null) {
-                                    byte[] byteImg = item.getOldMeal().getImage();
-                                    imageview.setImage(new Image(new ByteArrayInputStream(byteImg)));
-                                }
-                            }
-                        }
-                    };
-                    cell.setGraphic(imageview);
-                    return cell;
+            private final ImageView imageView = new ImageView();
+
+            @Override
+            protected void updateItem(Meal item, boolean empty) {
+                super.updateItem(item, empty);
+                imageView.setFitHeight(150);
+                imageView.setFitWidth(150);
+                if (item == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    imageView.setImage(byteArrayToImage(item.getImage()));
+                    setGraphic(imageView);
                 }
-
-            });
-
-
-            mealUpdatesNewImage.setCellFactory(new Callback<TableColumn<MealUpdate, Image>, TableCell<MealUpdate, Image>>() {
-                @Override
-                public TableCell<MealUpdate, Image> call(TableColumn<MealUpdate, Image> param) {
-                    final ImageView imageview = new ImageView();
-                    imageview.setFitHeight(150);
-                    imageview.setFitWidth(150);
-
-                    TableCell<MealUpdate, Image> cell = new TableCell<MealUpdate, Image>() {
-                        public void updateItem(MealUpdate item, boolean empty) {
-                            if (item != null) {
-                                if (item.getNewMeal() != null) {
-                                    byte[] byteImg = item.getNewMeal().getImage();
-                                    Image image = new Image(new ByteArrayInputStream(byteImg));
-                                    super.updateItem(image, empty);
-                                    imageview.setImage(image);
-                                }
-                            }
-                        }
-                    };
-                    cell.setGraphic(imageview);
-                    return cell;
-                }
-
-            });
-
-        mealUpdatesOldImage.setCellValueFactory(cellData -> new SimpleObjectProperty<>(getImageFromByte(cellData.getValue().getNewMeal().getImage())));
-
-//        mealUpdatesOldImage.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<MealUpdate, Image>, ObservableValue<Image>>() {
-//            public ObservableValue<Image> call(TableColumn.CellDataFeatures<MealUpdate, Image> p) {
-//                // p.getValue() returns the Person instance for a particular TableView row
-//                Meal meal = p.getValue().getOldMeal();
-//                if(meal!=null){
-//                    byte[] byteImg = meal.getImage();
-//                    Image image = new Image(new ByteArrayInputStream(byteImg));
-//                    return image;
-//                }
-//                return null;
-//            }
-//        });
+                this.setItem(item);
+            }
+        });
 
         try {
             SimpleClient.getClient().sendToServer("#getAllBranches");
@@ -366,9 +329,7 @@ public class WorkerController implements Initializable {
 
     }
 
-    private Image getImageFromByte(byte[] image) {
-        return new Image(new ByteArrayInputStream(image));
-    }
+
 
     public void initialize2(int privilege) {
         this.privilege = privilege;
@@ -450,7 +411,7 @@ public class WorkerController implements Initializable {
         ingredientsTF.setText(meal.getIngredients().toString());
         priceTF.setText(Double.toString(meal.getPrice()));
         branchIdTF.setText(Integer.toString(branch.getId()));
-        mealImageView.setImage(new Image(new ByteArrayInputStream(meal.getImage())));
+        mealImageView.setImage(byteArrayToImage(meal.getImage()));
         mealToUpdate = meal;
     }
 
@@ -465,13 +426,23 @@ public class WorkerController implements Initializable {
     }
 
 
-    public byte[] getByteFromImage(Image img) throws FileNotFoundException {
+    private ImageInfo imageToByteArray(Image i){
+        PixelReader pr = i.getPixelReader();
+        WritablePixelFormat<ByteBuffer> wf = PixelFormat.getByteBgraInstance();
 
-        int w = (int) img.getWidth();
-        int h = (int) img.getHeight();
-        byte[] buf = new byte[w * h * 4];
-        img.getPixelReader().getPixels(0, 0, w, h, PixelFormat.getByteBgraInstance(), buf, 0, w * 4);
-        return buf;
+        byte[] buffer = new byte[(int) (i.getWidth() * i.getHeight() *4)];
+
+        pr.getPixels(0, 0, (int) i.getWidth(), (int) i.getHeight(), wf, buffer, 0, (int) (i.getWidth())*4);
+        return new ImageInfo(buffer, (int) i.getWidth(), (int) i.getHeight()) ;
+    }
+
+    private Image byteArrayToImage(ImageInfo imageArray){
+
+        WritablePixelFormat<ByteBuffer> wf = PixelFormat.getByteBgraInstance();
+        WritableImage writableimage = new WritableImage(imageArray.getWidth(), imageArray.getHeight());
+        PixelWriter pixelWriter = writableimage.getPixelWriter();
+        pixelWriter.setPixels(0, 0, imageArray.getWidth(), imageArray.getHeight(), wf, imageArray.getImage(), 0, 4*imageArray.getWidth());
+        return writableimage;
     }
 
     @FXML
@@ -487,7 +458,9 @@ public class WorkerController implements Initializable {
         String[] ing = ingTxt.split("\\s+");
         List<String> ingredients = Arrays.asList(ing);
 
-        byte[] image = getByteFromImage(mealImageView.getImage());
+        ImageInfo image = imageToByteArray(mealImageView.getImage());
+        mealImageView.setImage(null);
+        mealImageView.setImage(byteArrayToImage(image));
 
         Meal oldMeal = mealToUpdate;
         Meal newMeal = new Meal(name, price, ingredients, image);

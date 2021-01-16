@@ -36,15 +36,15 @@ public class Meal implements Serializable {
     private List<String> ingredients;
 
 
-    @Lob
-    private byte[] image;
-
+    @OneToOne
+    @JoinColumn(name="image_id")
+    ImageInfo image;
 
     public Meal() {
 
     }
 
-    public Meal(String name, double price, List<String> ingredients, byte[] image) {
+    public Meal(String name, double price, List<String> ingredients, ImageInfo image) {
         this.name = name;
         this.price = price;
         this.ingredients = ingredients;
@@ -55,11 +55,11 @@ public class Meal implements Serializable {
         this.price = price;
     }
 
-    public byte[] getImage() {
+    public ImageInfo getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(ImageInfo image) {
         this.image = image;
     }
 

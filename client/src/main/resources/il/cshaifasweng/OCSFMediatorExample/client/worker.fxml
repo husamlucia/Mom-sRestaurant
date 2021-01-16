@@ -55,7 +55,7 @@
                 <TableView fx:id="menuTable" layoutX="69.0" layoutY="15.0" prefHeight="134.0" prefWidth="679.0">
                     <columns>
                         <TableColumn fx:id="mealIdCol" prefWidth="43.0" text="ID" />
-                        <TableColumn fx:id="mealImageCol" prefWidth="85.0" text="pic" />
+                        <TableColumn fx:id="mealImageCol" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="pic" />
                         <TableColumn fx:id="mealNameCol" prefWidth="108.0" text="Name" />
                         <TableColumn fx:id="mealIngCol" prefWidth="98.0" text="Ingredients" />
                         <TableColumn fx:id="networkMealMenuCol" prefWidth="127.0" text="Network Meal" />
@@ -83,24 +83,24 @@
                </font></Text>
             </children>
         </AnchorPane>
-      <AnchorPane fx:id="paneManager2" layoutX="14.0" layoutY="462.0" prefHeight="200.0" prefWidth="821.0">
+      <AnchorPane fx:id="paneManager2" layoutX="14.0" layoutY="462.0" prefHeight="200.0" prefWidth="1009.0">
          <children>
-            <TableView fx:id="mealUpdatesTable" layoutX="62.0" layoutY="35.0" prefHeight="151.0" prefWidth="679.0">
+            <TableView fx:id="mealUpdatesTable" layoutX="62.0" layoutY="35.0" prefHeight="151.0" prefWidth="827.0">
               <columns>
                 <TableColumn fx:id="mealUpdatesID" prefWidth="68.0" text="MealID" />
                 <TableColumn fx:id="mealUpdatesOldName" prefWidth="82.0" text="OldName" />
                   <TableColumn fx:id="mealUpdatesNewName" prefWidth="75.0" text="newName" />
                   <TableColumn fx:id="mealUpdatesOldPrice" prefWidth="75.0" text="oldPrice" />
                   <TableColumn fx:id="mealUpdatesNewPrice" prefWidth="75.0" text="newPrice" />
-                  <TableColumn fx:id="mealUpdatesOldImage" prefWidth="75.0" text="oldPic" />
-                  <TableColumn fx:id="mealUpdatesNewImage" prefWidth="75.0" text="newPic" />
+                  <TableColumn fx:id="mealUpdatesOldImage" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="oldPic" />
+                  <TableColumn fx:id="mealUpdatesNewImage" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="newPic" />
                   <TableColumn fx:id="mealUpdatesOldBranch" prefWidth="75.0" text="oldBranch" />
                   <TableColumn fx:id="mealUpdatesNewBranch" prefWidth="75.0" text="newBranch" />
               </columns>
             </TableView>
             <Text layoutX="14.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Meal Updates" />
-                <Button fx:id="approveBtn" layoutX="763.0" layoutY="64.0" mnemonicParsing="false" onAction="#approveMeal" prefHeight="25.0" prefWidth="94.0" text="Approve" />
-                <Button fx:id="denyBtn" layoutX="763.0" layoutY="100.0" mnemonicParsing="false" onAction="#denyMeal" prefHeight="25.0" prefWidth="94.0" text="Deny" />
+                <Button fx:id="approveBtn" layoutX="901.0" layoutY="65.0" mnemonicParsing="false" onAction="#approveMeal" prefHeight="25.0" prefWidth="94.0" text="Approve" />
+                <Button fx:id="denyBtn" layoutX="901.0" layoutY="98.0" mnemonicParsing="false" onAction="#denyMeal" prefHeight="25.0" prefWidth="94.0" text="Deny" />
          </children>
       </AnchorPane>
           <Button fx:id="viewUpdatesBtn" layoutX="310.0" layoutY="224.0" mnemonicParsing="false" onAction="#viewUpdates" prefHeight="25.0" prefWidth="94.0" text="Show Updates" />

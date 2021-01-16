@@ -140,7 +140,9 @@ public class OrderController implements Initializable {
                 TableCell<Meal,Image> cell = new TableCell<Meal, Image>(){
                     public void updateItem(Meal item, boolean empty) {
                         if(item!=null){
-                            byte[] byteImg = item.getImage();
+                            byte[] byteImg = item.getImage().getImage();
+                            int height = item.getImage().getHeight();
+                            int width = item.getImage().getWidth();
                             imageview.setImage(new Image(new ByteArrayInputStream(byteImg)));
                         }
                     }

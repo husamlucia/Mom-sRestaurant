@@ -2,13 +2,16 @@ package il.cshaifasweng.OCSFMediatorExample.server;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Mapp;
+import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
+import java.awt.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 public class SimpleServer extends AbstractServer {
 
@@ -186,64 +189,73 @@ public class SimpleServer extends AbstractServer {
         }
     }
     void dealWithMealUpdate(MealUpdate mealUpdate) {
-        String status = mealUpdate.getStatus();
-        int branchId;
-        Dao<Branch> branchDao = new Dao(Branch.class);
-        Dao<MealUpdate> mealUpdateDao = new Dao(MealUpdate.class);
-        Dao<Menu> menuDao = new Dao(Menu.class);
 
-        branchId = mealUpdate.getNewBranchId();
-        Branch oldBranch = mealUpdate.getBranch();
-        Branch newBranch = branchDao.findById(branchId);
+        try {
+            String status = mealUpdate.getStatus();
+            int branchId;
+            Dao<ImageInfo> imageDao = new Dao(ImageInfo.class);
+            Dao<Branch> branchDao = new Dao(Branch.class);
+            Dao<MealUpdate> mealUpdateDao = new Dao(MealUpdate.class);
+            Dao<Menu> menuDao = new Dao(Menu.class);
 
-        if (status.equals("Awaiting")) {
-            if (mealUpdate.getOldMeal() != null && mealUpdate.getNewMeal() == null) {
-                System.out.println("Delete update");
-            }
-            newBranch.getMealUpdates().add(mealUpdate);
-            mealUpdateDao.save(mealUpdate);
+            branchId = mealUpdate.getNewBranchId();
+            Branch oldBranch = mealUpdate.getBranch();
+            Branch newBranch = branchDao.findById(branchId);
 
-        } else if (status.equals("Approved")) {//recheck
-            try {
-                Meal oldMeal = mealUpdate.getOldMeal();
-                Meal newMeal = mealUpdate.getNewMeal();
-                Branch br = mealUpdate.getBr();
-                Menu menu = br.getMenu();
-                Dao<Meal> mealDao = new Dao(Meal.class);
-                if (oldMeal == null) {
-                    //newMeal != null -> we need to add newMeal to branch menu.
-                    newBranch.addMeal(newMeal);
-                    branchDao.update(newBranch);
-                    mealUpdateDao.update(mealUpdate);
-                } else if (newMeal == null) {
-                    ;
-                    mealUpdateDao.update(mealUpdate);
-                    System.out.println("Deleting meal...");
-                    newBranch.removeMeal(oldMeal);
-                    branchDao.update(newBranch);
-                    mealDao.update(oldMeal);
-                } else {
-                    mealUpdateDao.update(mealUpdate);
-
-                    oldMeal.setName(newMeal.getName());
-                    oldMeal.setPrice(newMeal.getPrice());
-                    oldMeal.setIngredients(newMeal.getIngredients());
-
-                    int oldMealBranch = oldBranch.getId();
-                    int newMealBranch = newBranch.getId();
-                    if (oldMealBranch != newMealBranch) {
-                        oldBranch.removeMeal(oldMeal);
-                        newBranch.addMeal(oldMeal);
-                    }
-                    mealDao.update(oldMeal);
+            if (status.equals("Awaiting")) {
+                if (mealUpdate.getOldMeal() != null && mealUpdate.getNewMeal() == null) {
+                    System.out.println("Delete update");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                imageDao.save(mealUpdate.getNewMeal().getImage());
+                newBranch.getMealUpdates().add(mealUpdate);
+                mealUpdateDao.save(mealUpdate);
 
-        } else if (status.equals("Denied")) {
-            mealUpdateDao.update(mealUpdate);
+            } else if (status.equals("Approved")) {//recheck
+                try {
+                    Meal oldMeal = mealUpdate.getOldMeal();
+                    Meal newMeal = mealUpdate.getNewMeal();
+                    Branch br = mealUpdate.getBr();
+                    Menu menu = br.getMenu();
+                    Dao<Meal> mealDao = new Dao(Meal.class);
+                    if (oldMeal == null) {
+                        //newMeal != null -> we need to add newMeal to branch menu.
+                        newBranch.addMeal(newMeal);
+                        branchDao.update(newBranch);
+                        mealUpdateDao.update(mealUpdate);
+                    } else if (newMeal == null) {
+                        ;
+                        mealUpdateDao.update(mealUpdate);
+                        System.out.println("Deleting meal...");
+                        newBranch.removeMeal(oldMeal);
+                        branchDao.update(newBranch);
+                        mealDao.update(oldMeal);
+                    } else {
+                        mealUpdateDao.update(mealUpdate);
+
+                        oldMeal.setName(newMeal.getName());
+                        oldMeal.setPrice(newMeal.getPrice());
+                        oldMeal.setIngredients(newMeal.getIngredients());
+
+                        int oldMealBranch = oldBranch.getId();
+                        int newMealBranch = newBranch.getId();
+                        if (oldMealBranch != newMealBranch) {
+                            oldBranch.removeMeal(oldMeal);
+                            newBranch.addMeal(oldMeal);
+                        }
+                        mealDao.update(oldMeal);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            } else if (status.equals("Denied")) {
+                mealUpdateDao.update(mealUpdate);
+            }
         }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     void sendMenuToClient(int id, ConnectionToClient client) {
