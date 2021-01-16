@@ -10,51 +10,51 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="476.0" prefWidth="742.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
+<AnchorPane prefHeight="479.0" prefWidth="1073.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
    <children>
-      <Button fx:id="orderBtn" layoutX="611.0" layoutY="417.0" mnemonicParsing="false" onAction="#order" prefHeight="42.0" prefWidth="114.0" text="Order">
+      <Button fx:id="orderBtn" layoutX="946.0" layoutY="420.0" mnemonicParsing="false" onAction="#order" prefHeight="42.0" prefWidth="114.0" text="Order">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </Button>
-      <TableView fx:id="menuTable" layoutX="78.0" layoutY="40.0" prefHeight="169.0" prefWidth="351.0">
+      <TableView fx:id="menuTable" layoutX="13.0" layoutY="40.0" prefHeight="417.0" prefWidth="581.0">
          <columns>
-            <TableColumn fx:id="nameCol" prefWidth="40.0" text="Name" />
-            <TableColumn fx:id="ingredientsCol" prefWidth="82.0" text="Ingredients" />
-            <TableColumn fx:id="picCol" prefWidth="56.0" text="Picture" />
-            <TableColumn fx:id="priceCol" prefWidth="46.0" text="Price" />
-            <TableColumn fx:id="networkMealCol" prefWidth="126.0" text="Network Meal" />
+            <TableColumn fx:id="picCol" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Picture" />
+            <TableColumn fx:id="nameCol" prefWidth="95.0" text="Name" />
+            <TableColumn fx:id="ingredientsCol" prefWidth="174.0" text="Ingredients" />
+            <TableColumn fx:id="priceCol" prefWidth="70.0" text="Price" />
+            <TableColumn fx:id="networkMealCol" prefWidth="90.0" text="Network Meal" />
          </columns>
       </TableView>
-      <Label layoutX="596.0" layoutY="192.0" text="Total:" />
+      <Label layoutX="764.0" layoutY="192.0" text="Total:" />
       <Label fx:id="totalCost" layoutX="629.0" layoutY="192.0" text="0" />
-      <Label layoutX="433.0" layoutY="66.0" text="Cart" />
-      <TableView fx:id="cartTable" layoutX="433.0" layoutY="84.0" prefHeight="126.0" prefWidth="159.0">
+      <Label layoutX="601.0" layoutY="66.0" text="Cart" />
+      <TableView fx:id="cartTable" layoutX="601.0" layoutY="84.0" prefHeight="126.0" prefWidth="159.0">
          <columns>
             <TableColumn fx:id="cartColName" prefWidth="76.79998779296875" text="Name" />
             <TableColumn fx:id="cartColPrice" minWidth="3.2000732421875" prefWidth="82.4000244140625" text="Price" />
          </columns>
       </TableView>
-      <Button layoutX="433.0" layoutY="40.0" mnemonicParsing="false" onAction="#addToCart" text="Add to Cart" />
-      <Button layoutX="596.0" layoutY="100.0" mnemonicParsing="false" onAction="#removeFromCart" text="Remove from Cart" />
+      <Button layoutX="601.0" layoutY="40.0" mnemonicParsing="false" onAction="#addToCart" text="Add to Cart" />
+      <Button layoutX="764.0" layoutY="100.0" mnemonicParsing="false" onAction="#removeFromCart" text="Remove from Cart" />
       <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
-      <Label layoutX="78.0" layoutY="228.0" text="Order Details:" />
-      <DatePicker fx:id="orderDate" layoutX="114.0" layoutY="264.0" />
-      <Label layoutX="78.0" layoutY="268.0" text="Date:" />
-      <CheckBox fx:id="pickupCheckBox" layoutX="78.0" layoutY="306.0" mnemonicParsing="false" text="Pick Up" />
-      <Label layoutX="87.0" layoutY="336.0" text="Address:" />
-      <TextField fx:id="orderAddressTF" layoutX="140.0" layoutY="332.0" />
-      <Label layoutX="79.0" layoutY="398.0" text="Recipient:" />
-      <TextField fx:id="recipientTF" layoutX="139.0" layoutY="394.0" />
-      <Label layoutX="318.0" layoutY="228.0" text="Customer Details:" />
-      <Label layoutX="318.0" layoutY="297.0" text="Phone:" />
-      <TextField fx:id="customerPhoneTF" layoutX="388.0" layoutY="293.0" />
-      <Label layoutX="318.0" layoutY="268.0" text="Full Name:" />
-      <TextField fx:id="customerNameTF" layoutX="388.0" layoutY="264.0" prefHeight="26.0" prefWidth="149.0" />
-      <Label layoutX="315.0" layoutY="336.0" text="Credit Card:" />
-      <TextField fx:id="creditTF" layoutX="388.0" layoutY="332.0" />
-      <CheckBox fx:id="differentCheckBox" layoutX="80.0" layoutY="368.0" mnemonicParsing="false" text="Different Recipient" />
-      <Label layoutX="47.0" layoutY="432.0" text="Recipient Phone:" />
-      <TextField fx:id="phoneTF" layoutX="139.0" layoutY="428.0" />
+      <Label layoutX="601.0" layoutY="231.0" text="Order Details:" />
+      <DatePicker fx:id="orderDate" layoutX="637.0" layoutY="267.0" />
+      <Label layoutX="601.0" layoutY="271.0" text="Date:" />
+      <CheckBox fx:id="pickupCheckBox" layoutX="601.0" layoutY="309.0" mnemonicParsing="false" text="Pick Up" />
+      <Label layoutX="610.0" layoutY="339.0" text="Address:" />
+      <TextField fx:id="orderAddressTF" layoutX="663.0" layoutY="335.0" />
+      <Label layoutX="607.0" layoutY="401.0" text="Recipient:" />
+      <TextField fx:id="recipientTF" layoutX="662.0" layoutY="397.0" />
+      <Label layoutX="841.0" layoutY="231.0" text="Customer Details:" />
+      <Label layoutX="841.0" layoutY="300.0" text="Phone:" />
+      <TextField fx:id="customerPhoneTF" layoutX="911.0" layoutY="296.0" />
+      <Label layoutX="841.0" layoutY="271.0" text="Full Name:" />
+      <TextField fx:id="customerNameTF" layoutX="911.0" layoutY="267.0" prefHeight="26.0" prefWidth="149.0" />
+      <Label layoutX="838.0" layoutY="339.0" text="Credit Card:" />
+      <TextField fx:id="creditTF" layoutX="911.0" layoutY="335.0" />
+      <CheckBox fx:id="differentCheckBox" layoutX="603.0" layoutY="371.0" mnemonicParsing="false" text="Different Recipient" />
+      <Label layoutX="603.0" layoutY="433.0" text="Recipient Phone:" />
+      <TextField fx:id="phoneTF" layoutX="704.0" layoutY="429.0" />
    </children>
 </AnchorPane>
