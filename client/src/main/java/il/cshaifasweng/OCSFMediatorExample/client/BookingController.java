@@ -11,17 +11,20 @@ import javafx.event.ActionEvent;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class BookingController implements Initializable {
@@ -30,6 +33,8 @@ public class BookingController implements Initializable {
     * Booking is working fine. Got to update so it limits time from 15 minutes of opening hour
     * and 1 hour before closing.*/
     private int branchID;
+    private String openh, closeh;
+    private Branch branch;
     private boolean branchHasInside;
     private boolean branchHasOutside;
 
@@ -40,6 +45,9 @@ public class BookingController implements Initializable {
     private int countDeclare = 0;
 
     AnchorPane anchorpane;
+
+    public BookingController() {
+    }
 
     void init(String date, String time, String area, int number) {
         this.bookingDate = date;
@@ -62,10 +70,47 @@ public class BookingController implements Initializable {
     public void onBookingControllerLoaded(BookingControllerLoaded event) {
         Platform.runLater(() -> {
             Branch br = event.getBranch();
+            branch = br;
             branchID = br.getId();
+            openh = br.getOpenHours();
+            closeh = br.getCloseHours();
+            initializeDateAndHours(openh, closeh);
             if(br.getMap("inside") == null) insideButton.setDisable(true);
             if(br.getMap("outside") == null) outsideButton.setDisable(true);
         });
+    }
+
+
+    public void initializeDateAndHours(String openh, String closeh){
+
+        LocalDate minDate = LocalDate.now();
+        final Callback<DatePicker, DateCell> dayCellFactory;
+
+        dayCellFactory = (final DatePicker datePicker) -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item.isBefore(minDate)) { //Disable all dates after required date
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;"); //To set background on different color
+                }
+            }
+        };
+
+        datePicker.setDayCellFactory(dayCellFactory);
+        LocalTime curr = LocalTime.parse(openh).plusMinutes(15);
+        LocalTime last = LocalTime.parse(closeh).minusMinutes(59);
+        String currString;
+        List<String> available = new ArrayList<>();
+        while(curr.isBefore(last)){
+            currString = curr.toString();
+            curr = curr.plusMinutes(15);
+            available.add(currString);
+        }
+        ObservableList<String> list = FXCollections.observableArrayList();
+        list.addAll(available);
+        hourComboBox.setItems(list);
+
     }
 
     @Subscribe
@@ -81,6 +126,12 @@ public class BookingController implements Initializable {
 
     }
 
+
+    @FXML
+    private ComboBox hourComboBox;
+
+    @FXML
+    private DatePicker datePicker;
     @FXML
     private Button insideButton;
 
@@ -153,7 +204,7 @@ public class BookingController implements Initializable {
 
     void checkAvailability(String location) {
 
-        init(BookingDateTF.getText(), BookingTimeTF.getText(), location, Integer.parseInt(BookingNumCustomersTF.getText()));
+        init(datePicker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), (String) hourComboBox.getValue(), location, Integer.parseInt(BookingNumCustomersTF.getText()));
         //        String msg = "#checkBooking " + " " +  brId + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
         String message = "#checkBooking " + branchID + ' ' + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
         //Checking for availability of Bookings in the bookingDate and bookingTime we present.

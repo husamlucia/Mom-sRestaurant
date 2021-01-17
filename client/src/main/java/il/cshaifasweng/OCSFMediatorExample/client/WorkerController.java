@@ -24,6 +24,10 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.*;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -129,16 +133,16 @@ public class WorkerController implements Initializable {
     private Button showRestaurantMapBtn;
 
     @FXML
-    private TableView<?> retaurantMapTable;
+    private TableView<SimpleTable> retaurantMapTable;
 
     @FXML
-    private TableColumn<?, ?> tableNumberMapCol;
+    private TableColumn<SimpleTable, Integer> tableNumberMapCol;
 
     @FXML
-    private TableColumn<?, ?> numOfSeatsMapCol;
+    private TableColumn<SimpleTable, String> numOfSeatsMapCol;
 
     @FXML
-    private TableColumn<?, ?> reservationsMapCol;
+    private TableColumn<SimpleTable, String> reservationsMapCol;
 
 
     @FXML
@@ -190,6 +194,15 @@ public class WorkerController implements Initializable {
     @FXML
     private AnchorPane paneCustomerService;
 
+
+    @FXML
+    private ComboBox hourComboBox;
+
+    @FXML
+    private DatePicker datePicker;
+
+
+
     @Subscribe
     public void onMenuEvent(MenuEvent event) {
         Platform.runLater(() -> {
@@ -198,6 +211,8 @@ public class WorkerController implements Initializable {
             menuTable.setItems(mealList);
         });
     }
+
+
 
 
     @Subscribe
@@ -226,10 +241,64 @@ public class WorkerController implements Initializable {
             branchTable.setItems(branchList);
         });
     }
+    @Subscribe
+    public void onOccupationMap(OccupationMap event) {
+        Platform.runLater(() -> {
+            ObservableList<SimpleTable> tableList = FXCollections.observableArrayList();
+            tableList.addAll(event.getTables());
+            retaurantMapTable.setItems(tableList);
+        });
+    }
 
+
+    public void initializeHours(String openh, String closeh){
+
+        LocalTime curr = LocalTime.parse(openh).plusMinutes(15);
+        LocalTime last = LocalTime.parse(closeh).minusMinutes(59);
+        String currString;
+        List<String> available = new ArrayList<>();
+        while(curr.isBefore(last)){
+            System.out.println(curr);
+            currString = curr.toString();
+            curr = curr.plusMinutes(15);
+            available.add(currString);
+        }
+        ObservableList<String> list = FXCollections.observableArrayList();
+        list.addAll(available);
+        hourComboBox.setItems(list);
+
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         EventBus.getDefault().register(this);
+
+
+        LocalDate minDate = LocalDate.now();
+        final Callback<DatePicker, DateCell> dayCellFactory;
+
+        dayCellFactory = (final DatePicker datePicker) -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item.isBefore(minDate)) { //Disable all dates after required date
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;"); //To set background on different color
+                }
+            }
+        };
+
+        datePicker.setDayCellFactory(dayCellFactory);
+
+
+        branchTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                branch = newSelection;
+                String openh = newSelection.getOpenHours();
+                String closeh = newSelection.getCloseHours();
+                initializeHours(openh, closeh);
+            }
+        });
+
 
         //each cellValueFactory has been set according to the member variables of your entity class
         brIdCol.setCellValueFactory(new PropertyValueFactory<Branch, Integer>("id"));
@@ -242,6 +311,10 @@ public class WorkerController implements Initializable {
         mealPriceCol.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
         mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
 
+        tableNumberMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, Integer>("id"));
+
+
+        numOfSeatsMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, String>("capacity"));
 
         numOfComplainComplaintsCol.setCellValueFactory(new PropertyValueFactory<Complaint, Integer>("id"));
         nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(
@@ -253,8 +326,7 @@ public class WorkerController implements Initializable {
         descriptionComplaintsCol.setCellValueFactory(cellData -> new SimpleStringProperty(
                 cellData.getValue().getComplaint()));
 
-
-
+        reservationsMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, String>("status"));
 
         mealUpdatesID.setCellValueFactory(cellData -> new SimpleStringProperty(
                 Integer.toString(cellData.getValue().getOldMeal() != null ? cellData.getValue().getOldMeal().getId() : 0)));
@@ -571,9 +643,11 @@ public class WorkerController implements Initializable {
 
     @FXML
     void requestRestaurantMap(ActionEvent event) {
-
+        Button b = (Button) event.getSource();
         try {
-            String message = "#requestMap " + branchTable.getSelectionModel().getSelectedItem().getId();
+            String date = datePicker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String hour = (String) hourComboBox.getValue();
+            String message = "#requestMap " + branchTable.getSelectionModel().getSelectedItem().getId() + ' ' + date + ' ' + hour + ' ' + b.getText().toLowerCase();
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             // TODO Auto-generated catch block

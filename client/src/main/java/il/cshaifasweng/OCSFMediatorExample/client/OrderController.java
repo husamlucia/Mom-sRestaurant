@@ -248,7 +248,7 @@ public class OrderController implements Initializable {
         if(!pickup){
             recipientAddress = orderAddressTF.getText();
         }
-        String date = orderDate.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String date = orderDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
         String recipientName = "";
         String recipientPhone = "";

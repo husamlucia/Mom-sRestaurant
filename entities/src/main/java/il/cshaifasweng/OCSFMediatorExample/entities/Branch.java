@@ -37,7 +37,8 @@ public class Branch implements Serializable {
     @OneToMany(mappedBy = "customerDetails", cascade = CascadeType.ALL)
     List<Order> orders;
 
-    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     List<Mapp> map;
 
     @OneToMany(mappedBy = "customerDetails",cascade = CascadeType.ALL)//Ask hussam
@@ -121,6 +122,15 @@ public class Branch implements Serializable {
     }
 
     public Branch() {
+
+    }
+
+    public OccupationMap getOccupationMap(String date, String hour, String area){
+
+        if(this.getMap(area) != null){
+            return this.getMap(area).getOccupationMap(date, hour);
+        }
+        return null;
 
     }
 
