@@ -1,6 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
+import il.cshaifasweng.OCSFMediatorExample.entities.ComplaintEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
 import javafx.application.Platform;
@@ -17,7 +18,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -72,13 +72,23 @@ public class WorkerController implements Initializable {
 
 
     @FXML
-    private TableView<?> complaintsTable;
+    private TableView<Complaint> complaintsTable;
 
     @FXML
-    private TableColumn<?, ?> numOfComplainComplaintsCol;
+    private TableColumn<Complaint, Integer> numOfComplainComplaintsCol;
 
     @FXML
-    private TableColumn<?, ?> descriptionComplaintsCol;
+    private TableColumn<Complaint, String> descriptionComplaintsCol;
+
+    @FXML
+    private TableColumn<Complaint, String> nameCol;
+
+    @FXML
+    private TableColumn<Complaint, String> phoneCol;
+
+
+    @FXML
+    private TableColumn<Complaint, String> dateTimeCol;
 
     @FXML
     private Button lockdownInstructionBtn;
@@ -303,7 +313,18 @@ public class WorkerController implements Initializable {
 
         tableNumberMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, Integer>("id"));
 
+
         numOfSeatsMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, String>("capacity"));
+
+        numOfComplainComplaintsCol.setCellValueFactory(new PropertyValueFactory<Complaint, Integer>("id"));
+        nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(
+                cellData.getValue().getCustomerDetails().getName()));
+        phoneCol.setCellValueFactory(cellData -> new SimpleStringProperty(
+                cellData.getValue().getCustomerDetails().getPhone()));
+        dateTimeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
+                cellData.getValue().getDatetime()));
+        descriptionComplaintsCol.setCellValueFactory(cellData -> new SimpleStringProperty(
+                cellData.getValue().getComplaint()));
 
         reservationsMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, String>("status"));
 
@@ -658,5 +679,18 @@ public class WorkerController implements Initializable {
     public void showReports(ActionEvent actionEvent) {
     }
 
+    @Subscribe
+    public void onComplaintEvent(ComplaintEvent complaintEvent){
+        Platform.runLater(() -> {
+            ObservableList<Complaint> complaints = FXCollections.observableArrayList();
+            try{
+                complaints.addAll(complaintEvent.getComplaints());
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
 
+            complaintsTable.setItems(complaints);
+        });
+    }
 }

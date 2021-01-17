@@ -38,6 +38,9 @@ public class SimpleClient extends AbstractClient {
 		}else if(msg.getClass().equals(OccupationMap.class)){
 			EventBus.getDefault().post(msg);
 		}
+		else if(msg.getClass().equals(ComplaintEvent.class)){
+			EventBus.getDefault().post(msg);
+		}
 	}
 	
 	public static SimpleClient getClient() {
