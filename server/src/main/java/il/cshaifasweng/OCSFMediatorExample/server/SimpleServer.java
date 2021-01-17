@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.server;
 
+
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.entities.Mapp;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
@@ -66,8 +67,28 @@ public class SimpleServer extends AbstractServer {
             Complaint complaint=(Complaint)msg;
             addNewComplaint(complaint);
         }
+        else if(msgString.startsWith("#requestComplaints ")){
+            int id = Integer.parseInt(msgString.substring(19));
+            sendComplaintsToClient(id, client);
+        }
 
     }
+
+    void sendComplaintsToClient(int id, ConnectionToClient client){
+        Dao<Branch> branchDao = new Dao(Branch.class);
+        Branch branch = branchDao.findById(id);
+
+        List<Complaint> complaints = branch.getComplaints();
+
+        ComplaintEvent complaintEvent = new ComplaintEvent(complaints);
+        try{
+            client.sendToClient(complaintEvent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     void addNewComplaint(Complaint complaint){
         Dao<Complaint> complaintDao=new Dao<>(Complaint.class);
         Dao<Branch> branchDao=new Dao<>(Branch.class);

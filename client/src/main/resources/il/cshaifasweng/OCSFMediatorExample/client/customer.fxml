@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -35,7 +36,6 @@
       </Button>
       <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="103.0" text="Back" />
       <Button layoutX="36.0" layoutY="380.0" mnemonicParsing="false" onAction="#createMaps" text="Create Maps with Tables" />
-      <TextField fx:id="complaintTF" layoutX="658.0" layoutY="219.0" prefHeight="120.0" prefWidth="194.0" />
       <Label layoutX="600.0" layoutY="58.0" text="Customer Details:" />
       <Label layoutX="600.0" layoutY="127.0" text="Phone:" />
       <TextField fx:id="customerPhoneTF" layoutX="670.0" layoutY="123.0" />
@@ -43,6 +43,8 @@
       <TextField fx:id="customerNameTF" layoutX="670.0" layoutY="94.0" prefHeight="26.0" prefWidth="149.0" />
       <Label layoutX="597.0" layoutY="166.0" text="Credit Card:" />
       <TextField fx:id="creditTF" layoutX="670.0" layoutY="162.0" />
+      <TextArea fx:id="complaintTF" layoutX="598.0" layoutY="216.0" prefHeight="128.0" prefWidth="221.0" />
+      <Button layoutX="574.0" layoutY="416.0" mnemonicParsing="false" onAction="#goToWorker" text="Go To Worker" />
 
    </children>
 </AnchorPane>

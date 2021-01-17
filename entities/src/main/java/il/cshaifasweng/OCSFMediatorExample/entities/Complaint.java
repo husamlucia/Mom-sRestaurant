@@ -1,5 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
+import org.hibernate.engine.internal.Cascade;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -17,7 +19,7 @@ public class Complaint implements Serializable {
     @Column(name = "complaint")
     private String complaint;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name="customer_id")
     CustomerDetails customerDetails;
 
@@ -29,7 +31,7 @@ public class Complaint implements Serializable {
         this.branch = branch;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name="branch_id")
     Branch branch;
 
@@ -69,5 +71,19 @@ public class Complaint implements Serializable {
     }
 
 
+    public String getDatetime() {
+        return datetime;
+    }
 
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
+    public CustomerDetails getCustomerDetails() {
+        return customerDetails;
+    }
+
+    public void setCustomerDetails(CustomerDetails customerDetails) {
+        this.customerDetails = customerDetails;
+    }
 }

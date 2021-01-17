@@ -66,7 +66,7 @@ public class CustomerController implements Initializable {
     private Button showReportsBtn;
 
     @FXML
-    private TextField complaintTF;
+    private TextArea complaintTF;
 
     @FXML
     private TextField customerPhoneTF;
@@ -165,7 +165,6 @@ public class CustomerController implements Initializable {
     }
 
 
-
     @Subscribe
     public void onBranchEvent(BranchEvent event){
         Platform.runLater(()->{
@@ -173,6 +172,15 @@ public class CustomerController implements Initializable {
             branchList.addAll(event.getBranches().getBranches());
             brTable.setItems(branchList);
         });
+    }
+
+    @FXML
+    void goToWorker(ActionEvent event) {
+        try {
+            App.setRoot("worker");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
