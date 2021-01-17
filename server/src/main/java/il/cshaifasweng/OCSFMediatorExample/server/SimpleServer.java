@@ -41,7 +41,16 @@ public class SimpleServer extends AbstractServer {
         } else if (msgString.startsWith("#requestUpdates ")) {
             int id = Integer.parseInt(msgString.substring(16));
             getBranchUpdates(id, client);
-        } else if (msgString.startsWith("#login ")) {
+        }else if(msgString.startsWith("#requestMap ")){
+            String[] attributes = msgString.substring(12).split("\\s+");
+
+            int id = Integer.parseInt(attributes[0]);
+            String date = attributes[1];
+            String hour = attributes[2];
+            String area = attributes[3];
+            requestMap(id,date, hour, area, client);
+        }
+        else if (msgString.startsWith("#login ")) {
 
             String[] attributes = msgString.substring(7).split("\\s+");
             String id = attributes[0];
@@ -66,6 +75,20 @@ public class SimpleServer extends AbstractServer {
             Complaint complaint=(Complaint)msg;
             addNewComplaint(complaint);
         }
+
+    }
+
+
+    void requestMap(int branchId, String date, String hour, String area, ConnectionToClient client){
+        Dao<Branch> brDao = new Dao(Branch.class);
+        Branch branch = brDao.findById(branchId);
+        OccupationMap map = branch.getOccupationMap(date, hour, area);
+
+        try{client.sendToClient(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
     void addNewComplaint(Complaint complaint){
@@ -100,6 +123,8 @@ public class SimpleServer extends AbstractServer {
             e.printStackTrace();
         }
     }
+
+
     void saveBooking(Booking book, ConnectionToClient client){
         try {
             Dao<Booking> bookDao = new Dao(Booking.class);
@@ -348,8 +373,8 @@ public class SimpleServer extends AbstractServer {
             Dao<Mapp> mapDao = new Dao(Mapp.class);
             Dao<Tablee> tDao = new Dao(Tablee.class);
 
-            Branch br1 = new Branch("09:00", "00:00");
-            Branch br2 = new Branch("09:00", "00:00");
+            Branch br1 = new Branch("09:00", "23:00");
+            Branch br2 = new Branch("09:00", "22:00");
             Mapp insideMap1 = new Mapp(br1, "inside");
             Mapp outsideMap1 = new Mapp(br1, "outside");
 

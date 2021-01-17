@@ -133,4 +133,19 @@ public class Mapp implements Serializable {
         }
         return null;
     }
+
+    public OccupationMap getOccupationMap(String date, String hour) {
+        OccupationMap map = new OccupationMap();
+        SimpleTable simpleTable;
+        for(Tablee table: tables){
+            if(table.isAvailable(date, hour)){
+                simpleTable = new SimpleTable(table.getId(), table.getCapacity(), "Available");
+            }
+            else{
+                simpleTable = new SimpleTable(table.getId(), table.getCapacity(), "Occupied");
+            }
+            map.addTable(simpleTable);
+        }
+        return map;
+    }
 }

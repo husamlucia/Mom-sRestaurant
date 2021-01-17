@@ -35,6 +35,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(msg);
 		}else if(msg.getClass().equals(MealUpdateEvent.class)){
 			EventBus.getDefault().post(msg);
+		}else if(msg.getClass().equals(OccupationMap.class)){
+			EventBus.getDefault().post(msg);
 		}
 	}
 	
