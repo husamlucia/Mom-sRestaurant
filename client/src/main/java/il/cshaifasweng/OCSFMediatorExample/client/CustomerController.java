@@ -1,13 +1,11 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 
-import il.cshaifasweng.OCSFMediatorExample.client.events.BookingControllerLoaded;
+import il.cshaifasweng.OCSFMediatorExample.client.events.BranchDataControllerLoaded;
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
-import il.cshaifasweng.OCSFMediatorExample.client.events.WarningEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomerDetails;
-import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,10 +19,8 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
@@ -100,6 +96,8 @@ public class CustomerController implements Initializable {
             String message = "#requestMenu " + Integer.toString(branchID);
             SimpleClient.getClient().sendToServer(message);
             App.setRoot("order");
+            EventBus.getDefault().post(new BranchDataControllerLoaded((Branch) br));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -131,7 +129,7 @@ public class CustomerController implements Initializable {
             String message = "#checkBooking " + Integer.toString(branchID) + ' ' + datetime + ' ' + "both" + ' ' +  '1';
             //SimpleClient.getClient().sendToServer(message);
             App.setRoot("booking");
-            EventBus.getDefault().post(new BookingControllerLoaded((Branch) br));
+            EventBus.getDefault().post(new BranchDataControllerLoaded((Branch) br));
         } catch (IOException e) {
             e.printStackTrace();
         }

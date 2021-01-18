@@ -9,6 +9,8 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.awt.*;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -32,13 +34,18 @@ public class SimpleServer extends AbstractServer {
                 checkAvailableBooking(attributes, client);
         } else if (msgString.startsWith("#getAllBranches")) {
             sendAllBranches(client);
-        } else if (msgString.startsWith("#order ")) {
-            String[] attributes = msgString.substring(7).split("\\s+");
-            createOrder(attributes, client);
-
-        } else if (msg.getClass().equals(MealUpdate.class)) {
+          }
+        else if(msg.getClass().equals(Order.class)){
+            saveOrder((Order) msg, client);
+        }
+//        else if (msgString.startsWith("#order ")) {
+//            String[] attributes = msgString.substring(7).split("\\s+");
+//            createOrder(attributes, client);
+//        }
+       else if (msg.getClass().equals(MealUpdate.class)) {
             MealUpdate mealUpdate = (MealUpdate) msg;
             dealWithMealUpdate(mealUpdate);
+            getBranchUpdates(mealUpdate.getBranch().getId(), client);
         } else if (msgString.startsWith("#requestUpdates ")) {
             int id = Integer.parseInt(msgString.substring(16));
             getBranchUpdates(id, client);
@@ -79,7 +86,14 @@ public class SimpleServer extends AbstractServer {
         else if(msgString.startsWith("#requestComplaints ")){
             int id = Integer.parseInt(msgString.substring(19));
             sendComplaintsToClient(id, client);
+        }else if(msgString.startsWith("#requestPurpleLetters")){
+            sendPurpleLetters(client);
         }
+        else if(msg.getClass().equals(PurpleLetter.class)){
+            updatePurpleLetter((PurpleLetter) msg);
+            sendPurpleLetters(client);
+        }
+
 
     }
 
@@ -154,61 +168,54 @@ public class SimpleServer extends AbstractServer {
                 e.printStackTrace();
             }
             int bookId = book.getId();
-            Warning warning = new Warning("Booking complete! Booking ID for cancelling booking: " + bookId);
+            String message = "";
+            if(bookDao.findById(bookId) != null){
+                message = "Booking complete! Booking ID for cancelling booking: " + bookId;
+            }
+            else{
+                message = "Booking failed! Please try again.";
+            }
+            Warning warning = new Warning(message);
             client.sendToClient(warning);
-            System.out.format("Order %d added successfully\n", bookId);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    void createOrder(String[] attributes, ConnectionToClient client){
-        String recipientName = "";
-        String recipientPhone = "";
-        String pickup = attributes[0];
-        String different = attributes[1];
-        String date = attributes[2];
-        String customerName = attributes[3];
-        String phoneNumber = attributes[4];
-        String creditCard = attributes[5];
-        double price = Double.parseDouble(attributes[6]);
-        String address = "";
-        int mealOffset = 7;
-        if (pickup.equals("0")) {
-            address = attributes[7];
-            if (different.equals("0")) mealOffset = 8;
-            else {
-                recipientName = attributes[8];
-                recipientPhone = attributes[9];
-                mealOffset = 10;
+    void saveOrder(Order order, ConnectionToClient client){
+        Dao<CustomerDetails> detailsDao = new Dao(CustomerDetails.class);
+        List<CustomerDetails> listOfCustomers = detailsDao.findAll();
+        for(CustomerDetails customer: listOfCustomers){
+            if (customer.getName().equals(order.getCustomerDetails().getName())){
+                order.setCustomerDetails(customer);
+                break;
             }
         }
-        String[] mealIds = Arrays.copyOfRange(attributes, mealOffset, attributes.length);
-        List<Meal> meals = new ArrayList<>();
-        Dao<Meal> daoMeals = new Dao(Meal.class);
-        for (String id : mealIds) {
-            Meal meal = daoMeals.findById(Integer.parseInt(id));
-            meals.add(meal);
-        }
 
-
-        CustomerDetails details = new CustomerDetails(customerName, phoneNumber, creditCard);
-        Dao<CustomerDetails> detailsDao = new Dao(CustomerDetails.class);
-        detailsDao.save(details);
+        Branch br = order.getBr();
+        br.addOrder(order);
+        order.getCustomerDetails().addOrder(order);
+        Dao<Branch> branchDao = new Dao(Branch.class);
+        branchDao.update(br);
         Dao<Order> orderDao = new Dao(Order.class);
-        Order order = new Order(meals, pickup, different, details, recipientName, recipientPhone, address, price);
-        orderDao.save(order);
         int orderId = order.getId();
+        String message = "";
         if (orderDao.findById(orderId) != null) {
-            Warning warning = new Warning("Order complete! Order ID for cancelling order: " + orderId);
+
+            message = "Order complete! Order ID for cancelling order: " + orderId;
+        }
+        else {
+            message = "Order failed! Please try again.";
+        }
             try {
+                Warning warning = new Warning(message);
                 client.sendToClient(warning);
                 System.out.format("Order %d added successfully\n", orderId);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-    }
+
 
     void addNewBranch(String open, String close) {
         try {
@@ -397,7 +404,6 @@ public class SimpleServer extends AbstractServer {
             Mapp insideMap1 = new Mapp(br1, "inside");
             Mapp outsideMap1 = new Mapp(br1, "outside");
 
-
             Tablee table1 = new Tablee(2, insideMap1);
             Tablee table2 = new Tablee(3, insideMap1);
             Tablee table3 = new Tablee(4, insideMap1);
@@ -464,6 +470,72 @@ public class SimpleServer extends AbstractServer {
             e.printStackTrace();
         }
 
+    }
+
+    void sendPurpleLetters(ConnectionToClient client){
+        Dao<PurpleLetter> purpleDao = new Dao(PurpleLetter.class);
+        List<PurpleLetter> purples = purpleDao.findAll();
+        PurpleLetterEvent event = new PurpleLetterEvent(purples);
+        try {
+            client.sendToClient(event);
+            System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void updatePurpleLetter(PurpleLetter newPurpleLetter){
+
+        try{
+            Dao<PurpleLetter> pDao = new Dao(PurpleLetter.class);
+            PurpleLetter NEWp = pDao.findById(newPurpleLetter.getId());
+            NEWp = newPurpleLetter;
+            pDao.update(NEWp);
+            cancelOrders(NEWp);
+            cancelBookings(NEWp);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+    void cancelOrders(PurpleLetter purpleLetter){
+        Dao<Branch> brDao = new Dao(Branch.class);
+        Branch br = brDao.findById(purpleLetter.getId());
+        if(purpleLetter.isQuarantine()){
+            List<Order> orders = br.getOrders();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            for(Order order: orders){
+                LocalDate orderDate = LocalDate.parse(order.getDate(), formatter);
+                LocalDate qStart = LocalDate.parse(purpleLetter.getQuarantineStartDate(), formatter);
+                LocalDate qEnd = LocalDate.parse(purpleLetter.getQuarantineEndDate(), formatter);
+                if(orderDate.isAfter(qStart) && orderDate.isBefore(qEnd)){
+                    order.setStatus("CancelledByQuarantine");
+                }
+            }
+        brDao.update(br);
+        }
+    }
+
+    void cancelBookings(PurpleLetter purpleLetter){
+        Dao<Branch> brDao = new Dao(Branch.class);
+        Branch br = brDao.findById(purpleLetter.getId());
+        if(purpleLetter.isQuarantine()){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate qStart = LocalDate.parse(purpleLetter.getQuarantineStartDate(),formatter);
+            LocalDate qEnd = LocalDate.parse(purpleLetter.getQuarantineEndDate(), formatter);
+            Mapp map = br.getMap("inside");
+            if(map != null){
+                map.cancelBookings(qStart, qEnd);
+            }
+            map = br.getMap("outside");
+            if(map != null){
+                map.cancelBookings(qStart, qEnd);
+            }
+            brDao.update(br);
+        }
     }
 
 

@@ -13,6 +13,8 @@ public class Booking implements Serializable {
     @Column(name="Booking_id")
     private int id;
 
+    private String status;
+
 
     @Column(name = "Date")
     private String bookingDate;
@@ -44,10 +46,28 @@ public class Booking implements Serializable {
         this.customerNum = customerNum;
         this.branch = branch;
         this.tables = tables;
+        this.status = "Active";
     }
 
     public Booking(){
 
+    }
+
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBookingDate() {
+        return bookingDate;
+    }
+
+    public void setBookingDate(String bookingDate) {
+        this.bookingDate = bookingDate;
     }
 
     public String getDate() {

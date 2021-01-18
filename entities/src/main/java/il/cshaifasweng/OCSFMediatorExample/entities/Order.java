@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name="orders")
-public class Order  implements Serializable {
+public class Order implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,26 +19,31 @@ public class Order  implements Serializable {
             inverseJoinColumns = { @JoinColumn(name="meal_id")})
     private List<Meal> meals;
 
+    @ManyToOne
+    private Branch br;
+
     private double price;
 
-    private String different;
-    private String pickup;
+    private boolean different;
+    private boolean pickup;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="customer_id")
     CustomerDetails customerDetails;
 
     private String date;
-
+    private String hour;
 
     private String address;
     private String Recipient;
     private String recipientPhone;
 
+    private String status;
 
     public Order(){}
 
-    public Order(List<Meal> meals, String pickup, String different,CustomerDetails customerDetails, String recipientName,String recipientPhone, String address, double price) {
+    public Order(Branch br, List<Meal> meals, boolean pickup, boolean different,CustomerDetails customerDetails, String recipientName,String recipientPhone, String address, double price, String date,  String hour) {
+        this.br = br;
         this.meals = meals;
         this.date = date;
         this.different = different;
@@ -48,6 +53,7 @@ public class Order  implements Serializable {
         this.recipientPhone = recipientPhone;
         this.customerDetails = customerDetails;
         this.price = price;
+        this.status = "Active";
     }
 
     public int getId() {
@@ -99,28 +105,52 @@ public class Order  implements Serializable {
         this.recipientPhone = recipientPhone;
     }
 
-    public String isDifferent() {
+    public Branch getBr() {
+        return br;
+    }
+
+    public void setBr(Branch br) {
+        this.br = br;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public boolean isDifferent() {
         return different;
     }
 
-    public void setDifferent(String different) {
+    public void setDifferent(boolean different) {
         this.different = different;
     }
 
-    public String isPickup() {
+    public boolean isPickup() {
         return pickup;
     }
 
-    public void setPickup(String pickup) {
+    public void setPickup(boolean pickup) {
         this.pickup = pickup;
     }
 
-    public String getDifferent() {
-        return different;
+    public String getHour() {
+        return hour;
     }
 
-    public String getPickup() {
-        return pickup;
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public CustomerDetails getCustomerDetails() {

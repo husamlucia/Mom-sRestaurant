@@ -1,9 +1,10 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
-import il.cshaifasweng.OCSFMediatorExample.client.events.BookingControllerLoaded;
+import il.cshaifasweng.OCSFMediatorExample.client.events.BranchDataControllerLoaded;
 import il.cshaifasweng.OCSFMediatorExample.entities.BookingEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Booking;
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
+import il.cshaifasweng.OCSFMediatorExample.entities.PurpleLetter;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,13 +31,14 @@ import java.util.ResourceBundle;
 public class BookingController implements Initializable {
 
     /* Reminder:
-    * Booking is working fine. Got to update so it limits time from 15 minutes of opening hour
-    * and 1 hour before closing.*/
+     * Booking is working fine. Got to update so it limits time from 15 minutes of opening hour
+     * and 1 hour before closing.*/
     private int branchID;
     private String openh, closeh;
     private Branch branch;
     private boolean branchHasInside;
     private boolean branchHasOutside;
+
 
     private String bookingDate;
     private String bookingTime;
@@ -67,25 +69,38 @@ public class BookingController implements Initializable {
     }
 
     @Subscribe
-    public void onBookingControllerLoaded(BookingControllerLoaded event) {
+    public void onBranchDataControllerLoaded(BranchDataControllerLoaded event) {
         Platform.runLater(() -> {
             Branch br = event.getBranch();
             branch = br;
             branchID = br.getId();
             openh = br.getOpenHours();
             closeh = br.getCloseHours();
-            initializeDateAndHours(openh, closeh);
-            if(br.getMap("inside") == null) insideButton.setDisable(true);
-            if(br.getMap("outside") == null) outsideButton.setDisable(true);
+            initializeDateAndHours(branch);
+            if (br.getMap("inside") == null) insideButton.setDisable(true);
+            if (br.getMap("outside") == null) outsideButton.setDisable(true);
         });
     }
 
 
-    public void initializeDateAndHours(String openh, String closeh){
+    public void initializeDateAndHours(Branch branch) {
 
+        String openh = branch.getOpenHours();
+        String closeh = branch.getCloseHours();
+        PurpleLetter p = branch.getPurpleLetter();
+        LocalDate qStart = LocalDate.now().minusDays(1);
+        LocalDate qEnd = LocalDate.now().minusDays(1);
+        boolean quarantine = p.isQuarantine();
+        if(quarantine){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            qStart = LocalDate.parse(p.getQuarantineStartDate(), formatter).minusDays(1);;
+            qEnd = LocalDate.parse(p.getQuarantineEndDate(), formatter).plusDays(1);
+        }
         LocalDate minDate = LocalDate.now();
         final Callback<DatePicker, DateCell> dayCellFactory;
 
+        LocalDate finalQStart = qStart;
+        LocalDate finalQEnd = qEnd;
         dayCellFactory = (final DatePicker datePicker) -> new DateCell() {
             @Override
             public void updateItem(LocalDate item, boolean empty) {
@@ -93,16 +108,22 @@ public class BookingController implements Initializable {
                 if (item.isBefore(minDate)) { //Disable all dates after required date
                     setDisable(true);
                     setStyle("-fx-background-color: #ffc0cb;"); //To set background on different color
+                } else if (quarantine) {
+                    if (item.isAfter(finalQStart) && item.isBefore(finalQEnd)) {
+                        setDisable(true);
+                        setStyle("-fx-background-color: #ffc0cb;");                    }
                 }
             }
         };
 
         datePicker.setDayCellFactory(dayCellFactory);
+
+
         LocalTime curr = LocalTime.parse(openh).plusMinutes(15);
         LocalTime last = LocalTime.parse(closeh).minusMinutes(59);
         String currString;
         List<String> available = new ArrayList<>();
-        while(curr.isBefore(last)){
+        while (curr.isBefore(last)) {
             currString = curr.toString();
             curr = curr.plusMinutes(15);
             available.add(currString);
@@ -210,32 +231,32 @@ public class BookingController implements Initializable {
         //Checking for availability of Bookings in the bookingDate and bookingTime we present.
         //We also need to send Branch ID of the branch we're accessing.
         try {
-                SimpleClient.getClient().sendToServer(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            SimpleClient.getClient().sendToServer(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
-        @FXML
-        void BookingPushSelected(ActionEvent event){
-            // dont forget the id of the booking wesa mnshof kef mn3mlha
-            countDeclare = 0;
-            bookBtn.setDisable(true);
-            Booking book = (Booking) AvailableTimeTable.getSelectionModel().getSelectedItem();
-            try {
-                SimpleClient.getClient().sendToServer(book);
+    @FXML
+    void BookingPushSelected(ActionEvent event) {
+        // dont forget the id of the booking wesa mnshof kef mn3mlha
+        countDeclare = 0;
+        bookBtn.setDisable(true);
+        Booking book = (Booking) AvailableTimeTable.getSelectionModel().getSelectedItem();
+        try {
+            SimpleClient.getClient().sendToServer(book);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        @FXML
-        void goToMain (ActionEvent event) throws IOException {
-            App.setRoot("customer");
-        }
-
     }
+
+    @FXML
+    void goToMain(ActionEvent event) throws IOException {
+        App.setRoot("customer");
+    }
+
+}
 
 

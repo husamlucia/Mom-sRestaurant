@@ -1,7 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.client.events.BranchDataControllerLoaded;
 import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
-import il.cshaifasweng.OCSFMediatorExample.entities.Meal;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -12,8 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -21,11 +21,17 @@ import org.greenrobot.eventbus.Subscribe;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class OrderController implements Initializable {
+
+    private Branch branch;
 
     @FXML
     private Button orderBtn;
@@ -81,10 +87,10 @@ public class OrderController implements Initializable {
     private CheckBox pickupCheckBox;
 
     @FXML
-    private TextField recipientPhoneTF;
+    private TextField phoneTF;
 
     @FXML
-    private TableColumn<Meal, Image> picCol;
+    private TableColumn<Meal, ImageInfo> picCol;
 
     @FXML
     private TableColumn<?, ?> networkMealCol;
@@ -130,52 +136,143 @@ public class OrderController implements Initializable {
         cartColName.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
         cartColPrice.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
 
-        picCol.setCellFactory(new Callback<TableColumn<Meal, Image>,TableCell<Meal,Image>>(){
+        picCol.setCellValueFactory(new PropertyValueFactory<Meal, ImageInfo>("image"));
+
+        picCol.setCellFactory(param -> new TableCell<Meal, ImageInfo>() {
+
+            private final ImageView imageView = new ImageView();
 
             @Override
-            public TableCell<Meal,Image> call(TableColumn<Meal,Image> param) {
-                final ImageView imageview = new ImageView();
-                imageview.setFitHeight(150);
-                imageview.setFitWidth(150);
-                TableCell<Meal,Image> cell = new TableCell<Meal, Image>(){
-                    public void updateItem(Meal item, boolean empty) {
-                        if(item!=null){
-                            byte[] byteImg = item.getImage().getImage();
-                            int height = item.getImage().getHeight();
-                            int width = item.getImage().getWidth();
-                            imageview.setImage(new Image(new ByteArrayInputStream(byteImg)));
-                        }
-                    }
-
-                };
-                cell.setGraphic(imageview);
-                return cell;
+            protected void updateItem(ImageInfo item, boolean empty) {
+                super.updateItem(item, empty);
+                imageView.setFitHeight(150);
+                imageView.setFitWidth(150);
+                if (item == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    imageView.setImage(byteArrayToImage(item));
+                    setGraphic(imageView);
+                }
+                this.setItem(item);
             }
-
         });
 
     }
 
 
+
+
+    private ImageInfo imageToByteArray(Image i) {
+        PixelReader pr = i.getPixelReader();
+        WritablePixelFormat<ByteBuffer> wf = PixelFormat.getByteBgraInstance();
+
+        byte[] buffer = new byte[(int) (i.getWidth() * i.getHeight() * 4)];
+
+        pr.getPixels(0, 0, (int) i.getWidth(), (int) i.getHeight(), wf, buffer, 0, (int) (i.getWidth()) * 4);
+        return new ImageInfo(buffer, (int) i.getWidth(), (int) i.getHeight());
+    }
+
+    private Image byteArrayToImage(ImageInfo imageArray) {
+
+        WritablePixelFormat<ByteBuffer> wf = PixelFormat.getByteBgraInstance();
+        WritableImage writableimage = new WritableImage(imageArray.getWidth(), imageArray.getHeight());
+        PixelWriter pixelWriter = writableimage.getPixelWriter();
+        pixelWriter.setPixels(0, 0, imageArray.getWidth(), imageArray.getHeight(), wf, imageArray.getImage(), 0, 4 * imageArray.getWidth());
+        return writableimage;
+    }
+
+
+
+    @Subscribe
+    public void onBranchDataControllerLoaded(BranchDataControllerLoaded event) {
+        Platform.runLater(() -> {
+            Branch br = event.getBranch();
+            branch = br;
+            initializeDateAndHours(branch);
+            if(br.getPurpleLetter().isDeliveryAllowed() == false){
+                pickupChecked(true);
+                pickupCheckBox.setDisable(true);
+            }
+            else if(!br.getPurpleLetter().isPickupAllowed()){
+                pickupCheckBox.setDisable(true);
+            }
+        });
+    }
+
+
+    public void initializeDateAndHours(Branch branch) {
+
+        String openh = branch.getOpenHours();
+        String closeh = branch.getCloseHours();
+        PurpleLetter p = branch.getPurpleLetter();
+        LocalDate qStart = LocalDate.now().minusDays(1);
+        LocalDate qEnd = LocalDate.now().minusDays(1);
+        boolean quarantine = p.isQuarantine();
+        if(quarantine){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            qStart = LocalDate.parse(p.getQuarantineStartDate(), formatter).minusDays(1);;
+            qEnd = LocalDate.parse(p.getQuarantineEndDate(), formatter).plusDays(1);
+        }
+        LocalDate minDate = LocalDate.now();
+        final Callback<DatePicker, DateCell> dayCellFactory;
+
+        LocalDate finalQStart = qStart;
+        LocalDate finalQEnd = qEnd;
+        dayCellFactory = (final DatePicker datePicker) -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item.isBefore(minDate)) { //Disable all dates after required date
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;"); //To set background on different color
+                } else if (quarantine) {
+                    if (item.isAfter(finalQStart) && item.isBefore(finalQEnd)) {
+                        setDisable(true);
+                        setStyle("-fx-background-color: #ffc0cb;");                    }
+                }
+            }
+        };
+
+        orderDate.setDayCellFactory(dayCellFactory);
+
+
+        LocalTime curr = LocalTime.parse(openh).plusMinutes(15);
+        LocalTime last = LocalTime.parse(closeh).minusMinutes(59);
+        String currString;
+        List<String> available = new ArrayList<>();
+        while (curr.isBefore(last)) {
+            currString = curr.toString();
+            curr = curr.plusMinutes(15);
+            available.add(currString);
+        }
+        ObservableList<String> list = FXCollections.observableArrayList();
+        list.addAll(available);
+        hourComboBox.setItems(list);
+
+    }
+
+
+
     void pickupChecked(boolean newValue){
-        int deliveryCost = 10;
+        double deliveryCost = 10;
         //disabling or enabling buttons upon changing state of pickup checkbox
         //b == true -> pickup is checked
         if(newValue){
-            totalCost.setText(Integer.toString(Integer.parseInt(totalCost.getText()) +deliveryCost ));
+            totalCost.setText(Double.toString(Double.parseDouble(totalCost.getText()) +deliveryCost ));
             orderAddressTF.setDisable(true);
             recipientTF.setDisable(true);
-            recipientPhoneTF.setDisable(true);
+            phoneTF.setDisable(true);
             differentCheckBox.setDisable(true);
             // your checkbox has been ticked.
         }else{
 
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            totalCost.setText(Integer.toString(Integer.parseInt(totalCost.getText()) - deliveryCost ));
+            totalCost.setText(Double.toString(Double.parseDouble(totalCost.getText()) - deliveryCost ));
             orderAddressTF.setDisable(false);
             recipientTF.setDisable(true);
-            recipientPhoneTF.setDisable(true);
+            phoneTF.setDisable(true);
             differentCheckBox.setDisable(false);
             differentCheckBox.setSelected(false);
         }
@@ -186,13 +283,13 @@ public class OrderController implements Initializable {
         //disabling or enabling buttons upon changing state of pickup checkbox
         //b == true -> pickup is checked
         if(newValue){
-            recipientPhoneTF.setDisable(false);
+            phoneTF.setDisable(false);
             recipientTF.setDisable(false);
             // your checkbox has been ticked.
         }else{
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            recipientPhoneTF.setDisable(true);
+            phoneTF.setDisable(true);
             recipientTF.setDisable(true);
         }
     }
@@ -227,10 +324,13 @@ public class OrderController implements Initializable {
         });
     }
 
+
+    @FXML
+    private ComboBox hourComboBox;
     @FXML
     public void order(ActionEvent actionEvent) {
 
-        List<Meal> meals = cartTable.getItems();
+        List<Meal> meals = new ArrayList<Meal>(cartTable.getItems());
         String mealIds = "";
         for(Meal meal: meals){
             mealIds += meal.getId() + " ";
@@ -249,18 +349,20 @@ public class OrderController implements Initializable {
             recipientAddress = orderAddressTF.getText();
         }
         String date = orderDate.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
+        String hour = (String) hourComboBox.getValue();
         String recipientName = "";
         String recipientPhone = "";
         if(different){
             recipientName = recipientTF.getText();
-            recipientPhone = recipientPhoneTF.getText();
+            recipientPhone = phoneTF.getText();
         }
-        String message = "#order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
-                creditCard + ' ' + price + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
-        //#order pickup different date customer_name customer_phone credit_Card price recipientName recipientPhone recipientAddress MealIDs
+
+        Order order = new Order(branch, meals, pickup, different, new CustomerDetails(customerName, customerPhone, creditCard), recipientName, recipientPhone,recipientAddress,Double.parseDouble(price), date, hour);
+//        String message = "#order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + hour + ' ' + customerName + ' ' + customerPhone + ' ' +
+//                creditCard + ' ' + price + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
+//        //#order pickup different date customer_name customer_phone credit_Card price recipientName recipientPhone recipientAddress MealIDs
         try{
-            SimpleClient.getClient().sendToServer(message);
+            SimpleClient.getClient().sendToServer(order);
         }catch (IOException e){
             e.printStackTrace();
         }
