@@ -81,7 +81,7 @@ public class OrderController implements Initializable {
     private CheckBox pickupCheckBox;
 
     @FXML
-    private TextField recipientPhoneTF;
+    private TextField phoneTF;
 
     @FXML
     private TableColumn<Meal, Image> picCol;
@@ -165,7 +165,7 @@ public class OrderController implements Initializable {
             totalCost.setText(Integer.toString(Integer.parseInt(totalCost.getText()) +deliveryCost ));
             orderAddressTF.setDisable(true);
             recipientTF.setDisable(true);
-            recipientPhoneTF.setDisable(true);
+            phoneTF.setDisable(true);
             differentCheckBox.setDisable(true);
             // your checkbox has been ticked.
         }else{
@@ -175,7 +175,7 @@ public class OrderController implements Initializable {
             totalCost.setText(Integer.toString(Integer.parseInt(totalCost.getText()) - deliveryCost ));
             orderAddressTF.setDisable(false);
             recipientTF.setDisable(true);
-            recipientPhoneTF.setDisable(true);
+            phoneTF.setDisable(true);
             differentCheckBox.setDisable(false);
             differentCheckBox.setSelected(false);
         }
@@ -186,13 +186,13 @@ public class OrderController implements Initializable {
         //disabling or enabling buttons upon changing state of pickup checkbox
         //b == true -> pickup is checked
         if(newValue){
-            recipientPhoneTF.setDisable(false);
+            phoneTF.setDisable(false);
             recipientTF.setDisable(false);
             // your checkbox has been ticked.
         }else{
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            recipientPhoneTF.setDisable(true);
+            phoneTF.setDisable(true);
             recipientTF.setDisable(true);
         }
     }
@@ -254,7 +254,7 @@ public class OrderController implements Initializable {
         String recipientPhone = "";
         if(different){
             recipientName = recipientTF.getText();
-            recipientPhone = recipientPhoneTF.getText();
+            recipientPhone = phoneTF.getText();
         }
         String message = "#order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + customerName + ' ' + customerPhone + ' ' +
                 creditCard + ' ' + price + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;

@@ -18,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -258,7 +259,7 @@ public class WorkerController implements Initializable {
         String currString;
         List<String> available = new ArrayList<>();
         while(curr.isBefore(last)){
-            System.out.println(curr);
+
             currString = curr.toString();
             curr = curr.plusMinutes(15);
             available.add(currString);

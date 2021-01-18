@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 @Entity
 @Table(name = "branches")
 public class Branch implements Serializable {
@@ -35,14 +36,15 @@ public class Branch implements Serializable {
 
 
     @OneToMany(mappedBy = "customerDetails", cascade = CascadeType.ALL)
-    List<Order> orders;
+    private List<Order> orders;
 
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
-    List<Mapp> map;
+    private List<Mapp> map;
 
-    @OneToMany(mappedBy = "customerDetails",cascade = CascadeType.ALL)//Ask hussam
-    List<Complaint> complaints;
+    @OneToMany(mappedBy = "branch",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OrderColumn
+    private List<Complaint> complaints;
 
     public List<Complaint> getComplaints() {
         return complaints;

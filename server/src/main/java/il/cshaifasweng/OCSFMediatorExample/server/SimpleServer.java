@@ -392,11 +392,12 @@ public class SimpleServer extends AbstractServer {
             Dao<Mapp> mapDao = new Dao(Mapp.class);
             Dao<Tablee> tDao = new Dao(Tablee.class);
 
+
+            PurpleLetter purpleLetter = new PurpleLetter();
             Branch br1 = new Branch("09:00", "23:00");
             Branch br2 = new Branch("09:00", "22:00");
             Mapp insideMap1 = new Mapp(br1, "inside");
             Mapp outsideMap1 = new Mapp(br1, "outside");
-
 
             Tablee table1 = new Tablee(2, insideMap1);
             Tablee table2 = new Tablee(3, insideMap1);

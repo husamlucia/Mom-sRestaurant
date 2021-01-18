@@ -38,6 +38,7 @@ public class BookingController implements Initializable {
     private boolean branchHasInside;
     private boolean branchHasOutside;
 
+
     private String bookingDate;
     private String bookingTime;
     private String bookingArea;
