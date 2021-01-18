@@ -2,11 +2,11 @@ package il.cshaifasweng.OCSFMediatorExample.client.events;
 
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 
-public class BookingControllerLoaded {
+public class BranchDataControllerLoaded {
     private Branch branch;
 
     boolean inside, outside;
-    public BookingControllerLoaded(Branch branch) {
+    public BranchDataControllerLoaded(Branch branch) {
         this.branch = branch;
     }
 

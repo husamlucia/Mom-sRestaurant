@@ -6,6 +6,8 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +48,33 @@ public class Branch implements Serializable {
     @OrderColumn
     private List<Complaint> complaints;
 
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="instruction_id")
+    private PurpleLetter purpleLetter;
+
+
+
+    public Branch(String openHours, String closeHours) {
+        this.openHours = openHours;
+        this.closeHours = closeHours;
+        this.menu = new Menu();
+        this.map = new ArrayList<>();
+        this.mealUpdates = new ArrayList<>();
+        this.complaints=new ArrayList<>();
+        this.purpleLetter = new PurpleLetter();
+        this.orders = new ArrayList<>();
+    }
+
+    public PurpleLetter getPurpleLetter() {
+        return purpleLetter;
+    }
+
+    public void setPurpleLetter(PurpleLetter purpleLetter) {
+
+        this.purpleLetter = purpleLetter;
+    }
+
     public List<Complaint> getComplaints() {
         return complaints;
     }
@@ -62,6 +91,8 @@ public class Branch implements Serializable {
     }
 
 
+
+
     public List<MealUpdate> getMealUpdates() {
         return mealUpdates;
     }
@@ -73,10 +104,12 @@ public class Branch implements Serializable {
     public List<Booking> book(String date, String time, String area, int persons) throws ParseException {
         Mapp map = this.getMap(area);
         if (map != null) {
-            return map.getPossibleBookings(date, time, persons);
+
+            return map.getPossibleBookings(date, time, persons, this.purpleLetter.getMax(area));
         }
         return null;
     }
+
 
     public void setMap(String area, Mapp map2) {
         map.add(map2);
@@ -114,14 +147,7 @@ public class Branch implements Serializable {
         this.closeHours = closeHours;
     }
 
-    public Branch(String openHours, String closeHours) {
-        this.openHours = openHours;
-        this.closeHours = closeHours;
-        this.menu = new Menu();
-        this.map = new ArrayList<>();
-        this.mealUpdates = new ArrayList<>();
-        this.complaints=new ArrayList<>();
-    }
+
 
     public Branch() {
 
@@ -152,5 +178,19 @@ public class Branch implements Serializable {
     public void removeMeal(Meal meal){
         this.getMenu().removeMeal(meal);
         meal.setMenu(null);
+    }
+
+
+    public void addOrder(Order order){
+        this.getOrders().add(order);
+    }
+
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }

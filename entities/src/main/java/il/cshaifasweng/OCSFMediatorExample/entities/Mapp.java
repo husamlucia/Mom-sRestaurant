@@ -6,7 +6,9 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -92,30 +94,47 @@ public class Mapp implements Serializable {
     }
 
 
-    public List<Booking> getPossibleBookings(String date, String hour, int persons) throws ParseException {
+    public List<Booking> getPossibleBookings(String date, String hour, int persons, int maxPurple) throws ParseException {
         List<Booking> availableBookings = new ArrayList<>();
         LocalTime currHour = LocalTime.parse(hour);
         LocalTime closeHour = LocalTime.parse(this.branch.getCloseHours());
-        Booking booking = tryBooking(date, hour, persons);
-        if(booking != null){
+        Booking booking = tryBooking(date, hour, persons, maxPurple);
+        if (booking != null) {
             availableBookings.add(booking);
             return availableBookings;
         }
-        while(Duration.between(currHour, closeHour).getSeconds()/60 < 0){
-            System.out.println(Duration.between(currHour, closeHour).getSeconds()/60);
+        while (Duration.between(currHour, closeHour).getSeconds() / 60 < 0) {
+            System.out.println(Duration.between(currHour, closeHour).getSeconds() / 60);
             currHour = currHour.plusMinutes(15);
             String currHourString = currHour.toString();
             System.out.println("currhourString = " + currHourString);
-            booking = tryBooking(date, currHourString, persons);
+            booking = tryBooking(date, currHourString, persons, maxPurple);
             availableBookings.add(booking);
-            if(booking != null){
+            if (booking != null) {
                 availableBookings.add(booking);
             }
         }
         return availableBookings;
     }
 
-    public Booking tryBooking(String date, String hour, int persons) {
+    public int getNumCustomersSitting(String date, String hour) {
+        int customers = 0;
+        for (Tablee table : tables) {
+            if (!table.isAvailable(date, hour)) {
+                customers += table.getSitting(date, hour);
+            }
+        }
+        return customers;
+    }
+
+    public Booking tryBooking(String date, String hour, int persons, int maxPurple) {
+        int allowedToSit = maxCapacity;
+        int countSitting = getNumCustomersSitting(date, hour);
+        if(maxPurple != -1){
+           allowedToSit = Math.min(allowedToSit, maxPurple);
+        }
+
+        if(countSitting > allowedToSit) return null;
 
         List<Booking> availableBookings = new ArrayList<>();
         tables.sort(Comparator.comparing(Tablee::getCapacity).reversed());
@@ -137,15 +156,28 @@ public class Mapp implements Serializable {
     public OccupationMap getOccupationMap(String date, String hour) {
         OccupationMap map = new OccupationMap();
         SimpleTable simpleTable;
-        for(Tablee table: tables){
-            if(table.isAvailable(date, hour)){
+        for (Tablee table : tables) {
+            if (table.isAvailable(date, hour)) {
                 simpleTable = new SimpleTable(table.getId(), table.getCapacity(), "Available");
-            }
-            else{
+            } else {
                 simpleTable = new SimpleTable(table.getId(), table.getCapacity(), "Occupied");
             }
             map.addTable(simpleTable);
         }
         return map;
     }
+
+    public void cancelBookings(LocalDate qStart, LocalDate qEnd){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        for(Tablee table: tables){
+            List<Booking> bookings = table.getBookings();
+            for(Booking booking: bookings){
+                LocalDate bookingDate = LocalDate.parse(booking.getDate(), formatter);
+                if(bookingDate.isAfter(qStart) && bookingDate.isBefore(qEnd)){
+                    booking.setStatus("CancelledByQuarantine");
+                }
+            }
+        }
+    }
+
 }

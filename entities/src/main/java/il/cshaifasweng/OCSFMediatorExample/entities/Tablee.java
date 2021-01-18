@@ -24,9 +24,15 @@ public class Tablee implements Serializable {
 
 
     @ManyToMany(mappedBy = "tables",cascade=CascadeType.ALL)
-    List<Booking> bookings;
+    private List<Booking> bookings;
 
+    public List<Booking> getBookings() {
+        return bookings;
+    }
 
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
 
     public Tablee(int capacity, Mapp map) {
         this.capacity = capacity;
@@ -107,6 +113,17 @@ public class Tablee implements Serializable {
             if (intersect == true) return false;
         }
         return true;
+    }
+
+    public int getSitting(String date, String hour){
+        for(Booking booking: bookings){
+            String bookingDate = booking.getDate();
+            if(!bookingDate.equals(date)) continue;
+            String bookingHour = booking.getTime();
+            boolean intersect = checkTimeIntersect(hour, bookingHour);
+            if (intersect == true) return booking.getCustomerNum();
+        }
+        return 0;
     }
 
 
