@@ -11,14 +11,14 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="479.0" prefWidth="1073.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
+<AnchorPane prefHeight="604.0" prefWidth="1073.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
    <children>
       <Button fx:id="orderBtn" layoutX="946.0" layoutY="420.0" mnemonicParsing="false" onAction="#order" prefHeight="42.0" prefWidth="114.0" text="Order">
          <opaqueInsets>
             <Insets />
          </opaqueInsets>
       </Button>
-      <TableView fx:id="menuTable" layoutX="13.0" layoutY="40.0" prefHeight="417.0" prefWidth="581.0">
+      <TableView fx:id="menuTable" layoutX="14.0" layoutY="49.0" prefHeight="417.0" prefWidth="581.0">
          <columns>
             <TableColumn fx:id="picCol" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="Picture" />
             <TableColumn fx:id="nameCol" prefWidth="95.0" text="Name" />
@@ -36,7 +36,7 @@
             <TableColumn fx:id="cartColPrice" minWidth="3.2000732421875" prefWidth="82.4000244140625" text="Price" />
          </columns>
       </TableView>
-      <Button layoutX="601.0" layoutY="40.0" mnemonicParsing="false" onAction="#addToCart" text="Add to Cart" />
+      <Button layoutX="598.0" layoutY="37.0" mnemonicParsing="false" onAction="#addToCart" text="Add to Cart" />
       <Button layoutX="764.0" layoutY="100.0" mnemonicParsing="false" onAction="#removeFromCart" text="Remove from Cart" />
       <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
       <Label layoutX="597.0" layoutY="210.0" text="Order Details:" />
@@ -58,6 +58,9 @@
       <Label layoutX="603.0" layoutY="433.0" text="Recipient Phone:" />
       <TextField fx:id="phoneTF" layoutX="704.0" layoutY="429.0" />
       <Label layoutX="598.0" layoutY="280.0" text="Hour:" />
-      <ComboBox fx:id="hourComboBox" layoutX="636.0" layoutY="276.0" prefHeight="25.0" prefWidth="9.0" />
+      <ComboBox fx:id="hourComboBox" layoutX="636.0" layoutY="276.0" prefHeight="25.0" prefWidth="73.0" />
+      <TextField fx:id="cancelOrderTF" layoutX="14.0" layoutY="537.0" prefHeight="26.0" prefWidth="128.0" />
+      <Button layoutX="158.0" layoutY="538.0" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="25.0" prefWidth="128.0" text="Cancel Order" />
+      <Label layoutX="14.0" layoutY="508.0" text="Enter order ID to cancel:" />
    </children>
 </AnchorPane>

@@ -143,6 +143,7 @@ public class Dao<T> {
         }
         return null;
     }
+
     public void deleteAll() {
         List<T> entityList = findAll();
         openCurrentSessionWithTransaction();

@@ -257,6 +257,21 @@ public class BookingController implements Initializable {
         App.setRoot("customer");
     }
 
+    @FXML
+    private TextField cancelBookingTF;
+
+    @FXML
+    void cancelBooking(ActionEvent event) {
+        System.out.println("Yo");
+        String id = cancelBookingTF.getText();
+        String message = "#cancelBooking " + id;
+        try{
+            SimpleClient.getClient().sendToServer(message);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }
 
 

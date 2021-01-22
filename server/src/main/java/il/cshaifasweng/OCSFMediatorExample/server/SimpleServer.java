@@ -6,10 +6,13 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Mapp;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
+import javassist.compiler.ast.Pair;
 
-import java.awt.*;
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
@@ -26,39 +29,45 @@ public class SimpleServer extends AbstractServer {
         String msgString = msg.toString();
 
         if (msg.getClass().equals(Booking.class)) {
-                Booking book = (Booking) msg;
-                saveBooking(book, client);
-
+            Booking book = (Booking) msg;
+            saveBooking(book, client);
+        } else if (msgString.startsWith("#cancelOrder ")) {
+            int id = Integer.parseInt(msgString.substring(13));
+            cancelOrder(id, client);
+        } else if (msg.getClass().equals(ReportRequest.class)) {
+            requestReports((ReportRequest) msg, client);
+        } else if (msgString.startsWith("#cancelBooking ")) {
+            System.out.println("test1");
+            int id = Integer.parseInt(msgString.substring(15));
+            cancelBooking(id, client);
         } else if (msgString.startsWith("#checkBooking ")) {
-                String[] attributes = msgString.substring(14).split("\\s+");
-                checkAvailableBooking(attributes, client);
+            String[] attributes = msgString.substring(14).split("\\s+");
+            checkAvailableBooking(attributes, client);
         } else if (msgString.startsWith("#getAllBranches")) {
             sendAllBranches(client);
-          }
-        else if(msg.getClass().equals(Order.class)){
+        } else if (msg.getClass().equals(Order.class)) {
             saveOrder((Order) msg, client);
         }
 //        else if (msgString.startsWith("#order ")) {
 //            String[] attributes = msgString.substring(7).split("\\s+");
 //            createOrder(attributes, client);
 //        }
-       else if (msg.getClass().equals(MealUpdate.class)) {
+        else if (msg.getClass().equals(MealUpdate.class)) {
             MealUpdate mealUpdate = (MealUpdate) msg;
             dealWithMealUpdate(mealUpdate);
             getBranchUpdates(mealUpdate.getBranch().getId(), client);
         } else if (msgString.startsWith("#requestUpdates ")) {
             int id = Integer.parseInt(msgString.substring(16));
             getBranchUpdates(id, client);
-        }else if(msgString.startsWith("#requestMap ")){
+        } else if (msgString.startsWith("#requestMap ")) {
             String[] attributes = msgString.substring(12).split("\\s+");
 
             int id = Integer.parseInt(attributes[0]);
             String date = attributes[1];
             String hour = attributes[2];
             String area = attributes[3];
-            requestMap(id,date, hour, area, client);
-        }
-        else if (msgString.startsWith("#login ")) {
+            requestMap(id, date, hour, area, client);
+        } else if (msgString.startsWith("#login ")) {
 
             String[] attributes = msgString.substring(7).split("\\s+");
             String id = attributes[0];
@@ -78,33 +87,222 @@ public class SimpleServer extends AbstractServer {
             initiateWorkers();
         } else if (msgString.startsWith("#createmapswithtables")) {
             create_branches_with_maps_and_tables();
-        }
-        else if(msg.getClass().equals(Complaint.class)){
-            Complaint complaint=(Complaint)msg;
+        } else if (msg.getClass().equals(Complaint.class)) {
+            Complaint complaint = (Complaint) msg;
             addNewComplaint(complaint);
-        }
-        else if(msgString.startsWith("#requestComplaints ")){
+        } else if (msgString.startsWith("#requestComplaints ")) {
             int id = Integer.parseInt(msgString.substring(19));
             sendComplaintsToClient(id, client);
-        }else if(msgString.startsWith("#requestPurpleLetters")){
+        } else if (msgString.startsWith("#requestPurpleLetters")) {
             sendPurpleLetters(client);
-        }
-        else if(msg.getClass().equals(PurpleLetter.class)){
+        } else if (msg.getClass().equals(PurpleLetter.class)) {
             updatePurpleLetter((PurpleLetter) msg);
             sendPurpleLetters(client);
         }
 
+    }
+
+
+    void requestReports(ReportRequest request,ConnectionToClient client) {
+        try{
+            Dao<Branch> brDao = new Dao(Branch.class);
+            int id = request.getId();
+            int month = request.getMonth();
+            Branch br = brDao.findById(id);
+
+            List<ChartInput> chartInputs = new ArrayList<>();
+
+            if(request.isOrders()){
+                chartInputs.add(getTotalOrders(br, month));
+            }
+            if(request.isCancelledOrders()){
+                chartInputs.add(getCancelledOrders(br, month));
+            }
+            if(request.isComplaints()){
+                chartInputs.add(getComplaints(br, month));
+            }
+
+            ChartEvent event = new ChartEvent(chartInputs);
+
+            try {
+                client.sendToClient(event);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
     }
 
-    void sendComplaintsToClient(int id, ConnectionToClient client){
+
+    ChartInput getTotalOrders(Branch br, int month){
+
+        LocalDate now = LocalDate.now();
+        YearMonth yearMonthObject = YearMonth.of(now.getYear(), month);
+        int daysInMonth = yearMonthObject.lengthOfMonth();
+
+        int[] toReturn = new int[daysInMonth];
+
+        List<Order> orders = br.getOrders();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate orderDate;
+        System.out.println(orders.size());
+        for (Order order : orders) {
+            orderDate = LocalDate.parse(order.getDate(), formatter);
+            if (orderDate.getMonthValue() == month) {
+                toReturn[orderDate.getDayOfMonth() - 1] += 1;
+            }
+        }
+
+        ChartInput data = new ChartInput("Total Orders", toReturn);
+        return data;
+    }
+
+
+    ChartInput getCancelledOrders(Branch br, int month){
+
+        LocalDate now = LocalDate.now();
+        YearMonth yearMonthObject = YearMonth.of(now.getYear(), month);
+        int daysInMonth = yearMonthObject.lengthOfMonth();
+
+        int[] toReturn = new int[daysInMonth];
+
+        List<Order> orders = br.getOrders();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate orderDate;
+        System.out.println(orders.size());
+        for (Order order : orders) {
+            orderDate = LocalDate.parse(order.getDate(), formatter);
+            if (orderDate.getMonthValue() == month) {
+                if(order.getStatus().equals("CancelledByQuarantine") || order.getStatus().equals("CancelledByCustomer"))
+                    toReturn[orderDate.getDayOfMonth() - 1] += 1;
+            }
+        }
+
+        ChartInput data = new ChartInput("Cancelled Orders", toReturn);
+        return data;
+    }
+
+    ChartInput getComplaints(Branch br, int month){
+
+        LocalDate now = LocalDate.now();
+        YearMonth yearMonthObject = YearMonth.of(now.getYear(), month);
+        int daysInMonth = yearMonthObject.lengthOfMonth();
+
+        int[] toReturn = new int[daysInMonth];
+
+        List<Complaint> orders = br.getComplaints();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate orderDate;
+        System.out.println(orders.size());
+        for (Complaint order : orders) {
+            orderDate = LocalDate.parse(order.getDate(), formatter);
+            if (orderDate.getMonthValue() == month) {
+                    toReturn[orderDate.getDayOfMonth() - 1] += 1;
+            }
+        }
+        ChartInput data = new ChartInput("Complaints", toReturn);
+        return data;
+    }
+
+
+
+    void cancelOrder(int id, ConnectionToClient client) {
+        try {
+            Dao<Order> orderDao = new Dao(Order.class);
+            Order order = orderDao.findById(id);
+            double orderPrice = order.getPrice();
+            double toCharge = 0;
+            String message = "";
+            if (order != null) {
+                String date = order.getDate(), hour = order.getHour();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate nowDate = LocalDate.parse(LocalDate.now().format(formatter), formatter);
+                LocalDate orderDate = LocalDate.parse(order.getDate(), formatter);
+                System.out.println(nowDate.toString());
+                System.out.println(orderDate.toString());
+                if (orderDate.isEqual(nowDate)) {
+                    LocalTime orderHour = LocalTime.parse(hour);
+                    LocalTime nowHour = LocalTime.now();
+                    Duration duration = Duration.between(nowHour, orderHour);
+                    long diff = duration.getSeconds() / 60;
+                    System.out.println(diff);
+                    if (diff > 180) {
+                        toCharge = 0;
+                    } else if (diff < 60) toCharge = orderPrice;
+                    else {
+                        toCharge = orderPrice * 0.5;
+                    }
+                }
+                order.setStatus("CancelledByCustomer");
+                orderDao.update(order);
+                message = "Order " + Integer.toString(id) + " has been cancelled. You have been charged " + Double.toString(toCharge) + " shekels.";
+            } else {
+                message = "Order not found. Please try again.";
+            }
+            try {
+                Warning warning = new Warning(message);
+                client.sendToClient(warning);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    void cancelBooking(int id, ConnectionToClient client) {
+        try {
+            Dao<Booking> bookDao = new Dao(Booking.class);
+            System.out.println("wtf");
+            Booking booking = bookDao.findById(id);
+            double toCharge = 0;
+            String message = "";
+            if (booking != null) {
+                String date = booking.getDate(), hour = booking.getTime();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate nowDate = LocalDate.parse(LocalDate.now().format(formatter), formatter);
+                LocalDate orderDate = LocalDate.parse(booking.getDate(), formatter);
+                System.out.println(nowDate.toString());
+                System.out.println(orderDate.toString());
+                if (orderDate.isEqual(nowDate)) {
+                    LocalTime orderHour = LocalTime.parse(hour);
+                    LocalTime nowHour = LocalTime.now();
+                    Duration duration = Duration.between(nowHour, orderHour);
+                    long diff = duration.getSeconds() / 60;
+                    System.out.println(diff);
+                    if (diff <= 60) {
+                        toCharge = 10 * booking.getCustomerNum();
+                    }
+                }
+                booking.setStatus("CancelledByCustomer");
+                bookDao.update(booking);
+                message = "Booking " + Integer.toString(id) + " has been cancelled. You have been charged " + Double.toString(toCharge) + " shekels.";
+            } else {
+                message = "Booking not found. Please try again.";
+            }
+            try {
+                Warning warning = new Warning(message);
+                client.sendToClient(warning);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    void sendComplaintsToClient(int id, ConnectionToClient client) {
         Dao<Branch> branchDao = new Dao(Branch.class);
         Branch branch = branchDao.findById(id);
 
         List<Complaint> complaints = branch.getComplaints();
 
         ComplaintEvent complaintEvent = new ComplaintEvent(complaints);
-        try{
+        try {
             client.sendToClient(complaintEvent);
         } catch (IOException e) {
             e.printStackTrace();
@@ -112,32 +310,35 @@ public class SimpleServer extends AbstractServer {
 
     }
 
-    void requestMap(int branchId, String date, String hour, String area, ConnectionToClient client){
+    void requestMap(int branchId, String date, String hour, String area, ConnectionToClient client) {
         Dao<Branch> brDao = new Dao(Branch.class);
         Branch branch = brDao.findById(branchId);
         OccupationMap map = branch.getOccupationMap(date, hour, area);
 
-        try{client.sendToClient(map);
+        try {
+            client.sendToClient(map);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
     }
-    void addNewComplaint(Complaint complaint){
-        Dao<Complaint> complaintDao=new Dao<>(Complaint.class);
-        Dao<Branch> branchDao=new Dao<>(Branch.class);
-        Branch branch=complaint.getBranch();
+
+    void addNewComplaint(Complaint complaint) {
+        Dao<Complaint> complaintDao = new Dao<>(Complaint.class);
+        Dao<Branch> branchDao = new Dao<>(Branch.class);
+        Branch branch = complaint.getBranch();
         branch.addComplaint(complaint);
-        try{
+        try {
             branchDao.update(complaint.getBranch());
-           // complaintDao.save(complaint);kjkjk
-        }
-        catch (Exception e){
+            // complaintDao.save(complaint);kjkjk
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    void checkAvailableBooking(String[] attributes, ConnectionToClient client){
+
+
+    void checkAvailableBooking(String[] attributes, ConnectionToClient client) {
         try {
             Dao<Branch> branchDao = new Dao(Branch.class);
             int brId = Integer.parseInt(attributes[0]);
@@ -158,21 +359,20 @@ public class SimpleServer extends AbstractServer {
     }
 
 
-    void saveBooking(Booking book, ConnectionToClient client){
+    void saveBooking(Booking book, ConnectionToClient client) {
         try {
             Dao<Booking> bookDao = new Dao(Booking.class);
-            System.out.println("Saving booking");
             try {
                 bookDao.save(book);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             int bookId = book.getId();
+            System.out.println(bookId);
             String message = "";
-            if(bookDao.findById(bookId) != null){
+            if (bookDao.findById(bookId) != null) {
                 message = "Booking complete! Booking ID for cancelling booking: " + bookId;
-            }
-            else{
+            } else {
                 message = "Booking failed! Please try again.";
             }
             Warning warning = new Warning(message);
@@ -182,31 +382,31 @@ public class SimpleServer extends AbstractServer {
         }
     }
 
-    void saveOrder(Order order, ConnectionToClient client){
-        Dao<CustomerDetails> detailsDao = new Dao(CustomerDetails.class);
-        List<CustomerDetails> listOfCustomers = detailsDao.findAll();
-        for(CustomerDetails customer: listOfCustomers){
-            if (customer.getName().equals(order.getCustomerDetails().getName())){
-                order.setCustomerDetails(customer);
-                break;
+    void saveOrder(Order order, ConnectionToClient client) {
+        try {
+            Dao<CustomerDetails> detailsDao = new Dao(CustomerDetails.class);
+            List<CustomerDetails> listOfCustomers = detailsDao.findAll();
+            for (CustomerDetails customer : listOfCustomers) {
+                if (customer.getName().equals(order.getCustomerDetails().getName())) {
+                    order.setCustomerDetails(customer);
+                    break;
+                }
             }
-        }
 
-        Branch br = order.getBr();
-        br.addOrder(order);
-        order.getCustomerDetails().addOrder(order);
-        Dao<Branch> branchDao = new Dao(Branch.class);
-        branchDao.update(br);
-        Dao<Order> orderDao = new Dao(Order.class);
-        int orderId = order.getId();
-        String message = "";
-        if (orderDao.findById(orderId) != null) {
+            Branch br = order.getBr();
+            br.addOrder(order);
+            order.getCustomerDetails().addOrder(order);
+            Dao<Branch> branchDao = new Dao(Branch.class);
+            branchDao.update(br);
+            Dao<Order> orderDao = new Dao(Order.class);
+            int orderId = order.getId();
+            String message = "";
+            if (orderDao.findById(orderId) != null) {
 
-            message = "Order complete! Order ID for cancelling order: " + orderId;
-        }
-        else {
-            message = "Order failed! Please try again.";
-        }
+                message = "Order complete! Order ID for cancelling order: " + orderId;
+            } else {
+                message = "Order failed! Please try again.";
+            }
             try {
                 Warning warning = new Warning(message);
                 client.sendToClient(warning);
@@ -214,8 +414,11 @@ public class SimpleServer extends AbstractServer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+    }
 
     void addNewBranch(String open, String close) {
         try {
@@ -227,7 +430,8 @@ public class SimpleServer extends AbstractServer {
             e.printStackTrace();
         }
     }
-    void sendAllBranches(ConnectionToClient client){
+
+    void sendAllBranches(ConnectionToClient client) {
         try {
             Dao<Branch> branchService = new Dao(Branch.class);
             List<Branch> branches = branchService.findAll();
@@ -254,6 +458,7 @@ public class SimpleServer extends AbstractServer {
             e.printStackTrace();
         }
     }
+
     void dealWithMealUpdate(MealUpdate mealUpdate) {
 
         try {
@@ -317,8 +522,7 @@ public class SimpleServer extends AbstractServer {
             } else if (status.equals("Denied")) {
                 mealUpdateDao.update(mealUpdate);
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -472,7 +676,7 @@ public class SimpleServer extends AbstractServer {
 
     }
 
-    void sendPurpleLetters(ConnectionToClient client){
+    void sendPurpleLetters(ConnectionToClient client) {
         Dao<PurpleLetter> purpleDao = new Dao(PurpleLetter.class);
         List<PurpleLetter> purples = purpleDao.findAll();
         PurpleLetterEvent event = new PurpleLetterEvent(purples);
@@ -484,54 +688,53 @@ public class SimpleServer extends AbstractServer {
         }
     }
 
-    void updatePurpleLetter(PurpleLetter newPurpleLetter){
+    void updatePurpleLetter(PurpleLetter newPurpleLetter) {
 
-        try{
+        try {
             Dao<PurpleLetter> pDao = new Dao(PurpleLetter.class);
             PurpleLetter NEWp = pDao.findById(newPurpleLetter.getId());
             NEWp = newPurpleLetter;
             pDao.update(NEWp);
             cancelOrders(NEWp);
             cancelBookings(NEWp);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
 
-    void cancelOrders(PurpleLetter purpleLetter){
+    void cancelOrders(PurpleLetter purpleLetter) {
         Dao<Branch> brDao = new Dao(Branch.class);
         Branch br = brDao.findById(purpleLetter.getId());
-        if(purpleLetter.isQuarantine()){
+        if (purpleLetter.isQuarantine()) {
             List<Order> orders = br.getOrders();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            for(Order order: orders){
+            for (Order order : orders) {
                 LocalDate orderDate = LocalDate.parse(order.getDate(), formatter);
                 LocalDate qStart = LocalDate.parse(purpleLetter.getQuarantineStartDate(), formatter);
                 LocalDate qEnd = LocalDate.parse(purpleLetter.getQuarantineEndDate(), formatter);
-                if(orderDate.isAfter(qStart) && orderDate.isBefore(qEnd)){
+                if (orderDate.isAfter(qStart) && orderDate.isBefore(qEnd)) {
                     order.setStatus("CancelledByQuarantine");
                 }
             }
-        brDao.update(br);
+            brDao.update(br);
         }
     }
 
-    void cancelBookings(PurpleLetter purpleLetter){
+    void cancelBookings(PurpleLetter purpleLetter) {
         Dao<Branch> brDao = new Dao(Branch.class);
         Branch br = brDao.findById(purpleLetter.getId());
-        if(purpleLetter.isQuarantine()){
+        if (purpleLetter.isQuarantine()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate qStart = LocalDate.parse(purpleLetter.getQuarantineStartDate(),formatter);
+            LocalDate qStart = LocalDate.parse(purpleLetter.getQuarantineStartDate(), formatter);
             LocalDate qEnd = LocalDate.parse(purpleLetter.getQuarantineEndDate(), formatter);
             Mapp map = br.getMap("inside");
-            if(map != null){
+            if (map != null) {
                 map.cancelBookings(qStart, qEnd);
             }
             map = br.getMap("outside");
-            if(map != null){
+            if (map != null) {
                 map.cancelBookings(qStart, qEnd);
             }
             brDao.update(br);

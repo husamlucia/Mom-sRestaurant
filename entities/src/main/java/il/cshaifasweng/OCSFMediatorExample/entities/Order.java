@@ -46,6 +46,7 @@ public class Order implements Serializable {
         this.br = br;
         this.meals = meals;
         this.date = date;
+        this.hour = hour;
         this.different = different;
         this.pickup = pickup;
         this.address = address;

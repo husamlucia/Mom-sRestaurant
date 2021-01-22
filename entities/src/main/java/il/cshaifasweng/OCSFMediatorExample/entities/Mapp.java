@@ -121,6 +121,8 @@ public class Mapp implements Serializable {
         int customers = 0;
         for (Tablee table : tables) {
             if (!table.isAvailable(date, hour)) {
+                int sitting = table.getSitting(date, hour);
+                System.out.println(sitting);
                 customers += table.getSitting(date, hour);
             }
         }

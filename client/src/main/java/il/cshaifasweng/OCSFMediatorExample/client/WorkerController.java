@@ -10,7 +10,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -18,6 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -27,6 +35,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +94,6 @@ public class WorkerController implements Initializable {
 
     @FXML
     private TableColumn<Complaint, String> phoneCol;
-
 
 
     @FXML
@@ -267,7 +275,7 @@ public class WorkerController implements Initializable {
         LocalDate qStart = LocalDate.now().minusDays(1);
         LocalDate qEnd = LocalDate.now().minusDays(1);
         boolean quarantine = p.isQuarantine();
-        if(quarantine){
+        if (quarantine) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             qStart = LocalDate.parse(p.getQuarantineStartDate(), formatter);
             qEnd = LocalDate.parse(p.getQuarantineEndDate(), formatter);
@@ -287,7 +295,8 @@ public class WorkerController implements Initializable {
                 } else if (quarantine) {
                     if (item.isAfter(finalQStart) && item.isBefore(finalQEnd)) {
                         setDisable(true);
-                        setStyle("-fx-background-color: #ffc0cb;");                    }
+                        setStyle("-fx-background-color: #ffc0cb;");
+                    }
                 }
             }
         };
@@ -747,7 +756,6 @@ public class WorkerController implements Initializable {
     }
 
 
-
     @FXML
     private TableView<PurpleLetter> purpleLetterTable;
 
@@ -777,7 +785,6 @@ public class WorkerController implements Initializable {
     private TableColumn<PurpleLetter, Integer> purpleBrId;
 
 
-
     @FXML
     private CheckBox quarantineCheckBox;
     @FXML
@@ -802,11 +809,10 @@ public class WorkerController implements Initializable {
         currentPurple = purple;
         if (purple != null) {
             quarantineCheckBox.setSelected(purple.isQuarantine());
-            if(purple.isQuarantine()){
+            if (purple.isQuarantine()) {
                 quarantineStart.setValue(LocalDate.parse(purple.getQuarantineStartDate(), formatter));
                 quarantineEnd.setValue(LocalDate.parse(purple.getQuarantineEndDate(), formatter));
-            }
-            else{
+            } else {
                 quarantineStart.setValue(LocalDate.now().minusDays(1));
                 quarantineEnd.setValue(LocalDate.now().minusDays(1));
             }
@@ -834,5 +840,86 @@ public class WorkerController implements Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    @Subscribe
+    public void onChartEvent(ChartEvent event){
+
+        Platform.runLater(() -> {
+            try {
+                Stage stage = new Stage();
+                stage.setTitle("Testing chart");
+
+                final CategoryAxis xAxis = new CategoryAxis();
+                final NumberAxis yAxis = new NumberAxis();
+
+                final BarChart<String, Number> bc =
+                        new BarChart<String, Number>(xAxis, yAxis);
+                bc.setTitle("Order Summary");
+                xAxis.setLabel("Day");
+                yAxis.setLabel("Amount");
+
+                List<ChartInput> inputs = event.getChartInputs();
+                int numOfSeries = inputs.size();
+
+                LocalDate now = LocalDate.now();
+                YearMonth yearMonthObject = YearMonth.of(now.getYear(), now.getMonthValue());
+                int daysInMonth = yearMonthObject.lengthOfMonth(); //28
+
+
+
+
+                int[] data;
+                XYChart.Series[] series = new XYChart.Series[numOfSeries];
+                String name;
+                for (int i = 0; i < numOfSeries; i++) {
+                    series[i] = new XYChart.Series();
+                    name = inputs.get(i).getSeriesName();
+                    series[i].setName(name);
+                    data = inputs.get(i).getData();
+                    for(int j=1 ; j <= data.length ; j++){
+                        series[i].getData().add(new XYChart.Data("Day " + Integer.toString(j), data[j-1]));
+                    }
+                }
+
+                bc.getData().addAll(series);
+
+                Scene scene = new Scene(bc, 1000, 800);
+                stage.setScene(scene);
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
+    @FXML
+    private CheckBox cancelledCheckBox;
+
+    @FXML
+    private CheckBox complaintsCheckBox;
+
+    @FXML
+    private CheckBox ordersCheckBox;
+
+    @FXML
+    public void createChart() {
+        int month = 1, branch = branchTable.getSelectionModel().getSelectedItem().getId();
+
+        try {
+            ReportRequest request = new ReportRequest(branch, month, ordersCheckBox.isSelected(), cancelledCheckBox.isSelected(), complaintsCheckBox.isSelected());
+            SimpleClient.getClient().sendToServer(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*
+        * Request from DB:
+        * List of Series, each Series represents different "DO5"
+        * Each Series must have:
+        * days * pairs of: <day, value>
+        * */
+
     }
 }
