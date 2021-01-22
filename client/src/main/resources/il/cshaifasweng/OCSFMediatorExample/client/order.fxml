@@ -62,5 +62,6 @@
       <TextField fx:id="cancelOrderTF" layoutX="14.0" layoutY="537.0" prefHeight="26.0" prefWidth="128.0" />
       <Button layoutX="158.0" layoutY="538.0" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="25.0" prefWidth="128.0" text="Cancel Order" />
       <Label layoutX="14.0" layoutY="508.0" text="Enter order ID to cancel:" />
+      <Label fx:id="totalCost" layoutX="807.0" layoutY="192.0" text=" " />
    </children>
 </AnchorPane>

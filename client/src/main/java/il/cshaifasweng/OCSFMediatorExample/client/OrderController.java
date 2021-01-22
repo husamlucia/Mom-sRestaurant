@@ -305,8 +305,8 @@ public class OrderController implements Initializable {
 
     @FXML
     void removeFromCart(ActionEvent event) {
-        Meal meal = menuTable.getSelectionModel().getSelectedItem();
-        cartTable.getItems().add(meal);
+        Meal meal = cartTable.getSelectionModel().getSelectedItem();
+        cartTable.getItems().remove(meal);
         double newCost = meal.getPrice();
         buyPrice -= newCost;
         if (cartTable.getItems().isEmpty()) buyPrice = 0;
