@@ -105,10 +105,13 @@
       </AnchorPane>
           <Button fx:id="viewUpdatesBtn" layoutX="310.0" layoutY="224.0" mnemonicParsing="false" onAction="#viewUpdates" prefHeight="25.0" prefWidth="94.0" text="Show Updates" />
       <Text layoutX="553.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Map" />
-        <AnchorPane fx:id="paneManager1" layoutX="805.0" layoutY="234.0" prefHeight="200.0" prefWidth="135.0">
+        <AnchorPane fx:id="paneManager1" layoutX="773.0" layoutY="265.0" prefHeight="200.0" prefWidth="135.0">
             <children>
-                <Button fx:id="showReportsBtn" layoutX="24.0" layoutY="53.0" mnemonicParsing="false" onAction="#showReports" prefHeight="25.0" prefWidth="94.0" text="Show Reports" />
+                <Button fx:id="showReportsBtn" layoutX="14.0" layoutY="161.0" mnemonicParsing="false" onAction="#showReports" prefHeight="25.0" prefWidth="94.0" text="Show Reports" />
                 <Text layoutX="44.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manager" />
+            <CheckBox fx:id="ordersCheckBox" layoutX="7.0" layoutY="83.0" mnemonicParsing="false" text="Total Orders" />
+            <CheckBox fx:id="cancelledCheckBox" layoutX="6.0" layoutY="56.0" mnemonicParsing="false" text="Cancelled by Quarantine" />
+            <CheckBox fx:id="complaintsCheckBox" layoutX="7.0" layoutY="31.0" mnemonicParsing="false" text="Complaints" />
             </children>
         </AnchorPane>
       <Text layoutX="338.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
@@ -149,5 +152,6 @@
       <Label layoutX="1073.0" layoutY="439.0" text="Max inside:" />
       <TextField fx:id="maxOutsideTF" layoutX="1144.0" layoutY="463.0" />
       <Label layoutX="1074.0" layoutY="467.0" text="Max outside:" />
+      <Button layoutX="95.0" layoutY="26.0" mnemonicParsing="false" onAction="#createChart" text="Test" />
     </children>
 </AnchorPane>

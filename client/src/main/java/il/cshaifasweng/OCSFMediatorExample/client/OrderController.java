@@ -37,7 +37,7 @@ public class OrderController implements Initializable {
     private Button orderBtn;
 
     String buyMessage;
-    int buyPrice;
+    double buyPrice;
 
     @FXML
     private TableView<Meal> menuTable;
@@ -127,7 +127,6 @@ public class OrderController implements Initializable {
                 differentChecked(newValue);
             }
         });
-        buyMessage = "order ";
         buyPrice = 0;
         nameCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
         priceCol.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
@@ -297,22 +296,22 @@ public class OrderController implements Initializable {
     void addToCart(ActionEvent event) {
         Meal meal = menuTable.getSelectionModel().getSelectedItem();
         cartTable.getItems().add(meal);
-        Double currCost = Double.parseDouble(totalCost.getText());
-        Double toAdd = meal.getPrice();
-        String newCost = Double.toString(currCost + toAdd);
-        totalCost.setText(newCost);
+        double newCost = meal.getPrice();
+        buyPrice += newCost;
+        String newCostStr = Double.toString(buyPrice);
+        totalCost.setText(newCostStr);
     }
 
 
     @FXML
     void removeFromCart(ActionEvent event) {
-        Meal meal = cartTable.getSelectionModel().getSelectedItem();
-        cartTable.getItems().remove(meal);
-        Double currCost = Double.parseDouble(totalCost.getText());
-        Double toAdd = meal.getPrice();
-        String newCost = Double.toString(currCost - toAdd);
-        if (cartTable.getItems().isEmpty()) newCost = "0";
-        totalCost.setText(newCost);
+        Meal meal = menuTable.getSelectionModel().getSelectedItem();
+        cartTable.getItems().add(meal);
+        double newCost = meal.getPrice();
+        buyPrice -= newCost;
+        if (cartTable.getItems().isEmpty()) buyPrice = 0;
+        String newCostStr = Double.toString(buyPrice);
+        totalCost.setText(newCostStr);
     }
 
     @Subscribe
@@ -372,5 +371,20 @@ public class OrderController implements Initializable {
         //if pickup=0 ->
         //  if different=0 -> offset = 7
         //  if different -> offset = 9
+    }
+
+
+    @FXML
+    private TextField cancelOrderTF;
+
+    @FXML
+    void cancelOrder(ActionEvent event) {
+        String id = cancelOrderTF.getText();
+        String message = "#cancelOrder " + id;
+        try{
+            SimpleClient.getClient().sendToServer(message);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

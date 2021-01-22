@@ -37,7 +37,7 @@ public class Branch implements Serializable {
     private List<MealUpdate> mealUpdates;
 
 
-    @OneToMany(mappedBy = "customerDetails", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "br", cascade = CascadeType.ALL)
     private List<Order> orders;
 
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

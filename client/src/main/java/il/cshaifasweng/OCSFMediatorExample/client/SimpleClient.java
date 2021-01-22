@@ -42,6 +42,8 @@ public class SimpleClient extends AbstractClient {
 			EventBus.getDefault().post(msg);
 		}else if(msg.getClass().equals(PurpleLetterEvent.class)){
 			EventBus.getDefault().post(msg);
+		}else if(msg.getClass().equals(ChartEvent.class)){
+			EventBus.getDefault().post(msg);
 		}
 	}
 	
