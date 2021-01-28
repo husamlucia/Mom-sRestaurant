@@ -45,6 +45,7 @@ public class SimpleClient extends AbstractClient {
 		}else if(msg.getClass().equals(ChartEvent.class)){
 			EventBus.getDefault().post(msg);
 		}
+
 	}
 	
 	public static SimpleClient getClient() {
