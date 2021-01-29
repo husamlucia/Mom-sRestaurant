@@ -31,13 +31,19 @@ public class SimpleServer extends AbstractServer {
         if (msg.getClass().equals(Booking.class)) {
             Booking book = (Booking) msg;
             saveBooking(book, client);
-        } else if (msgString.startsWith("#cancelOrder ")) {
+        }
+        else if(msg.getClass().equals(LoginMessage.class)){
+            confirmLogin((LoginMessage) msg, client);
+        }else if (msgString.startsWith("#cancelOrder ")) {
             int id = Integer.parseInt(msgString.substring(13));
             cancelOrder(id, client);
-        } else if (msg.getClass().equals(ReportRequest.class)) {
+        }
+        else if (msgString.startsWith("#login ")) {
+            String[] attributes = msgString.substring(7).split("\\s+");
+            checkLogin(attributes[0], attributes[1], client);
+        }else if (msg.getClass().equals(ReportRequest.class)) {
             requestReports((ReportRequest) msg, client);
         } else if (msgString.startsWith("#cancelBooking ")) {
-            System.out.println("test1");
             int id = Integer.parseInt(msgString.substring(15));
             cancelBooking(id, client);
         } else if (msgString.startsWith("#checkBooking ")) {
@@ -45,7 +51,11 @@ public class SimpleServer extends AbstractServer {
             checkAvailableBooking(attributes, client);
         } else if (msgString.startsWith("#getAllBranches")) {
             sendAllBranches(client);
-        } else if (msg.getClass().equals(Order.class)) {
+        }
+        else if (msgString.startsWith("#requestBranch ")) {
+            int id = Integer.parseInt(msgString.substring(15));
+            requestBranch(id, client);
+        }else if (msg.getClass().equals(Order.class)) {
             saveOrder((Order) msg, client);
         }
 //        else if (msgString.startsWith("#order ")) {
@@ -67,14 +77,7 @@ public class SimpleServer extends AbstractServer {
             String hour = attributes[2];
             String area = attributes[3];
             requestMap(id, date, hour, area, client);
-        } else if (msgString.startsWith("#login ")) {
-
-            String[] attributes = msgString.substring(7).split("\\s+");
-            String id = attributes[0];
-            String password = attributes[1];
-            confirmLogin(id, password, client);
-
-        } else if (msgString.startsWith("#requestMenu ")) {
+        }  else if (msgString.startsWith("#requestMenu ")) {
             int id = Integer.parseInt(msgString.substring(13));
             sendMenuToClient(id, client);
         } else if (msgString.startsWith("#addBranch ")) {
@@ -102,6 +105,37 @@ public class SimpleServer extends AbstractServer {
 
     }
 
+
+    void requestBranch(int id, ConnectionToClient client){
+        try {
+            Dao<Branch> branchService = new Dao(Branch.class);
+            List<Branch> branches = new ArrayList<>();
+            branches.add(branchService.findById(id));
+            BranchList ret = new BranchList(branches);
+            client.sendToClient(ret);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    void checkLogin(String id, String pw, ConnectionToClient client){
+        Dao<Worker> workerDao = new Dao(Worker.class);
+        List<Worker> workers = workerDao.findAll();
+        for(Worker worker: workers){
+            if(worker.getGovId().equals(id) && worker.getPassword().equals(pw)){
+                try {
+                    client.sendToClient(worker);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+        }
+        try {
+            client.sendToClient(new Warning("Login failed. Please try again."));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     void requestReports(ReportRequest request,ConnectionToClient client) {
         try{
@@ -362,12 +396,21 @@ public class SimpleServer extends AbstractServer {
     void saveBooking(Booking book, ConnectionToClient client) {
         try {
             Dao<Booking> bookDao = new Dao(Booking.class);
+            Booking newBook = new Booking();
+            newBook.setBookingDate((book.getBookingDate()));
+            newBook.setArea(book.getArea());
+            newBook.setBranch(book.getBranch());
+            newBook.setStatus(book.getStatus());
+            newBook.setDate(book.getDate());
+            newBook.setCustomerNum(book.getCustomerNum());
+            newBook.setTables(book.getTables());
+            newBook.setTime(book.getTime());
             try {
-                bookDao.save(book);
+                bookDao.save(newBook);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            int bookId = book.getId();
+            int bookId = newBook.getId();
             System.out.println(bookId);
             String message = "";
             if (bookDao.findById(bookId) != null) {
@@ -532,6 +575,7 @@ public class SimpleServer extends AbstractServer {
         //Should send to client list of Meals..
         Dao<Branch> brDao = new Dao(Branch.class);
         Branch br = brDao.findById(id);
+
         List<Meal> meals = new ArrayList<Meal>(br.getMenu().getMeals());
         if (id > 1) {
             Branch brGlobal = brDao.findById(1);
@@ -547,31 +591,53 @@ public class SimpleServer extends AbstractServer {
         }
     }
 
-    void confirmLogin(String id, String password, ConnectionToClient client) {
-        Dao<Worker> dao = new Dao(Worker.class);
-        List<Worker> workers = dao.findAll();
-        System.out.println(id + ' ' + password);
-        for (Worker worker : workers) {
-            String workerId = worker.getGovId();
-            String workerPw = worker.getPassword();
-            if (id.equals(workerId) && password.equals(workerPw)) {
-                try {
-                    client.sendToClient(worker);
-                    return;
-                } catch (IOException e) {
-                    e.printStackTrace();
+    void confirmLogin(LoginMessage loginMessage, ConnectionToClient client) {
+        String type = loginMessage.getType();
+
+        if(type.equals("Customer")){
+            Dao<CustomerDetails> dao = new Dao(CustomerDetails.class);
+            List<CustomerDetails> customers = dao.findAll();
+            String phone = loginMessage.getIdentifier1();
+            String cc = loginMessage.getIdentifier2();
+            for(CustomerDetails customer: customers){
+                String customerPhone = customer.getPhone();
+                String customerCC = customer.getCreditCard();
+                if(phone.equals(customerPhone) && cc.equals(customerCC)){
+                    try{
+                        client.sendToClient(customer);
+                    }catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        else if(type.equals("Worker")){
+            Dao<Worker> dao = new Dao(Worker.class);
+            List<Worker> workers = dao.findAll();
+            String id = loginMessage.getIdentifier1();
+            String password = loginMessage.getIdentifier2();
+
+            for (Worker worker : workers) {
+                String workerId = worker.getGovId();
+                String workerPw = worker.getPassword();
+                if (id.equals(workerId) && password.equals(workerPw)) {
+                    try {
+                        client.sendToClient(worker);
+                        return;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
 
-        Warning warning = new Warning("Incorrect userId or password!");
+        String message = "Login failed. Please try again";
         try {
+            Warning warning = new Warning(message);
             client.sendToClient(warning);
-            System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -581,11 +647,11 @@ public class SimpleServer extends AbstractServer {
             Dao<Worker> workerDao = new Dao(Worker.class);
             Worker[] workers = new Worker[5];
 
-            workers[0] = new Worker(5, "209146687", "Husam Lucia", "bestadmin123");
-            workers[1] = new Worker(4, "209050202", "Samer Kharouba", "lovesamer");
-            workers[2] = new Worker(3, "209146695", "Sahar Lucia", "sahar123");
-            workers[3] = new Worker(2, "206214785", "Loai Marei", "loainoob1");
-            workers[4] = new Worker(1, "209050203", "Dalia Khateb", "daliakhateb123");
+            workers[0] = new Worker(5, "209146687", 2,"Husam Lucia", "bestadmin123");
+            workers[1] = new Worker(4, "209050202",2, "Samer Kharouba", "lovesamer");
+            workers[2] = new Worker(3, "209146695", 2,"Sahar Lucia", "sahar123");
+            workers[3] = new Worker(2, "206214785", 2,"Loai Marei", "loainoob1");
+            workers[4] = new Worker(1, "209050203",2, "Dalia Khateb", "daliakhateb123");
 
             for (Worker worker : workers) {
                 workerDao.save(worker);

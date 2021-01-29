@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.entities;
 
-import javax.management.loading.PrivateClassLoader;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
@@ -15,6 +17,7 @@ public class Menu implements Serializable {
     private int id;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "menu")
+    @Fetch(FetchMode.SELECT)
     private List<Meal> meals;
 
 
@@ -23,7 +26,6 @@ public class Menu implements Serializable {
     }
 
     public void addMeal(Meal meal) {
-
         meals.add(meal);
     }
 

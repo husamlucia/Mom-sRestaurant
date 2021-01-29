@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.WorkerControllers.WorkerCommon">
+    <children>
+        <TableView fx:id="branchTable" layoutX="14.0" layoutY="14.0" prefHeight="202.0" prefWidth="226.0">
+            <columns>
+                <TableColumn fx:id="brIdCol" prefWidth="75.0" text="BrID" />
+                <TableColumn fx:id="brOpenCol" prefWidth="75.0" text="Open Hour" />
+                <TableColumn fx:id="brCloseCol" prefWidth="75.0" text="Close Hour" />
+            </columns>
+        </TableView>
+        <Button fx:id="showMenuBtn" layoutX="14.0" layoutY="222.0" mnemonicParsing="false" onAction="#requestMenu" prefHeight="0.0" prefWidth="94.0" text="Show Menu" />
+        <TableView fx:id="menuTable" layoutX="14.0" layoutY="255.0" prefHeight="538.0" prefWidth="694.0">
+            <columns>
+                <TableColumn fx:id="mealIdCol" prefWidth="29.0" text="ID" />
+                <TableColumn fx:id="mealImageCol" maxWidth="164.0" minWidth="150.0" prefWidth="164.0" text="pic" />
+                <TableColumn fx:id="mealNameCol" prefWidth="108.0" text="Name" />
+                <TableColumn fx:id="mealIngCol" prefWidth="98.0" text="Ingredients" />
+                <TableColumn fx:id="networkMealMenuCol" prefWidth="183.0" text="Network Meal" />
+                <TableColumn fx:id="mealPriceCol" minWidth="0.0" prefWidth="110.0" text="Price" />
+            </columns>
+        </TableView>
+        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Map" />
+        <AnchorPane layoutX="247.0" layoutY="8.0" prefHeight="214.0" prefWidth="457.0">
+            <children>
+                <TableView fx:id="retaurantMapTable" layoutX="242.0" layoutY="10.0" prefHeight="202.0" prefWidth="208.0">
+                    <columns>
+                        <TableColumn fx:id="tableNumberMapCol" prefWidth="63.0" text="Table No." />
+                        <TableColumn fx:id="numOfSeatsMapCol" prefWidth="50.0" text="Seats" />
+                        <TableColumn fx:id="reservationsMapCol" minWidth="0.0" prefWidth="94.0" text="Status" />
+                    </columns>
+                </TableView>
+                <DatePicker fx:id="datePicker" layoutX="61.0" layoutY="54.0" />
+                <Text layoutX="14.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Show Map:" />
+                <Button fx:id="mapOutsideBtn" layoutX="169.0" layoutY="113.0" mnemonicParsing="false" onAction="#requestRestaurantMap" prefHeight="25.0" prefWidth="60.0" text="Outside" />
+                <Button fx:id="mapInsideBtn" layoutX="88.0" layoutY="113.0" mnemonicParsing="false" onAction="#requestRestaurantMap" prefHeight="25.0" prefWidth="60.0" text="Inside" />
+                <ComboBox fx:id="hourComboBox" layoutX="61.0" layoutY="82.0" prefHeight="25.0" prefWidth="71.0" />
+                <Text layoutX="18.0" layoutY="99.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
+                <Text layoutX="18.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
+                <Label layoutX="20.0" layoutY="14.0" text="Select Date and Time to display map:" />
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

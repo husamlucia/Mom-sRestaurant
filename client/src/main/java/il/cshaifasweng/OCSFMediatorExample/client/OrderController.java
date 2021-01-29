@@ -109,6 +109,8 @@ public class OrderController implements Initializable {
 
     public void initialize(URL url, ResourceBundle rb) {
         EventBus.getDefault().register(this);
+        buyPrice = 0;
+        totalCost.setText(Double.toString(buyPrice));
         pickupChecked(false);
         differentChecked(false);
         pickupCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -258,7 +260,7 @@ public class OrderController implements Initializable {
         //disabling or enabling buttons upon changing state of pickup checkbox
         //b == true -> pickup is checked
         if(newValue){
-            totalCost.setText(Double.toString(Double.parseDouble(totalCost.getText()) +deliveryCost ));
+            totalCost.setText(Double.toString(Double.parseDouble(totalCost.getText()) - deliveryCost ));
             orderAddressTF.setDisable(true);
             recipientTF.setDisable(true);
             phoneTF.setDisable(true);
@@ -268,7 +270,7 @@ public class OrderController implements Initializable {
 
             // your checkbox has been unticked. do stuff...
             // clear the config file
-            totalCost.setText(Double.toString(Double.parseDouble(totalCost.getText()) - deliveryCost ));
+            totalCost.setText(Double.toString(Double.parseDouble(totalCost.getText()) + deliveryCost ));
             orderAddressTF.setDisable(false);
             recipientTF.setDisable(true);
             phoneTF.setDisable(true);
