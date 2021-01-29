@@ -47,7 +47,7 @@
             <ImageView fx:id="mealImageView" fitHeight="134.0" fitWidth="151.0" layoutX="11.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true" />
             </children>
         </AnchorPane>
-        <AnchorPane layoutX="6.0" layoutY="313.0" prefHeight="164.0" prefWidth="798.0">
+        <AnchorPane layoutX="6.0" layoutY="312.0" prefHeight="164.0" prefWidth="798.0">
             <children>
                 <TableView fx:id="menuTable" layoutX="69.0" layoutY="15.0" prefHeight="134.0" prefWidth="679.0">
                     <columns>

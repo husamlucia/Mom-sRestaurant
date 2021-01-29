@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+import javafx.stage.StageStyle;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
@@ -22,18 +23,20 @@ public class App extends Application {
 
     private static Scene scene;
     private SimpleClient client;
+    private static Stage stage1;
 
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
         client = SimpleClient.getClient();
         client.openConnection();
-        scene = new Scene(loadFXML("worker"), 640, 480);
+        scene = new Scene(loadFXML("login"));
         stage.setScene(scene);
+        stage1 = stage;
         stage.show();
     }
 
-    static void setRoot(String fxml) throws IOException {
+    public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
     }
 
@@ -41,7 +44,6 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
-
 
     @Override
     public void stop() throws Exception {
@@ -61,18 +63,6 @@ public class App extends Application {
             alert.show();
         });
     }
-
-// @Subscribe
-// public void onAllMealsEvent(AllMealsEvent event) {
-//     Platform.runLater(() -> {
-//         ObservableList<Meal> MealList = FXCollections.observableArrayList();
-//         MealList.addAll(event.getMenu().getMeals());
-//         TableView tbl = (TableView) scene.lookup("#menuTable1");
-//         tbl.setItems(MealList);
-//         System.out.println(MealList.size());
-//     });
-// }
-
 
 
     public static void main(String[] args) {
