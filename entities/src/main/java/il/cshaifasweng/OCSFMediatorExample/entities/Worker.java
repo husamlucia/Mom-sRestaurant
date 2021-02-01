@@ -16,6 +16,16 @@ public class Worker implements Serializable {
     @Column(name="govId", unique = true, nullable=false)
     private String govId;
 
+    int branchId;
+
+    public Worker(int privilege, String govId, int branchId, String fullName, String password) {
+        this.privilege = privilege;
+        this.govId = govId;
+        this.branchId = branchId;
+        this.fullName = fullName;
+        this.password = password;
+    }
+
     public int getId() {
         return id;
     }
@@ -59,11 +69,12 @@ public class Worker implements Serializable {
     private String fullName;
     private String password;
 
-    public Worker(int privilege, String govId, String fullName, String password) {
-        this.privilege = privilege;
-        this.govId = govId;
-        this.fullName = fullName;
-        this.password = password;
+    public int getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(int branchId) {
+        this.branchId = branchId;
     }
 
     public Worker(){

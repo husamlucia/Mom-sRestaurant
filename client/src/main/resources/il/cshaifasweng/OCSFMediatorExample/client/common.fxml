@@ -6,13 +6,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.WorkerControllers.DietitianController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.WorkerControllers.WorkerCommon">
     <children>
         <TableView fx:id="branchTable" layoutX="14.0" layoutY="14.0" prefHeight="202.0" prefWidth="226.0">
             <columns>
@@ -52,28 +49,5 @@
                 <Label layoutX="20.0" layoutY="14.0" text="Select Date and Time to display map:" />
             </children>
         </AnchorPane>
-      <AnchorPane fx:id="paneDietitian" layoutX="717.0" layoutY="255.0" prefHeight="349.0" prefWidth="466.0">
-         <children>
-            <Button fx:id="saveBtn" layoutX="23.0" layoutY="265.0" mnemonicParsing="false" onAction="#saveMeal" prefHeight="25.0" prefWidth="446.0" text="Save" />
-            <TextField fx:id="nameTF" disable="true" layoutX="176.0" layoutY="87.0" prefHeight="25.0" prefWidth="252.0" />
-            <Text layoutX="176.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="34.84375" />
-            <TextField fx:id="ingredientsTF" disable="true" layoutX="176.0" layoutY="183.0" prefHeight="25.0" prefWidth="287.0" />
-            <Text layoutX="180.0" layoutY="127.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price" />
-            <TextField fx:id="priceTF" disable="true" layoutX="176.0" layoutY="137.0" prefHeight="25.0" prefWidth="60.0" />
-            <Text layoutX="176.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Branch ID" wrappingWidth="59.6953125" />
-            <TextField fx:id="branchIdTF" disable="true" layoutX="176.0" layoutY="229.0" prefHeight="25.0" prefWidth="73.0" />
-            <Text layoutX="176.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ingredients" />
-            <Button fx:id="editMealBtn" layoutX="87.0" layoutY="32.0" mnemonicParsing="false" onAction="#editMeal" prefHeight="25.0" prefWidth="132.0" text="Edit Selected Meal" />
-            <Button fx:id="addMealBtn" layoutX="6.0" layoutY="32.0" mnemonicParsing="false" onAction="#addMeal" prefHeight="25.0" prefWidth="75.0" text="New Meal" />
-            <Button fx:id="removeMealBtn" layoutX="227.0" layoutY="32.0" mnemonicParsing="false" onAction="#removeMeal" prefHeight="25.0" prefWidth="151.0" text="Remove Selected Meal" />
-            <Text layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dietitian" textAlignment="CENTER">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Text>
-            <Button fx:id="chooseImageButton" layoutX="24.0" layoutY="229.0" mnemonicParsing="false" onAction="#chooseImage" prefHeight="25.0" prefWidth="132.0" text="Choose Image" />
-            <ImageView fx:id="mealImageView" fitHeight="134.0" fitWidth="151.0" layoutX="14.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true" />
-         </children>
-      </AnchorPane>
     </children>
 </AnchorPane>

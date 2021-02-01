@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.greenrobot.eventbus.EventBus;
@@ -26,21 +25,27 @@ public class LoginController implements Initializable {
     private TextField id;
 
     @FXML
-    private PasswordField pass;
+    private TextField password;
 
 
     @FXML
+    void initWorkers(ActionEvent event){
+        try {
+            SimpleClient.getClient().sendToServer("#addDefaultWorkers");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
     void checkLogin(ActionEvent event) {
         String workerId = id.getText();
-        String password = pass.getText();
+        String password = this.password.getText();
         String message = "#login " + workerId + ' ' + password;
         try {
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //if logined successfully then go to workerfxml
-        //App.setRoot("worker");
     }
 
     @FXML
@@ -54,20 +59,34 @@ public class LoginController implements Initializable {
 
         Platform.runLater(() -> {
             int privilege = event.getWorker().getPrivilege();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("worker.fxml"));
-            Stage stage = new Stage(StageStyle.DECORATED);
-            try {
-                stage.setScene(new Scene(loader.load()));
-            } catch (IOException e) {
+            int branch = event.getWorker().getBranchId();
+            String fxml="common";
+            String message = "#requestBranch " + branch;
+            switch(privilege){
+                case 1:
+                    fxml = "common";
+                    break;
+                case 2:
+                    fxml = "dietitian";
+                    break;
+                case 3:
+                    fxml = "customerService";
+                    message = "#getAllBranches";
+                    break;
+                case 4:
+                    fxml = "manager";
+                    break;
+                case 5:
+                    fxml = "manager";
+                    message = "#getAllBranches";
+                    break;
+            }
+            try{
+                App.setRoot(fxml);
+                SimpleClient.getClient().sendToServer(message);
+            }catch(IOException e){
                 e.printStackTrace();
             }
-
-            WorkerController workerController = loader.<WorkerController>getController();
-            workerController.initialize2(privilege);
-            Stage prevStage = (Stage) id.getScene().getWindow();
-            prevStage.close();
-            stage.show();
-
         });
 
     }
