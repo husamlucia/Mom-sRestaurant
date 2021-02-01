@@ -11,7 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="604.0" prefWidth="1073.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
+<AnchorPane stylesheets="@style.css" prefHeight="604.0" prefWidth="1073.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
    <children>
       <Button fx:id="orderBtn" layoutX="946.0" layoutY="420.0" mnemonicParsing="false" onAction="#order" prefHeight="42.0" prefWidth="114.0" text="Order">
          <opaqueInsets>
@@ -62,6 +62,6 @@
       <TextField fx:id="cancelOrderTF" layoutX="14.0" layoutY="537.0" prefHeight="26.0" prefWidth="128.0" />
       <Button layoutX="158.0" layoutY="538.0" mnemonicParsing="false" onAction="#cancelOrder" prefHeight="25.0" prefWidth="128.0" text="Cancel Order" />
       <Label layoutX="14.0" layoutY="508.0" text="Enter order ID to cancel:" />
-      <Label fx:id="totalCost" layoutX="807.0" layoutY="192.0" text=" " />
+      <Label fx:id="totalCost" layoutX="807.0" layoutY="192.0" />
    </children>
 </AnchorPane>

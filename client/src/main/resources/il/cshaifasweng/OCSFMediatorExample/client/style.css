@@ -1,0 +1,74 @@
+.root{
+    -fx-background-color:#f85f73;
+    -fx-background-image: url("food.png");
+    }
+
+.button{
+    -fx-background-color: #fbe8d3;
+    -fx-background-radius: 30;
+    -fx-background-insets: 0;
+    -fx-text-fill: black;
+}
+
+.text-field{
+    -fx-background-color:#fbe8d3;
+    -fx-border-color:#fbe8d3;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-text-fill: black;
+}
+
+.check-box .box{
+    -fx-background-color: #fbe8d3;
+}
+
+
+.button:hover{
+-fx-background-color:#d9b68f;
+}
+
+.combo-box{
+    -fx-background-color: #fbe8d3;
+}
+
+.date-picker{
+}
+
+
+.table-view {
+    -fx-background-color: transparent;
+}
+
+
+.table-view .column-header-background{
+    -fx-background-color: linear-gradient(to bottom, #fbe8d3, #ffcf99);
+    -fx-background-radius: 7px 7px 0px 0px;
+    -fx-padding: 5 0 5px 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell{
+    -fx-border-color: transparent;
+    -fx-padding: 2 0 2 10px;
+    -fx-text-fill: black;
+}
+.table-row-cell: hover {
+    -fx-background-color: #d9b68f;
+    -fx-text-fill: black;
+}
+
+.table-row-cell: selected{
+    -fx-background-color: #d9b68f;
+}
+.table-row-cell: odd{
+    -fx-background-color: #ffcf99;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}
+.table-row-cell: even{
+    -fx-background-color: #fbe8d3;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 0.0em;
+}

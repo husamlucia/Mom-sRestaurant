@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="427.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.BookingController">
+<AnchorPane stylesheets="@style.css" prefHeight="427.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.BookingController">
    <children>
       <Text layoutX="14.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" />
       <Text layoutX="14.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time" />
