@@ -6,7 +6,6 @@ import il.cshaifasweng.OCSFMediatorExample.entities.Mapp;
 import il.cshaifasweng.OCSFMediatorExample.entities.Menu;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
-import javassist.compiler.ast.Pair;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -31,21 +30,18 @@ public class SimpleServer extends AbstractServer {
         if (msg.getClass().equals(Booking.class)) {
             Booking book = (Booking) msg;
             saveBooking(book, client);
-        }
-        else if(msg.getClass().equals(LoginMessage.class)){
+        } else if (msg.getClass().equals(LoginMessage.class)) {
             confirmLogin((LoginMessage) msg, client);
-        }else if (msgString.startsWith("#cancelOrder ")) {
+        } else if (msgString.startsWith("#cancelOrder ")) {
             int id = Integer.parseInt(msgString.substring(13));
             cancelOrder(id, client);
-        }
-        else if (msgString.startsWith("#login ")) {
+        } else if (msgString.startsWith("#login ")) {
             String[] attributes = msgString.substring(7).split("\\s+");
             checkLogin(attributes[0], attributes[1], client);
-        }else if(msgString.startsWith("#logOut ")){
+        } else if (msgString.startsWith("#logOut ")) {
             String[] attributes = msgString.substring(8).split("\\s+");
-            checkLogOut(attributes[0],client);
-        }
-        else if (msg.getClass().equals(ReportRequest.class)) {
+            checkLogOut(attributes[0], client);
+        } else if (msg.getClass().equals(ReportRequest.class)) {
             requestReports((ReportRequest) msg, client);
         } else if (msgString.startsWith("#cancelBooking ")) {
             int id = Integer.parseInt(msgString.substring(15));
@@ -55,18 +51,12 @@ public class SimpleServer extends AbstractServer {
             checkAvailableBooking(attributes, client);
         } else if (msgString.startsWith("#getAllBranches")) {
             sendAllBranches(client);
-        }
-        else if (msgString.startsWith("#requestBranch ")) {
+        } else if (msgString.startsWith("#requestBranch ")) {
             int id = Integer.parseInt(msgString.substring(15));
             requestBranch(id, client);
-        }else if (msg.getClass().equals(Order.class)) {
+        } else if (msg.getClass().equals(Order.class)) {
             saveOrder((Order) msg, client);
-        }
-//        else if (msgString.startsWith("#order ")) {
-//            String[] attributes = msgString.substring(7).split("\\s+");
-//            createOrder(attributes, client);
-//        }
-        else if (msg.getClass().equals(MealUpdate.class)) {
+        } else if (msg.getClass().equals(MealUpdate.class)) {
             MealUpdate mealUpdate = (MealUpdate) msg;
             dealWithMealUpdate(mealUpdate);
             getBranchUpdates(mealUpdate.getBranch().getId(), client);
@@ -81,7 +71,7 @@ public class SimpleServer extends AbstractServer {
             String hour = attributes[2];
             String area = attributes[3];
             requestMap(id, date, hour, area, client);
-        }  else if (msgString.startsWith("#requestMenu ")) {
+        } else if (msgString.startsWith("#requestMenu ")) {
             int id = Integer.parseInt(msgString.substring(13));
             sendMenuToClient(id, client);
         } else if (msgString.startsWith("#addBranch ")) {
@@ -105,15 +95,32 @@ public class SimpleServer extends AbstractServer {
         } else if (msg.getClass().equals(PurpleLetter.class)) {
             updatePurpleLetter((PurpleLetter) msg);
             sendPurpleLetters(client);
+        } else if (msgString.startsWith("#closeComplaint ")) {
+            String[] attributes = msgString.substring(16).split("\\s+");
+            closeComplaint(Integer.parseInt(attributes[0]), Integer.parseInt(attributes[1]), client);
         }
-
     }
 
-    private void checkLogOut(String id, ConnectionToClient client) {
+
+    void closeComplaint(int id, int refund, ConnectionToClient client) {
+        try {
+            Dao<Complaint> cDao = new Dao(Complaint.class);
+            Complaint complaint = cDao.findById(id);
+            if (complaint != null) {
+                cDao.update(complaint);
+                client.sendToClient(new Warning("Complaint closed with refund " + Integer.toString(refund)));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void checkLogOut(String id, ConnectionToClient client) {
         Dao<Worker> workerDao = new Dao(Worker.class);
         List<Worker> workers = workerDao.findAll();
-        for(Worker worker: workers){
-            if(worker.getGovId().equals(id) && worker.isLoggedIn()==true){
+        for (Worker worker : workers) {
+            if (worker.getGovId().equals(id) && worker.isLoggedIn() == true) {
                 worker.setLoggedIn(false);
                 workerDao.update(worker);
                 return;
@@ -122,7 +129,7 @@ public class SimpleServer extends AbstractServer {
     }
 
 
-    void requestBranch(int id, ConnectionToClient client){
+    void requestBranch(int id, ConnectionToClient client) {
         try {
             Dao<Branch> branchService = new Dao(Branch.class);
             List<Branch> branches = new ArrayList<>();
@@ -133,11 +140,12 @@ public class SimpleServer extends AbstractServer {
             e.printStackTrace();
         }
     }
-    void checkLogin(String id, String pw, ConnectionToClient client){
+
+    void checkLogin(String id, String pw, ConnectionToClient client) {
         Dao<Worker> workerDao = new Dao(Worker.class);
         List<Worker> workers = workerDao.findAll();
-        for(Worker worker: workers){
-            if(worker.getGovId().equals(id) && worker.getPassword().equals(pw) && worker.isLoggedIn()==false){
+        for (Worker worker : workers) {
+            if (worker.getGovId().equals(id) && worker.getPassword().equals(pw) && worker.isLoggedIn() == false) {
                 worker.setLoggedIn(true);
                 workerDao.update(worker);
                 try {
@@ -155,22 +163,21 @@ public class SimpleServer extends AbstractServer {
         }
     }
 
-    void requestReports(ReportRequest request,ConnectionToClient client) {
-        try{
+    void requestReports(ReportRequest request, ConnectionToClient client) {
+        try {
             Dao<Branch> brDao = new Dao(Branch.class);
             int id = request.getId();
             int month = request.getMonth();
             Branch br = brDao.findById(id);
-
             List<ChartInput> chartInputs = new ArrayList<>();
 
-            if(request.isOrders()){
+            if (request.isOrders()) {
                 chartInputs.add(getTotalOrders(br, month));
             }
-            if(request.isCancelledOrders()){
+            if (request.isCancelledOrders()) {
                 chartInputs.add(getCancelledOrders(br, month));
             }
-            if(request.isComplaints()){
+            if (request.isComplaints()) {
                 chartInputs.add(getComplaints(br, month));
             }
 
@@ -181,14 +188,14 @@ public class SimpleServer extends AbstractServer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
 
-    ChartInput getTotalOrders(Branch br, int month){
+    ChartInput getTotalOrders(Branch br, int month) {
 
         LocalDate now = LocalDate.now();
         YearMonth yearMonthObject = YearMonth.of(now.getYear(), month);
@@ -212,7 +219,7 @@ public class SimpleServer extends AbstractServer {
     }
 
 
-    ChartInput getCancelledOrders(Branch br, int month){
+    ChartInput getCancelledOrders(Branch br, int month) {
 
         LocalDate now = LocalDate.now();
         YearMonth yearMonthObject = YearMonth.of(now.getYear(), month);
@@ -227,7 +234,7 @@ public class SimpleServer extends AbstractServer {
         for (Order order : orders) {
             orderDate = LocalDate.parse(order.getDate(), formatter);
             if (orderDate.getMonthValue() == month) {
-                if(order.getStatus().equals("CancelledByQuarantine") || order.getStatus().equals("CancelledByCustomer"))
+                if (order.getStatus().equals("CancelledByQuarantine") || order.getStatus().equals("CancelledByCustomer"))
                     toReturn[orderDate.getDayOfMonth() - 1] += 1;
             }
         }
@@ -236,7 +243,7 @@ public class SimpleServer extends AbstractServer {
         return data;
     }
 
-    ChartInput getComplaints(Branch br, int month){
+    ChartInput getComplaints(Branch br, int month) {
 
         LocalDate now = LocalDate.now();
         YearMonth yearMonthObject = YearMonth.of(now.getYear(), month);
@@ -249,15 +256,14 @@ public class SimpleServer extends AbstractServer {
         LocalDate orderDate;
         System.out.println(orders.size());
         for (Complaint order : orders) {
-            orderDate = LocalDate.parse(order.getDate().substring(0,10), formatter);
+            orderDate = LocalDate.parse(order.getDate().substring(0, 10), formatter);
             if (orderDate.getMonthValue() == month) {
-                    toReturn[orderDate.getDayOfMonth() - 1] += 1;
+                toReturn[orderDate.getDayOfMonth() - 1] += 1;
             }
         }
         ChartInput data = new ChartInput("Complaints", toReturn);
         return data;
     }
-
 
 
     void cancelOrder(int id, ConnectionToClient client) {
@@ -612,24 +618,23 @@ public class SimpleServer extends AbstractServer {
     void confirmLogin(LoginMessage loginMessage, ConnectionToClient client) {
         String type = loginMessage.getType();
 
-        if(type.equals("Customer")){
+        if (type.equals("Customer")) {
             Dao<CustomerDetails> dao = new Dao(CustomerDetails.class);
             List<CustomerDetails> customers = dao.findAll();
             String phone = loginMessage.getIdentifier1();
             String cc = loginMessage.getIdentifier2();
-            for(CustomerDetails customer: customers){
+            for (CustomerDetails customer : customers) {
                 String customerPhone = customer.getPhone();
                 String customerCC = customer.getCreditCard();
-                if(phone.equals(customerPhone) && cc.equals(customerCC)){
-                    try{
+                if (phone.equals(customerPhone) && cc.equals(customerCC)) {
+                    try {
                         client.sendToClient(customer);
-                    }catch (IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        }
-        else if(type.equals("Worker")){
+        } else if (type.equals("Worker")) {
             Dao<Worker> dao = new Dao(Worker.class);
             List<Worker> workers = dao.findAll();
             String id = loginMessage.getIdentifier1();
@@ -665,11 +670,11 @@ public class SimpleServer extends AbstractServer {
             Dao<Worker> workerDao = new Dao(Worker.class);
             Worker[] workers = new Worker[5];
 
-            workers[0] = new Worker(5, "209146687", 2,"Husam Lucia", "bestadmin123");
-            workers[1] = new Worker(4, "209050202",2, "Samer Kharouba", "lovesamer");
-            workers[2] = new Worker(3, "209146695", 2,"Sahar Lucia", "sahar123");
-            workers[3] = new Worker(2, "206214785", 2,"Loai Marei", "loainoob1");
-            workers[4] = new Worker(1, "209050203",2, "Dalia Khateb", "daliakhateb123");
+            workers[0] = new Worker(5, "209146687", 2, "Husam Lucia", "bestadmin123");
+            workers[1] = new Worker(4, "209050202", 2, "Samer Kharouba", "lovesamer");
+            workers[2] = new Worker(3, "209146695", 2, "Sahar Lucia", "sahar123");
+            workers[3] = new Worker(2, "206214785", 2, "Loai Marei", "loainoob1");
+            workers[4] = new Worker(1, "209050203", 2, "Dalia Khateb", "daliakhateb123");
 
             for (Worker worker : workers) {
                 workerDao.save(worker);

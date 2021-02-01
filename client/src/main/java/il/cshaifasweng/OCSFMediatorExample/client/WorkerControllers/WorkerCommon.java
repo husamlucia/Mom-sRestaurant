@@ -114,6 +114,7 @@ public class WorkerCommon implements Initializable {
         String message="#logOut"+' '+ worker.getGovId();
         try{
             SimpleClient.getClient().sendToServer(message);
+            App.setRoot("login");
         }
         catch (IOException e) {
             e.printStackTrace();

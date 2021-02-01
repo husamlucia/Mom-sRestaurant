@@ -58,6 +58,7 @@
                   <CheckBox fx:id="cancelledCheckBox" layoutX="8.0" layoutY="96.0" mnemonicParsing="false" text="Cancelled by Quarantine" />
                   <CheckBox fx:id="complaintsCheckBox" layoutX="9.0" layoutY="71.0" mnemonicParsing="false" text="Complaints" />
                   <Label layoutX="8.0" layoutY="5.0" text="Request Reports:" />
+                  <ComboBox fx:id="monthComboBox" layoutX="10.0" layoutY="31.0" prefWidth="150.0" />
                </children>
             </AnchorPane>
             <TableView fx:id="mealUpdatesTable" layoutX="14.0" layoutY="48.0" prefHeight="243.0" prefWidth="827.0">

@@ -84,6 +84,7 @@ public class LoginController implements Initializable {
             try{
                 App.setRoot(fxml);
                 SimpleClient.getClient().sendToServer(message);
+                EventBus.getDefault().unregister(this);
                 EventBus.getDefault().post(event);
             }catch(IOException e){
                 e.printStackTrace();

@@ -115,6 +115,7 @@ public class CServiceController implements Initializable {
         String message="#logOut"+' '+ worker.getGovId();
         try{
             SimpleClient.getClient().sendToServer(message);
+            App.setRoot("login");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -522,11 +523,21 @@ public class CServiceController implements Initializable {
         });
     }
 
-
+    @FXML
+    private TextField refundTF;
 
     @FXML
     void sendMessage(ActionEvent event) {
-
+        System.out.println("test1");
+        Complaint complaint = complaintsTable.getSelectionModel().getSelectedItem();
+        String refund = refundTF.getText();
+        System.out.println(complaint.getId());
+        try {
+            String message = "#closeComplaint " + Integer.toString(complaint.getId()) + ' ' + refund;
+            SimpleClient.getClient().sendToServer(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

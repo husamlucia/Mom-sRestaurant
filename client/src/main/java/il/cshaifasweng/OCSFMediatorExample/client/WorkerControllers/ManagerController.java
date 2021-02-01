@@ -12,7 +12,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
@@ -37,7 +36,6 @@ import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -123,6 +121,7 @@ public class ManagerController implements Initializable {
         String message="#logOut"+' '+ worker.getGovId();
         try{
             SimpleClient.getClient().sendToServer(message);
+            App.setRoot("login");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -161,6 +160,8 @@ public class ManagerController implements Initializable {
             retaurantMapTable.setItems(tableList);
         });
     }
+
+
 
 
     public void initializeDateAndHours(Branch branch) {
@@ -289,7 +290,22 @@ public class ManagerController implements Initializable {
 
     }
 
+
+    @FXML
+    private ComboBox monthComboBox;
+
     private void initializeManager() {
+
+        List<String> available = new ArrayList<>();
+        for (int i=1; i<13;i++){
+            available.add(Integer.toString(i));
+        }
+        ObservableList<String> list = FXCollections.observableArrayList();
+        list.addAll(available);
+        monthComboBox.setItems(list);
+
+
+
         mealUpdatesID.setCellValueFactory(cellData -> new SimpleStringProperty(
                 Integer.toString(cellData.getValue().getOldMeal() != null ? cellData.getValue().getOldMeal().getId() : 0)));
 
@@ -511,7 +527,7 @@ public class ManagerController implements Initializable {
 
     @FXML
     public void showReports() {
-        int month = 1, branch = branchTable.getSelectionModel().getSelectedItem().getId();
+        int month = Integer.parseInt((String) monthComboBox.getValue()), branch = branchTable.getSelectionModel().getSelectedItem().getId();
 
         try {
             ReportRequest request = new ReportRequest(branch, month, ordersCheckBox.isSelected(), cancelledCheckBox.isSelected(), complaintsCheckBox.isSelected());
@@ -519,13 +535,6 @@ public class ManagerController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        /*
-         * Request from DB:
-         * List of Series, each Series represents different "DO5"
-         * Each Series must have:
-         * days * pairs of: <day, value>
-         * */
-
     }
 
 
