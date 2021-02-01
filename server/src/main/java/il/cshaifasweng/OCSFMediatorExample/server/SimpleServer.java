@@ -227,11 +227,11 @@ public class SimpleServer extends AbstractServer {
         int[] toReturn = new int[daysInMonth];
 
         List<Complaint> orders = br.getComplaints();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate orderDate;
         System.out.println(orders.size());
         for (Complaint order : orders) {
-            orderDate = LocalDate.parse(order.getDate(), formatter);
+            orderDate = LocalDate.parse(order.getDate().substring(0,10), formatter);
             if (orderDate.getMonthValue() == month) {
                     toReturn[orderDate.getDayOfMonth() - 1] += 1;
             }
