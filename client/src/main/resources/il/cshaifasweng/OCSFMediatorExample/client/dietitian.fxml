@@ -75,5 +75,6 @@
             <ImageView fx:id="mealImageView" fitHeight="134.0" fitWidth="151.0" layoutX="14.0" layoutY="70.0" pickOnBounds="true" preserveRatio="true" />
          </children>
       </AnchorPane>
+      <Button fx:id="logOutBtn" layoutX="777.0" layoutY="18.0" mnemonicParsing="false" onAction="#logOut" text="log out" />
     </children>
 </AnchorPane>

@@ -80,5 +80,6 @@
             <Text layoutX="16.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manager" />
          </children>
       </AnchorPane>
+      <Button fx:id="logOutBtn" layoutX="788.0" layoutY="18.0" mnemonicParsing="false" onAction="#logOut" text="log out" textFill="#302c2c" />
     </children>
 </AnchorPane>

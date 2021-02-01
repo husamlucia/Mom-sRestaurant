@@ -41,7 +41,11 @@ public class SimpleServer extends AbstractServer {
         else if (msgString.startsWith("#login ")) {
             String[] attributes = msgString.substring(7).split("\\s+");
             checkLogin(attributes[0], attributes[1], client);
-        }else if (msg.getClass().equals(ReportRequest.class)) {
+        }else if(msgString.startsWith("#logOut ")){
+            String[] attributes = msgString.substring(8).split("\\s+");
+            checkLogOut(attributes[0],client);
+        }
+        else if (msg.getClass().equals(ReportRequest.class)) {
             requestReports((ReportRequest) msg, client);
         } else if (msgString.startsWith("#cancelBooking ")) {
             int id = Integer.parseInt(msgString.substring(15));
@@ -105,6 +109,18 @@ public class SimpleServer extends AbstractServer {
 
     }
 
+    private void checkLogOut(String id, ConnectionToClient client) {
+        Dao<Worker> workerDao = new Dao(Worker.class);
+        List<Worker> workers = workerDao.findAll();
+        for(Worker worker: workers){
+            if(worker.getGovId().equals(id) && worker.isLoggedIn()==true){
+                worker.setLoggedIn(false);
+                workerDao.update(worker);
+                return;
+            }
+        }
+    }
+
 
     void requestBranch(int id, ConnectionToClient client){
         try {
@@ -121,7 +137,9 @@ public class SimpleServer extends AbstractServer {
         Dao<Worker> workerDao = new Dao(Worker.class);
         List<Worker> workers = workerDao.findAll();
         for(Worker worker: workers){
-            if(worker.getGovId().equals(id) && worker.getPassword().equals(pw)){
+            if(worker.getGovId().equals(id) && worker.getPassword().equals(pw) && worker.isLoggedIn()==false){
+                worker.setLoggedIn(true);
+                workerDao.update(worker);
                 try {
                     client.sendToClient(worker);
                 } catch (IOException e) {

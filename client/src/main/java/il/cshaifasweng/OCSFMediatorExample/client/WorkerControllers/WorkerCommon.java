@@ -3,6 +3,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.WorkerControllers;
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
+import il.cshaifasweng.OCSFMediatorExample.client.events.LoginEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
 import javafx.application.Platform;
@@ -35,6 +36,7 @@ public class WorkerCommon implements Initializable {
 
     private Branch branch;
     private int privilege;
+    private  Worker worker;
 
     @FXML
     private TableView<Branch> branchTable;
@@ -104,6 +106,24 @@ public class WorkerCommon implements Initializable {
     @FXML
     private DatePicker datePicker;
 
+    @FXML
+    private Button logOutBtn;
+
+    @FXML
+    void logOut(ActionEvent event) {
+        String message="#logOut"+' '+ worker.getGovId();
+        try{
+            SimpleClient.getClient().sendToServer(message);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Subscribe
+    public void onLoginEvent(LoginEvent event){
+        worker= event.getWorker();
+    }
 
     @Subscribe
     public void onMenuEvent(MenuEvent event) {

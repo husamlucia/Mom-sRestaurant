@@ -13,6 +13,8 @@ public class Worker implements Serializable {
 
     private int privilege;
 
+    private boolean loggedIn;
+
     @Column(name="govId", unique = true, nullable=false)
     private String govId;
 
@@ -24,6 +26,15 @@ public class Worker implements Serializable {
         this.branchId = branchId;
         this.fullName = fullName;
         this.password = password;
+        this.loggedIn=false;
+    }
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
     }
 
     public int getId() {

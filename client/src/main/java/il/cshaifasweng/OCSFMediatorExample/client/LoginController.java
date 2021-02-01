@@ -84,12 +84,14 @@ public class LoginController implements Initializable {
             try{
                 App.setRoot(fxml);
                 SimpleClient.getClient().sendToServer(message);
+                EventBus.getDefault().post(event);
             }catch(IOException e){
                 e.printStackTrace();
             }
         });
 
     }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
