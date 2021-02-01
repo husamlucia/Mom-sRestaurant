@@ -8,6 +8,7 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -30,8 +31,6 @@ public class SimpleServer extends AbstractServer {
         if (msg.getClass().equals(Booking.class)) {
             Booking book = (Booking) msg;
             saveBooking(book, client);
-        } else if (msg.getClass().equals(LoginMessage.class)) {
-            confirmLogin((LoginMessage) msg, client);
         } else if (msgString.startsWith("#cancelOrder ")) {
             int id = Integer.parseInt(msgString.substring(13));
             cancelOrder(id, client);
@@ -58,7 +57,7 @@ public class SimpleServer extends AbstractServer {
             saveOrder((Order) msg, client);
         } else if (msg.getClass().equals(MealUpdate.class)) {
             MealUpdate mealUpdate = (MealUpdate) msg;
-            dealWithMealUpdate(mealUpdate);
+            dealWithMealUpdate(mealUpdate, client);
             getBranchUpdates(mealUpdate.getBranch().getId(), client);
         } else if (msgString.startsWith("#requestUpdates ")) {
             int id = Integer.parseInt(msgString.substring(16));
@@ -86,14 +85,14 @@ public class SimpleServer extends AbstractServer {
             create_branches_with_maps_and_tables();
         } else if (msg.getClass().equals(Complaint.class)) {
             Complaint complaint = (Complaint) msg;
-            addNewComplaint(complaint);
+            addNewComplaint(complaint, client);
         } else if (msgString.startsWith("#requestComplaints ")) {
             int id = Integer.parseInt(msgString.substring(19));
             sendComplaintsToClient(id, client);
         } else if (msgString.startsWith("#requestPurpleLetters")) {
             sendPurpleLetters(client);
         } else if (msg.getClass().equals(PurpleLetter.class)) {
-            updatePurpleLetter((PurpleLetter) msg);
+            updatePurpleLetter((PurpleLetter) msg, client);
             sendPurpleLetters(client);
         } else if (msgString.startsWith("#closeComplaint ")) {
             String[] attributes = msgString.substring(16).split("\\s+");
@@ -123,7 +122,13 @@ public class SimpleServer extends AbstractServer {
             if (worker.getGovId().equals(id) && worker.isLoggedIn() == true) {
                 worker.setLoggedIn(false);
                 workerDao.update(worker);
-                return;
+
+                try{
+                    String message = "You have been logged out.";
+                    client.sendToClient(new Warning(message));
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -185,6 +190,8 @@ public class SimpleServer extends AbstractServer {
 
             try {
                 client.sendToClient(event);
+                String message = "Reports are available in new window.";
+                client.sendToClient(new Warning(message));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -362,6 +369,8 @@ public class SimpleServer extends AbstractServer {
         ComplaintEvent complaintEvent = new ComplaintEvent(complaints);
         try {
             client.sendToClient(complaintEvent);
+            String message = "Complaints sent, you can see them in the table view.";
+            client.sendToClient(new Warning(message));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -375,6 +384,8 @@ public class SimpleServer extends AbstractServer {
 
         try {
             client.sendToClient(map);
+            String message = "Map sent, you can see it in the table view.";
+            client.sendToClient(new Warning(message));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -382,13 +393,15 @@ public class SimpleServer extends AbstractServer {
 
     }
 
-    void addNewComplaint(Complaint complaint) {
+    void addNewComplaint(Complaint complaint, ConnectionToClient client) {
         Dao<Complaint> complaintDao = new Dao<>(Complaint.class);
         Dao<Branch> branchDao = new Dao<>(Branch.class);
         Branch branch = complaint.getBranch();
         branch.addComplaint(complaint);
         try {
             branchDao.update(complaint.getBranch());
+            String message = "Complaint added, you will receive a response within 24 hours.";
+            client.sendToClient(new Warning(message));
             // complaintDao.save(complaint);kjkjk
         } catch (Exception e) {
             e.printStackTrace();
@@ -451,15 +464,14 @@ public class SimpleServer extends AbstractServer {
 
     void saveOrder(Order order, ConnectionToClient client) {
         try {
-            Dao<CustomerDetails> detailsDao = new Dao(CustomerDetails.class);
-            List<CustomerDetails> listOfCustomers = detailsDao.findAll();
-            for (CustomerDetails customer : listOfCustomers) {
-                if (customer.getName().equals(order.getCustomerDetails().getName())) {
-                    order.setCustomerDetails(customer);
-                    break;
-                }
-            }
-
+//            Dao<CustomerDetails> detailsDao = new Dao(CustomerDetails.class);
+//            List<CustomerDetails> listOfCustomers = detailsDao.findAll();
+//            for (CustomerDetails customer : listOfCustomers) {
+//                if (customer.getName().equals(order.getCustomerDetails().getName())) {
+//                    order.setCustomerDetails(customer);
+//                    break;
+//                }
+//            }
             Branch br = order.getBr();
             br.addOrder(order);
             order.getCustomerDetails().addOrder(order);
@@ -526,7 +538,7 @@ public class SimpleServer extends AbstractServer {
         }
     }
 
-    void dealWithMealUpdate(MealUpdate mealUpdate) {
+    void dealWithMealUpdate(MealUpdate mealUpdate, ConnectionToClient client) {
 
         try {
             String status = mealUpdate.getStatus();
@@ -541,12 +553,12 @@ public class SimpleServer extends AbstractServer {
             Branch newBranch = branchDao.findById(branchId);
 
             if (status.equals("Awaiting")) {
-                if (mealUpdate.getOldMeal() != null && mealUpdate.getNewMeal() == null) {
-                    System.out.println("Delete update");
-                }
                 imageDao.save(mealUpdate.getNewMeal().getImage());
                 newBranch.getMealUpdates().add(mealUpdate);
                 mealUpdateDao.save(mealUpdate);
+
+                String message = "Meal update sent to manager for approval.";
+                client.sendToClient(new Warning(message));
 
             } else if (status.equals("Approved")) {//recheck
                 try {
@@ -582,12 +594,18 @@ public class SimpleServer extends AbstractServer {
                         }
                         mealDao.update(oldMeal);
                     }
+
+                    String message = "Meal update successfully approved.";
+                    client.sendToClient(new Warning(message));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             } else if (status.equals("Denied")) {
                 mealUpdateDao.update(mealUpdate);
+
+                String message = "Meal update successfully denied.";
+                client.sendToClient(new Warning(message));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -614,55 +632,6 @@ public class SimpleServer extends AbstractServer {
             e.printStackTrace();
         }
     }
-
-    void confirmLogin(LoginMessage loginMessage, ConnectionToClient client) {
-        String type = loginMessage.getType();
-
-        if (type.equals("Customer")) {
-            Dao<CustomerDetails> dao = new Dao(CustomerDetails.class);
-            List<CustomerDetails> customers = dao.findAll();
-            String phone = loginMessage.getIdentifier1();
-            String cc = loginMessage.getIdentifier2();
-            for (CustomerDetails customer : customers) {
-                String customerPhone = customer.getPhone();
-                String customerCC = customer.getCreditCard();
-                if (phone.equals(customerPhone) && cc.equals(customerCC)) {
-                    try {
-                        client.sendToClient(customer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } else if (type.equals("Worker")) {
-            Dao<Worker> dao = new Dao(Worker.class);
-            List<Worker> workers = dao.findAll();
-            String id = loginMessage.getIdentifier1();
-            String password = loginMessage.getIdentifier2();
-
-            for (Worker worker : workers) {
-                String workerId = worker.getGovId();
-                String workerPw = worker.getPassword();
-                if (id.equals(workerId) && password.equals(workerPw)) {
-                    try {
-                        client.sendToClient(worker);
-                        return;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        String message = "Login failed. Please try again";
-        try {
-            Warning warning = new Warning(message);
-            client.sendToClient(warning);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     void initiateWorkers() {
 
@@ -771,13 +740,14 @@ public class SimpleServer extends AbstractServer {
         PurpleLetterEvent event = new PurpleLetterEvent(purples);
         try {
             client.sendToClient(event);
-            System.out.format("Sent warning to client %s\n", client.getInetAddress().getHostAddress());
+            String message = "Purple letter instructions available in the table view.";
+            client.sendToClient(new Warning(message));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    void updatePurpleLetter(PurpleLetter newPurpleLetter) {
+    void updatePurpleLetter(PurpleLetter newPurpleLetter, ConnectionToClient client) {
 
         try {
             Dao<PurpleLetter> pDao = new Dao(PurpleLetter.class);
@@ -786,6 +756,8 @@ public class SimpleServer extends AbstractServer {
             pDao.update(NEWp);
             cancelOrders(NEWp);
             cancelBookings(NEWp);
+            String message = "Purple letter instructions successfully updated.";
+            client.sendToClient(new Warning(message));
         } catch (Exception e) {
             e.printStackTrace();
         }

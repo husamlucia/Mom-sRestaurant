@@ -11,7 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane stylesheets="@style.css" prefHeight="604.0" prefWidth="1073.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
+<AnchorPane prefHeight="604.0" prefWidth="1073.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.OrderController">
    <children>
       <Button fx:id="orderBtn" layoutX="946.0" layoutY="420.0" mnemonicParsing="false" onAction="#order" prefHeight="42.0" prefWidth="114.0" text="Order">
          <opaqueInsets>
@@ -24,7 +24,7 @@
             <TableColumn fx:id="nameCol" prefWidth="95.0" text="Name" />
             <TableColumn fx:id="ingredientsCol" prefWidth="174.0" text="Ingredients" />
             <TableColumn fx:id="priceCol" prefWidth="70.0" text="Price" />
-            <TableColumn fx:id="networkMealCol" prefWidth="90.0" text="Network Meal" />
+            <TableColumn fx:id="networkMealMenuCol" prefWidth="90.0" text="Network Meal" />
          </columns>
       </TableView>
       <Label layoutX="764.0" layoutY="192.0" text="Total:" />

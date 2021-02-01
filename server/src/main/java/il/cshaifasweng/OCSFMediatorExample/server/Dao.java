@@ -104,6 +104,7 @@ public class Dao<T> {
 
     public void update(T entity) {
         openCurrentSessionWithTransaction();
+        getCurrentSession().clear();
         getCurrentSession().update(entity);
         closeCurrentSessionWithTransaction();
     }
