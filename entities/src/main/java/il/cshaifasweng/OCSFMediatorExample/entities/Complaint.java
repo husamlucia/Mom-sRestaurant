@@ -35,13 +35,25 @@ public class Complaint implements Serializable {
     @JoinColumn(name="branch_id")
     Branch branch;
 
+    private String status;
+
     public Complaint(String datetime, String complaint,CustomerDetails customerDetails,Branch branch) {
         this.datetime = datetime;
         this.complaint = complaint;
         this.customerDetails=customerDetails;
         this.branch=branch;
+        this.status = "Open";
 
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Complaint() {
 
     }

@@ -17,6 +17,12 @@
     -fx-text-fill: black;
 }
 
+.dialog-pane {
+   -fx-background-color: #fbe8d3;
+  }
+
+
+
 .check-box .box{
     -fx-background-color: #fbe8d3;
 }
@@ -59,9 +65,10 @@
     -fx-text-fill: black;
 }
 
-.table-row-cell: selected{
-    -fx-background-color: #d9b68f;
+.table-row-cell:selected{
+    -fx-background-color: #b39676;
 }
+
 .table-row-cell: odd{
     -fx-background-color: #ffcf99;
     -fx-background-insets: 0, 0 0 1 0;

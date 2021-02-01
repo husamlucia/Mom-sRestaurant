@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.events.LoginEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -70,6 +71,8 @@ public class WorkerCommon implements Initializable {
 
 
     @FXML
+    private TableColumn<Meal, Boolean>  networkMealMenuCol;
+    @FXML
     private TextField nameTF;
 
     @FXML
@@ -114,6 +117,7 @@ public class WorkerCommon implements Initializable {
         String message="#logOut"+' '+ worker.getGovId();
         try{
             SimpleClient.getClient().sendToServer(message);
+            App.setRoot("login");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -256,6 +260,9 @@ public class WorkerCommon implements Initializable {
         reservationsMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, String>("status"));
 
         mealImageCol.setCellValueFactory(new PropertyValueFactory<Meal, ImageInfo>("image"));
+
+        networkMealMenuCol.setCellValueFactory(cellData -> new SimpleBooleanProperty(
+                cellData.getValue().getMenu().getId() == 1 ? true:false));
 
         mealImageCol.setCellFactory(param -> new TableCell<Meal, ImageInfo>() {
 

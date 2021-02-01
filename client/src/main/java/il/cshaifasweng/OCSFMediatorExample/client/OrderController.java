@@ -4,6 +4,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.events.BranchDataControllerLoa
 import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -54,6 +55,8 @@ public class OrderController implements Initializable {
     @FXML
     private TableColumn idCol;
 
+    @FXML
+    private TableColumn<Meal, Boolean>  networkMealMenuCol;
 
     @FXML
     private TableView<Meal> cartTable;
@@ -138,6 +141,11 @@ public class OrderController implements Initializable {
         cartColPrice.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
 
         picCol.setCellValueFactory(new PropertyValueFactory<Meal, ImageInfo>("image"));
+
+
+        networkMealMenuCol.setCellValueFactory(cellData -> new SimpleBooleanProperty(
+                cellData.getValue().getMenu().getId() == 1 ? true:false));
+
 
         picCol.setCellFactory(param -> new TableCell<Meal, ImageInfo>() {
 
@@ -362,6 +370,7 @@ public class OrderController implements Initializable {
 //        String message = "#order " + pickuptxt + ' ' + differenttxt + ' ' + date + ' ' + hour + ' ' + customerName + ' ' + customerPhone + ' ' +
 //                creditCard + ' ' + price + ' ' + recipientName + ' ' + recipientPhone + ' ' + recipientAddress + ' ' + mealIds;
 //        //#order pickup different date customer_name customer_phone credit_Card price recipientName recipientPhone recipientAddress MealIDs
+        clearOrderFields();
         try{
             SimpleClient.getClient().sendToServer(order);
         }catch (IOException e){
@@ -373,6 +382,15 @@ public class OrderController implements Initializable {
         //if pickup=0 ->
         //  if different=0 -> offset = 7
         //  if different -> offset = 9
+    }
+
+    void clearOrderFields(){
+        orderAddressTF.setText("");
+        recipientTF.setText("");
+        phoneTF.setText("");
+        customerPhoneTF.setText("");
+        customerNameTF.setText("");
+        creditTF.setText("");
     }
 
 

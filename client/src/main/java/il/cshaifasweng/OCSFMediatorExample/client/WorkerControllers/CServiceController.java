@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.events.LoginEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -69,6 +70,8 @@ public class CServiceController implements Initializable {
     @FXML
     private TableColumn<Meal, ImageInfo> mealImageCol;
 
+    @FXML
+    private TableColumn<Meal, Boolean>  networkMealMenuCol;
 
     @FXML
     private TextField nameTF;
@@ -115,6 +118,7 @@ public class CServiceController implements Initializable {
         String message="#logOut"+' '+ worker.getGovId();
         try{
             SimpleClient.getClient().sendToServer(message);
+            App.setRoot("login");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -260,6 +264,8 @@ public class CServiceController implements Initializable {
 
 
         mealImageCol.setCellValueFactory(new PropertyValueFactory<Meal, ImageInfo>("image"));
+        networkMealMenuCol.setCellValueFactory(cellData -> new SimpleBooleanProperty(
+                cellData.getValue().getMenu().getId() == 1 ? true:false));
 
         mealImageCol.setCellFactory(param -> new TableCell<Meal, ImageInfo>() {
 
@@ -522,11 +528,21 @@ public class CServiceController implements Initializable {
         });
     }
 
-
+    @FXML
+    private TextField refundTF;
 
     @FXML
     void sendMessage(ActionEvent event) {
-
+        System.out.println("test1");
+        Complaint complaint = complaintsTable.getSelectionModel().getSelectedItem();
+        String refund = refundTF.getText();
+        System.out.println(complaint.getId());
+        try {
+            String message = "#closeComplaint " + Integer.toString(complaint.getId()) + ' ' + refund;
+            SimpleClient.getClient().sendToServer(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -7,6 +7,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.events.LoginEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import il.cshaifasweng.OCSFMediatorExample.client.events.MenuEvent;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -71,6 +72,9 @@ public class DietitianController implements Initializable {
     private TableColumn<Meal, ImageInfo> mealImageCol;
 
     @FXML
+    private TableColumn<Meal, Boolean>  networkMealMenuCol;
+
+    @FXML
     private Button showRestaurantMapBtn;
 
     @FXML
@@ -100,6 +104,7 @@ public class DietitianController implements Initializable {
         String message="#logOut"+' '+ worker.getGovId();
         try{
             SimpleClient.getClient().sendToServer(message);
+            App.setRoot("login");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -238,6 +243,8 @@ public class DietitianController implements Initializable {
         mealPriceCol.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
         mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
         mealImageCol.setCellValueFactory(new PropertyValueFactory<Meal, ImageInfo>("image"));
+        networkMealMenuCol.setCellValueFactory(cellData -> new SimpleBooleanProperty(
+                cellData.getValue().getMenu().getId() == 1 ? true:false));
 
         mealImageCol.setCellFactory(param -> new TableCell<Meal, ImageInfo>() {
 
