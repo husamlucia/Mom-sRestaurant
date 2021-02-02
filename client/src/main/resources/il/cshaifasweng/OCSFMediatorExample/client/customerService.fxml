@@ -66,7 +66,6 @@
             </TableView>
             <Button fx:id="sendMessageBtn" layoutX="209.0" layoutY="310.0" mnemonicParsing="false" onAction="#sendMessage" prefHeight="25.0" prefWidth="135.0" text="Send Message" />
             <Text layoutX="21.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The complain has been taken care of, Thank you" wrappingWidth="134.9999999999999" />
-            <Button fx:id="lockdownInstructionBtn" layoutX="20.0" layoutY="348.0" mnemonicParsing="false" onAction="#goToLockdownInstructions" prefHeight="25.0" prefWidth="179.0" text="Lockdown Instructions" />
             <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Service">
                <font>
                   <Font size="14.0" />

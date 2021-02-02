@@ -352,7 +352,7 @@ public class OrderController implements Initializable {
             recipientPhone = phoneTF.getText();
         }
 
-        if(meals.size() == 0 || customerName.equals("") || customerPhone.equals("") || creditCard.equals("") || (different && (recipientName.equals("") || recipientPhone.equals(""))) || recipientAddress.equals("") || date.equals("") || hour.equals("")){
+        if(meals.size() == 0 || customerName.equals("") || customerPhone.equals("") || creditCard.equals("") || (different && (recipientName.equals("") || recipientPhone.equals(""))) || (pickup == false && recipientAddress.equals("")) || date.equals("") || hour.equals("")){
             EventBus.getDefault().post(new Warning("Please fill all the fields properly."));
             return;
         }

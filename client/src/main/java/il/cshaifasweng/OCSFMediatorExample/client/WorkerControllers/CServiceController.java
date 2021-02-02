@@ -317,8 +317,12 @@ public class CServiceController implements Initializable {
         maxOutside.setCellValueFactory(new PropertyValueFactory<PurpleLetter, Integer>("maxOutside"));
         purpleBrId.setCellValueFactory(new PropertyValueFactory<PurpleLetter, Integer>("id"));
 
-
-
+        try{
+            SimpleClient.getClient().sendToServer("#requestPurpleLetters");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 

@@ -1,5 +1,6 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.client.events.ConnectionEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.events.LoginEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
 import javafx.application.Platform;
@@ -103,7 +104,7 @@ public class LoginController implements Initializable {
 
     @FXML
     public void clientConnect(ActionEvent event) throws IOException {
-        App.connection(host.getText(), Integer.parseInt(port.getText()));
+        EventBus.getDefault().post(new ConnectionEvent(host.getText(), Integer.parseInt(port.getText()) ));
     }
 
     @Override

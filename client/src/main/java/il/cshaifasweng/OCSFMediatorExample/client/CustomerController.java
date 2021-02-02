@@ -171,7 +171,6 @@ public class CustomerController implements Initializable {
 
     }
 
-
     @Subscribe
     public void onBranchEvent(BranchEvent event){
         Platform.runLater(()->{

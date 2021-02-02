@@ -1,6 +1,8 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
+import il.cshaifasweng.OCSFMediatorExample.client.events.ConnectionEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.events.WarningEvent;
+import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -22,23 +24,15 @@ import org.greenrobot.eventbus.Subscribe;
 public class App extends Application {
 
     private static Scene scene;
-    private static SimpleClient client;
-    private static Stage stage1;
+    private SimpleClient client;
 
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
         scene = new Scene(loadFXML("login"));
         stage.setScene(scene);
-        stage1 = stage;
         stage.show();
     }
-
-    public static void connection(String host, int port) throws IOException {
-        client = SimpleClient.initClient(host, port);
-        client.openConnection();
-    }
-
 
     public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
@@ -68,7 +62,30 @@ public class App extends Application {
         });
     }
 
+    @Subscribe
+    public void onConnectionEvent(ConnectionEvent event) {
+        Platform.runLater(() -> {
+            client = SimpleClient.initClient(event.getHost(), event.getPort());
+            try {
+                client.openConnection();
+                System.out.println("Connection ready");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
+    @Subscribe
+    public void onWarning(Warning warning){
+        Platform.runLater(() -> {
+            Alert alert = new Alert(AlertType.INFORMATION,
+                    String.format("Message: %s\nTimestamp: %s\n",
+                            warning.getMessage(),
+                            warning.getTime().toString())
+            );
+            alert.show();
+        });
+    }
     public static void main(String[] args) {
 
         launch();

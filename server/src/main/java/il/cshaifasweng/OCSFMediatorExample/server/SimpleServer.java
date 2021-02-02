@@ -8,7 +8,6 @@ import il.cshaifasweng.OCSFMediatorExample.server.ocsf.AbstractServer;
 import il.cshaifasweng.OCSFMediatorExample.server.ocsf.ConnectionToClient;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -365,8 +364,14 @@ public class SimpleServer extends AbstractServer {
         Branch branch = branchDao.findById(id);
 
         List<Complaint> complaints = branch.getComplaints();
+        List<Complaint> toSend = new ArrayList<>();
+        for(Complaint complaint: complaints){
+            if(complaint.getStatus().equals("Open")){
+                toSend.add(complaint);
+            }
+        }
 
-        ComplaintEvent complaintEvent = new ComplaintEvent(complaints);
+        ComplaintEvent complaintEvent = new ComplaintEvent(toSend);
         try {
             client.sendToClient(complaintEvent);
             String message = "Complaints sent, you can see them in the table view.";
