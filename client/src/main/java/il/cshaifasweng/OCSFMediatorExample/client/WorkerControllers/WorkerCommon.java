@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.WorkerControllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.client.events.BranchDataControllerLoaded;
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.events.LoginEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
@@ -14,11 +15,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.*;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -61,7 +65,7 @@ public class WorkerCommon implements Initializable {
     private TableColumn<Meal, String> mealNameCol;
 
     @FXML
-    private TableColumn<Meal, List<String>> mealIngCol;
+    private TableColumn<Meal, String> mealIngCol;
 
     @FXML
     private TableColumn<Meal, Double> mealPriceCol;
@@ -114,7 +118,7 @@ public class WorkerCommon implements Initializable {
 
     @FXML
     void logOut(ActionEvent event) {
-        String message="#logOut"+' '+ worker.getGovId();
+        String message="#logOut "+ worker.getGovId();
         try{
             SimpleClient.getClient().sendToServer(message);
             App.setRoot("login");
@@ -159,7 +163,6 @@ public class WorkerCommon implements Initializable {
 
 
     public void initializeDateAndHours(Branch branch) {
-
 
         String openh = branch.getOpenHours();
         String closeh = branch.getCloseHours();
@@ -253,7 +256,7 @@ public class WorkerCommon implements Initializable {
         mealIdCol.setCellValueFactory(new PropertyValueFactory<Meal, Integer>("id"));
         mealNameCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
         mealPriceCol.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
-        mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
+        mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("ingredients"));
 
         tableNumberMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, Integer>("id"));
         numOfSeatsMapCol.setCellValueFactory(new PropertyValueFactory<SimpleTable, String>("capacity"));
@@ -310,15 +313,18 @@ public class WorkerCommon implements Initializable {
         App.setRoot("login");
     }
 
-
-
     @FXML
     void requestRestaurantMap(ActionEvent event) {
         Button b = (Button) event.getSource();
         try {
             String date = datePicker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String hour = (String) hourComboBox.getValue();
-            String message = "#requestMap " + branchTable.getSelectionModel().getSelectedItem().getId() + ' ' + date + ' ' + hour + ' ' + b.getText().toLowerCase();
+            Branch br = branchTable.getSelectionModel().getSelectedItem();
+            if(br==null || date.equals("") || hour.equals("")){
+                EventBus.getDefault().post(new Warning("Please select branch and pick date and hour correctly."));
+                return;
+            }
+            String message = "#requestMap " + br.getId() + ' ' + date + ' ' + hour + ' ' + b.getText().toLowerCase();
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -330,7 +336,10 @@ public class WorkerCommon implements Initializable {
     @FXML
     void requestMenu(ActionEvent event) {
         this.branch = branchTable.getSelectionModel().getSelectedItem();
-
+        if(branch ==null){
+            EventBus.getDefault().post(new Warning("Please select a branch."));
+            return;
+        }
         int id = branch.getId();
         try {
             String message = "#requestMenu " + Integer.toString(id);
@@ -340,5 +349,25 @@ public class WorkerCommon implements Initializable {
             e.printStackTrace();
         }
     }
-
+    @FXML
+    void goToBook(ActionEvent event) throws IOException {
+        Parent root;
+        Branch br = branchTable.getSelectionModel().getSelectedItem();
+        if(branch ==null){
+            EventBus.getDefault().post(new Warning("Please select a branch."));
+            return;
+        }
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("booking.fxml"));
+            root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Worker Booking");
+            stage.setScene(new Scene(root));
+            stage.show();
+            EventBus.getDefault().post(new BranchDataControllerLoaded(branch));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

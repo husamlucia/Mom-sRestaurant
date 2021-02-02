@@ -60,12 +60,12 @@
     -fx-padding: 2 0 2 10px;
     -fx-text-fill: black;
 }
-.table-row-cell: hover {
+.table-row-cell:filled:hover {
     -fx-background-color: #d9b68f;
     -fx-text-fill: black;
 }
 
-.table-row-cell:selected{
+.table-row-cell:filled:selected{
     -fx-background-color: #b39676;
 }
 

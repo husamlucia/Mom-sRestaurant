@@ -607,15 +607,13 @@ public class WorkerController implements Initializable {
         brId = branchIdTF.getText();
         price = Double.parseDouble(priceTF.getText());
 
-        String[] ing = ingTxt.split("\\s+");
-        List<String> ingredients = Arrays.asList(ing);
 
         ImageInfo image = imageToByteArray(mealImageView.getImage());
         mealImageView.setImage(null);
         mealImageView.setImage(byteArrayToImage(image));
 
         Meal oldMeal = mealToUpdate;
-        Meal newMeal = new Meal(name, price, ingredients, image);
+        Meal newMeal = new Meal(name, price, ingTxt, image);
         createAndSendMealUpdateToServer(oldMeal, newMeal, branch, Integer.parseInt(brId));
     }
 

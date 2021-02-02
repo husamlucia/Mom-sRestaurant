@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.WorkerControllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.client.events.BranchDataControllerLoaded;
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.events.LoginEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
@@ -13,7 +14,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
@@ -68,7 +71,7 @@ public class ManagerController implements Initializable {
     private TableColumn<Meal, String> mealNameCol;
 
     @FXML
-    private TableColumn<Meal, List<String>> mealIngCol;
+    private TableColumn<Meal, String> mealIngCol;
 
     @FXML
     private TableColumn<Meal, Double> mealPriceCol;
@@ -263,7 +266,7 @@ public class ManagerController implements Initializable {
         mealIdCol.setCellValueFactory(new PropertyValueFactory<Meal, Integer>("id"));
         mealNameCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
         mealPriceCol.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
-        mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
+        mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("ingredients"));
         mealImageCol.setCellValueFactory(new PropertyValueFactory<Meal, ImageInfo>("image"));
 
         networkMealMenuCol.setCellValueFactory(cellData -> new SimpleBooleanProperty(
@@ -403,14 +406,18 @@ public class ManagerController implements Initializable {
         App.setRoot("login");
     }
 
-
     @FXML
     void requestRestaurantMap(ActionEvent event) {
         Button b = (Button) event.getSource();
         try {
             String date = datePicker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String hour = (String) hourComboBox.getValue();
-            String message = "#requestMap " + branchTable.getSelectionModel().getSelectedItem().getId() + ' ' + date + ' ' + hour + ' ' + b.getText().toLowerCase();
+            Branch br = branchTable.getSelectionModel().getSelectedItem();
+            if(br==null || date.equals("") || hour.equals("")){
+                EventBus.getDefault().post(new Warning("Please select branch and pick date and hour correctly."));
+                return;
+            }
+            String message = "#requestMap " + br.getId() + ' ' + date + ' ' + hour + ' ' + b.getText().toLowerCase();
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -418,10 +425,14 @@ public class ManagerController implements Initializable {
         }
     }
 
+
     @FXML
     void requestMenu(ActionEvent event) {
         this.branch = branchTable.getSelectionModel().getSelectedItem();
-
+        if(branch ==null){
+            EventBus.getDefault().post(new Warning("Please select branch and pick date and hour correctly."));
+            return;
+        }
         int id = branch.getId();
         try {
             String message = "#requestMenu " + Integer.toString(id);
@@ -432,7 +443,27 @@ public class ManagerController implements Initializable {
         }
     }
 
-
+    @FXML
+    void goToBook(ActionEvent event) throws IOException {
+        Parent root;
+        Branch br = branchTable.getSelectionModel().getSelectedItem();
+        if(branch ==null){
+            EventBus.getDefault().post(new Warning("Please select a branch."));
+            return;
+        }
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("booking.fxml"));
+            root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Worker Booking");
+            stage.setScene(new Scene(root));
+            stage.show();
+            EventBus.getDefault().post(new BranchDataControllerLoaded(branch));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     //Manager
 
 
@@ -535,7 +566,13 @@ public class ManagerController implements Initializable {
 
     @FXML
     public void showReports() {
-        int month = Integer.parseInt((String) monthComboBox.getValue()), branch = branchTable.getSelectionModel().getSelectedItem().getId();
+        int month = Integer.parseInt((String) monthComboBox.getValue());
+        Branch  br = branchTable.getSelectionModel().getSelectedItem();
+        if(br == null || month > 12 || month < 1){
+            EventBus.getDefault().post(new Warning("Please select branch and pick month correctly."));
+            return;
+        }
+        int branch = br.getId();
 
         try {
             ReportRequest request = new ReportRequest(branch, month, ordersCheckBox.isSelected(), cancelledCheckBox.isSelected(), complaintsCheckBox.isSelected());
@@ -567,6 +604,11 @@ public class ManagerController implements Initializable {
     @FXML
     void approveMeal(ActionEvent event) {
         MealUpdate mealUpdate = mealUpdatesTable.getSelectionModel().getSelectedItem();
+        if(mealUpdate == null){
+            EventBus.getDefault().post(new Warning("Please select meal update to approve."));
+            return;
+        }
+        mealUpdatesTable.getItems().remove(mealUpdate);
         mealUpdate.setStatus("Approved");
         try {
             SimpleClient.getClient().sendToServer(mealUpdate);
@@ -582,11 +624,15 @@ public class ManagerController implements Initializable {
     @FXML
     void denyMeal(ActionEvent event) {
         MealUpdate mealUpdate = mealUpdatesTable.getSelectionModel().getSelectedItem();
+        if(mealUpdate == null){
+            EventBus.getDefault().post(new Warning("Please select meal update to deny."));
+            return;
+        }
         mealUpdatesTable.getItems().remove(mealUpdate);
         mealUpdate.setStatus("Denied");
         try {
             SimpleClient.getClient().sendToServer(mealUpdate);
-
+            SimpleClient.getClient().sendToServer("#requestMenu " + branch.getId());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -596,11 +642,14 @@ public class ManagerController implements Initializable {
     @FXML
     void viewUpdates(ActionEvent event) {
         this.branch = branchTable.getSelectionModel().getSelectedItem();
+        if(branch == null){
+            EventBus.getDefault().post(new Warning("Please select branch."));
+            return;
+        }
         String id = Integer.toString(branch.getId());
         try {
             String message = "#requestUpdates " + id;
             SimpleClient.getClient().sendToServer(message);
-            System.out.println("Sent message");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

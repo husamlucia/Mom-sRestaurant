@@ -2,6 +2,7 @@ package il.cshaifasweng.OCSFMediatorExample.client.WorkerControllers;
 
 import il.cshaifasweng.OCSFMediatorExample.client.App;
 import il.cshaifasweng.OCSFMediatorExample.client.SimpleClient;
+import il.cshaifasweng.OCSFMediatorExample.client.events.BranchDataControllerLoaded;
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
 import il.cshaifasweng.OCSFMediatorExample.client.events.LoginEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.*;
@@ -14,12 +15,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.*;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,7 +35,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -63,7 +66,7 @@ public class DietitianController implements Initializable {
     private TableColumn<Meal, String> mealNameCol;
 
     @FXML
-    private TableColumn<Meal, List<String>> mealIngCol;
+    private TableColumn<Meal, String> mealIngCol;
 
     @FXML
     private TableColumn<Meal, Double> mealPriceCol;
@@ -241,7 +244,7 @@ public class DietitianController implements Initializable {
         mealIdCol.setCellValueFactory(new PropertyValueFactory<Meal, Integer>("id"));
         mealNameCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("name"));
         mealPriceCol.setCellValueFactory(new PropertyValueFactory<Meal, Double>("price"));
-        mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, List<String>>("ingredients"));
+        mealIngCol.setCellValueFactory(new PropertyValueFactory<Meal, String>("ingredients"));
         mealImageCol.setCellValueFactory(new PropertyValueFactory<Meal, ImageInfo>("image"));
         networkMealMenuCol.setCellValueFactory(cellData -> new SimpleBooleanProperty(
                 cellData.getValue().getMenu().getId() == 1 ? true:false));
@@ -305,23 +308,57 @@ public class DietitianController implements Initializable {
     }
 
 
+
+    @FXML
+    void goToBook(ActionEvent event) throws IOException {
+        Parent root;
+        Branch br = branchTable.getSelectionModel().getSelectedItem();
+        if(branch ==null){
+            EventBus.getDefault().post(new Warning("Please select a branch."));
+            return;
+        }
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("booking.fxml"));
+            root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Worker Booking");
+            stage.setScene(new Scene(root));
+            stage.show();
+            EventBus.getDefault().post(new BranchDataControllerLoaded(branch));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @FXML
     void requestRestaurantMap(ActionEvent event) {
         Button b = (Button) event.getSource();
         try {
             String date = datePicker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             String hour = (String) hourComboBox.getValue();
-            String message = "#requestMap " + branchTable.getSelectionModel().getSelectedItem().getId() + ' ' + date + ' ' + hour + ' ' + b.getText().toLowerCase();
+            Branch br = branchTable.getSelectionModel().getSelectedItem();
+            if(br==null || date.equals("") || hour.equals("")){
+                EventBus.getDefault().post(new Warning("Please select branch and pick date and hour correctly."));
+                return;
+            }
+            String message = "#requestMap " + br.getId() + ' ' + date + ' ' + hour + ' ' + b.getText().toLowerCase();
             SimpleClient.getClient().sendToServer(message);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
+
+
     @FXML
     void requestMenu(ActionEvent event) {
         this.branch = branchTable.getSelectionModel().getSelectedItem();
-
+        if(branch ==null){
+            EventBus.getDefault().post(new Warning("Please select branch and pick date and hour correctly."));
+            return;
+        }
         int id = branch.getId();
         try {
             String message = "#requestMenu " + Integer.toString(id);
@@ -395,7 +432,10 @@ public class DietitianController implements Initializable {
         branchIdTF.setDisable(false);
 
         Meal meal = (Meal) menuTable.getSelectionModel().getSelectedItem();
-
+        if(meal == null){
+                EventBus.getDefault().post(new Warning("Please select meal."));
+                return;
+        }
         nameTF.setText(meal.getName());
         ingredientsTF.setText(meal.getIngredients().toString());
         priceTF.setText(Double.toString(meal.getPrice()));
@@ -406,7 +446,10 @@ public class DietitianController implements Initializable {
 
     @FXML
     void removeMeal(ActionEvent event) {
-        Meal meal = (Meal) menuTable.getSelectionModel().getSelectedItem();
+        Meal meal = (Meal) menuTable.getSelectionModel().getSelectedItem();        if(meal == null){
+            EventBus.getDefault().post(new Warning("Please select meal."));
+            return;
+        }
         mealToUpdate = meal;
         int brId = branch.getId();
         createAndSendMealUpdateToServer(meal, null, branch, brId);
@@ -424,15 +467,16 @@ public class DietitianController implements Initializable {
         brId = branchIdTF.getText();
         price = Double.parseDouble(priceTF.getText());
 
-        String[] ing = ingTxt.split("\\s+");
-        List<String> ingredients = Arrays.asList(ing);
-
         ImageInfo image = imageToByteArray(mealImageView.getImage());
         mealImageView.setImage(null);
         mealImageView.setImage(byteArrayToImage(image));
 
         Meal oldMeal = mealToUpdate;
-        Meal newMeal = new Meal(name, price, ingredients, image);
+        Meal newMeal = new Meal(name, price, ingTxt, image);
+        if(name.equals("") || price < 0 || price > 500 || ingTxt.equals("") || image == null){
+                EventBus.getDefault().post(new Warning("Please fill all fields correctly."));
+                return;
+        }
         createAndSendMealUpdateToServer(oldMeal, newMeal, branch, Integer.parseInt(brId));
     }
 

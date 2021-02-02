@@ -6,17 +6,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="183.0" prefWidth="356.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LoginController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="356.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.LoginController">
    <children>
-      <Button layoutX="14.0" layoutY="148.0" mnemonicParsing="false" onAction="#loadMain" text="Continue as Guest" />
-      <Button layoutX="181.0" layoutY="148.0" mnemonicParsing="false" onAction="#checkLogin" text="Log in" />
-      <Button layoutX="230.0" layoutY="10.0" mnemonicParsing="false" onAction="#initWorkers" text="initalize restaurant" />
-      <TextField fx:id="id" layoutX="17.0" layoutY="56.0" prefHeight="27.0" prefWidth="323.0" promptText="Government ID" />
-      <TextField fx:id="password" layoutX="17.0" layoutY="101.0" prefHeight="27.0" prefWidth="323.0" promptText="Password" />
-      <Label layoutX="10.0" layoutY="15.0" text="Enter details to login as Worker">
+      <Button layoutX="15.0" layoutY="279.0" mnemonicParsing="false" onAction="#loadMain" text="Continue as Guest" />
+      <Button layoutX="288.0" layoutY="279.0" mnemonicParsing="false" onAction="#checkLogin" text="Log in" />
+      <Button layoutX="230.0" layoutY="109.0" mnemonicParsing="false" onAction="#initWorkers" text="initalize restaurant" />
+      <TextField fx:id="id" layoutX="18.0" layoutY="187.0" prefHeight="27.0" prefWidth="323.0" promptText="Government ID" />
+      <TextField fx:id="password" layoutX="18.0" layoutY="232.0" prefHeight="27.0" prefWidth="323.0" promptText="Password" />
+      <Label layoutX="11.0" layoutY="152.0" text="Enter details to login as Worker">
          <font>
             <Font name="Verdana" size="12.0" />
          </font>
       </Label>
+      <Label layoutX="11.0" layoutY="14.0" text="Enter NGROK host and PORT to start demonstration" />
+      <TextField fx:id="host" layoutX="9.0" layoutY="31.0" prefHeight="26.0" prefWidth="339.0" promptText="NGROK HOST" />
+      <TextField fx:id="port" layoutX="9.0" layoutY="67.0" prefHeight="26.0" prefWidth="339.0" promptText="PORT" />
+      <Button layoutX="16.0" layoutY="109.0" mnemonicParsing="false" onAction="#clientConnect" text="CONNECT CLIENT" />
    </children>
 </AnchorPane>

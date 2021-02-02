@@ -22,19 +22,23 @@ import org.greenrobot.eventbus.Subscribe;
 public class App extends Application {
 
     private static Scene scene;
-    private SimpleClient client;
+    private static SimpleClient client;
     private static Stage stage1;
 
     @Override
     public void start(Stage stage) throws IOException {
         EventBus.getDefault().register(this);
-        client = SimpleClient.getClient();
-        client.openConnection();
         scene = new Scene(loadFXML("login"));
         stage.setScene(scene);
         stage1 = stage;
         stage.show();
     }
+
+    public static void connection(String host, int port) throws IOException {
+        client = SimpleClient.initClient(host, port);
+        client.openConnection();
+    }
+
 
     public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));

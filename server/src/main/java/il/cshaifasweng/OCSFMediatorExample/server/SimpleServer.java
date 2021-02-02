@@ -78,9 +78,9 @@ public class SimpleServer extends AbstractServer {
             String open = msgString.substring(11, 16);
             String close = msgString.substring(17, 22);
             addNewBranch(open, close);
-        } else if (msgString.startsWith("#addDefaultWorkers")) {
+        } else if (msgString.startsWith("#initRestaurant")) {
             //Should send to client list of Meals..
-            initiateWorkers();
+            initiateRestaurant();
         } else if (msgString.startsWith("#createmapswithtables")) {
             create_branches_with_maps_and_tables();
         } else if (msg.getClass().equals(Complaint.class)) {
@@ -637,35 +637,44 @@ public class SimpleServer extends AbstractServer {
 
         try {
             Dao<Worker> workerDao = new Dao(Worker.class);
-            Worker[] workers = new Worker[5];
+            Worker[] workers = new Worker[10];
 
-            workers[0] = new Worker(5, "209146687", 2, "Husam Lucia", "bestadmin123");
+            workers[0] = new Worker(5, "209146687", 1, "Husam Lucia", "bestadmin123");
+            workers[2] = new Worker(3, "209146695", 1, "Sahar Lucia", "sahar123");
+            workers[3] = new Worker(2, "206214785", 1, "Loai Marei", "loainoob1");
+            workers[4] = new Worker(1, "209050203", 1, "Dalia Khateb", "daliakhateb123");
+
+            workers[5] = new Worker(4, "209456458", 3, "Yosra Abd Algani", "yosra123");
+            workers[6] = new Worker(3, "209052342", 3, "John Doe", "johnnyJohn");
+            workers[6] = new Worker(1, "209052342", 3, "John Doe", "johnnyJohn");
+
+            workers[7] = new Worker(4, "201234567", 4, "Malki Grossman", "malki13");
+            workers[8] = new Worker(1, "201234568", 4, "Liel Friedman", "liel123");
+
             workers[1] = new Worker(4, "209050202", 2, "Samer Kharouba", "lovesamer");
-            workers[2] = new Worker(3, "209146695", 2, "Sahar Lucia", "sahar123");
-            workers[3] = new Worker(2, "206214785", 2, "Loai Marei", "loainoob1");
-            workers[4] = new Worker(1, "209050203", 2, "Dalia Khateb", "daliakhateb123");
-
+            workers[9] = new Worker(1, "11234567", 2, "Sam Carson", "sammySam123");
             for (Worker worker : workers) {
                 workerDao.save(worker);
             }
-            System.out.format("Done");
+            System.out.format("Successfully added workers.");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
+    void initiateRestaurant(){
+        create_branches_with_maps_and_tables();
+        initiateWorkers();
+    }
+
     void create_branches_with_maps_and_tables() {
         try {
             Dao<Branch> brDao = new Dao(Branch.class);
-            Dao<Mapp> mapDao = new Dao(Mapp.class);
-            Dao<Tablee> tDao = new Dao(Tablee.class);
 
             Branch br1 = new Branch("09:00", "23:00");
-            Branch br2 = new Branch("09:00", "22:00");
             Mapp insideMap1 = new Mapp(br1, "inside");
             Mapp outsideMap1 = new Mapp(br1, "outside");
-
             Tablee table1 = new Tablee(2, insideMap1);
             Tablee table2 = new Tablee(3, insideMap1);
             Tablee table3 = new Tablee(4, insideMap1);
@@ -678,7 +687,6 @@ public class SimpleServer extends AbstractServer {
             insideMap1.addTable(table4);
             insideMap1.addTable(table5);
             insideMap1.addTable(table6);
-
 
             Tablee table7 = new Tablee(2, outsideMap1);
             Tablee table8 = new Tablee(2, outsideMap1);
@@ -694,6 +702,7 @@ public class SimpleServer extends AbstractServer {
             outsideMap1.addTable(table12);
 
 
+            Branch br2 = new Branch("09:00", "22:00");
             Mapp insideMap2 = new Mapp(br2, "inside");
             Mapp outsideMap2 = new Mapp(br2, "outside");
 
@@ -710,7 +719,6 @@ public class SimpleServer extends AbstractServer {
             insideMap2.addTable(tablee5);
             insideMap2.addTable(tablee6);
 
-
             Tablee tablee7 = new Tablee(2, outsideMap2);
             Tablee tablee8 = new Tablee(2, outsideMap2);
             Tablee tablee9 = new Tablee(3, outsideMap2);
@@ -725,8 +733,42 @@ public class SimpleServer extends AbstractServer {
             outsideMap2.addTable(tablee12);
 
 
+            Branch br3 = new Branch("07:00", "23:00");
+            Mapp insideMap3 = new Mapp(br3, "inside");
+            Tablee tableee1 = new Tablee(2, insideMap3);
+            Tablee tableee2 = new Tablee(3, insideMap3);
+            Tablee tableee3 = new Tablee(4, insideMap3);
+            Tablee tableee4 = new Tablee(4, insideMap3);
+            Tablee tableee5 = new Tablee(4, insideMap3);
+            Tablee tableee6 = new Tablee(3, insideMap3);
+            insideMap3.addTable(tableee1);
+            insideMap3.addTable(tableee2);
+            insideMap3.addTable(tableee3);
+            insideMap3.addTable(tableee4);
+            insideMap3.addTable(tableee5);
+            insideMap3.addTable(tableee6);
+
+
+            Branch br4 = new Branch("07:30", "23:30");
+            Mapp outsideMap4 = new Mapp(br4, "outside");
+            Tablee tableee7 = new Tablee(2, outsideMap4);
+            Tablee tableee8 = new Tablee(2, outsideMap4);
+            Tablee tableee9 = new Tablee(3, outsideMap4);
+            Tablee tableee10 = new Tablee(4, outsideMap4);
+            Tablee tableee11 = new Tablee(4, outsideMap4);
+            Tablee tableee12 = new Tablee(4, outsideMap4);
+            outsideMap4.addTable(tableee7);
+            outsideMap4.addTable(tableee8);
+            outsideMap4.addTable(tableee9);
+            outsideMap4.addTable(tableee10);
+            outsideMap4.addTable(tableee11);
+            outsideMap4.addTable(tableee12);
+
             brDao.save(br1);
             brDao.save(br2);
+            brDao.save(br3);
+            brDao.save(br4);
+
             System.out.println("Done");
         } catch (Exception e) {
             e.printStackTrace();

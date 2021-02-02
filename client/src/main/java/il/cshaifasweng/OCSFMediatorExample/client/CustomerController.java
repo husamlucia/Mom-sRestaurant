@@ -6,6 +6,7 @@ import il.cshaifasweng.OCSFMediatorExample.client.events.BranchEvent;
 import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
 import il.cshaifasweng.OCSFMediatorExample.entities.Complaint;
 import il.cshaifasweng.OCSFMediatorExample.entities.CustomerDetails;
+import il.cshaifasweng.OCSFMediatorExample.entities.Warning;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -92,6 +93,10 @@ public class CustomerController implements Initializable {
     void showMenu(ActionEvent event) {
         try {
             Branch br = brTable.getSelectionModel().getSelectedItem();
+            if(br == null){
+                EventBus.getDefault().post(new Warning("Please select a branch!"));
+                return;
+            }
             int branchID = br!=null?br.getId():0;
             String message = "#requestMenu " + Integer.toString(branchID);
             SimpleClient.getClient().sendToServer(message);
@@ -116,10 +121,11 @@ public class CustomerController implements Initializable {
         //"#getAvailableHours " + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
 
         Branch br = brTable.getSelectionModel().getSelectedItem();
-
-        if(br==null) return;
+        if(br == null){
+            EventBus.getDefault().post(new Warning("Please select a branch!"));
+            return;
+        }
         int branchID = br.getId();
-
         String datetime;
         //dd-MM-yyyy
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -137,21 +143,26 @@ public class CustomerController implements Initializable {
     @FXML
     void complain(ActionEvent event) {
 
-        String name=customerNameTF.getText();
-        String phone=customerPhoneTF.getText();
-        String credit=creditTF.getText();
-        CustomerDetails customerDetails=new CustomerDetails(name,phone,credit);
-
+        Branch br = brTable.getSelectionModel().getSelectedItem();
+        if(br == null){
+            EventBus.getDefault().post(new Warning("Please select a branch!"));
+            return;
+        }
+        String name=customerNameTF.getText(),
+                phone=customerPhoneTF.getText(),
+                credit=creditTF.getText();
         String complaintMsg=complaintTF.getText();
+        if(name.equals("") || phone.length() != 10 || credit.equals("") || complaintMsg.equals("")){
+            EventBus.getDefault().post(new Warning("Enter your correct details to submit a complaint."));
+            return;
+        }
+        CustomerDetails customerDetails=new CustomerDetails(name,phone,credit);
         String datetime;
         //dd-MM-yyyy
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         LocalDateTime now = LocalDateTime.now();
         datetime = dtf.format(now);
-        Branch br = brTable.getSelectionModel().getSelectedItem();
-        //int branchID = br!=null?br.getId():0;
         Complaint complaint=new Complaint(datetime,complaintMsg,customerDetails,br);
-
         try {
             SimpleClient.getClient().sendToServer(complaint);
         } catch (IOException e) {

@@ -12,15 +12,15 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="945.0" prefWidth="1280.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="il.cshaifasweng.OCSFMediatorExample.client.WorkerControllers.ManagerController">
     <children>
-        <TableView fx:id="branchTable" layoutX="14.0" layoutY="14.0" prefHeight="202.0" prefWidth="226.0">
+        <TableView fx:id="branchTable" layoutX="14.0" layoutY="14.0" prefHeight="202.0" prefWidth="307.0">
             <columns>
                 <TableColumn fx:id="brIdCol" prefWidth="75.0" text="BrID" />
                 <TableColumn fx:id="brOpenCol" prefWidth="75.0" text="Open Hour" />
-                <TableColumn fx:id="brCloseCol" prefWidth="75.0" text="Close Hour" />
+                <TableColumn fx:id="brCloseCol" prefWidth="156.0" text="Close Hour" />
             </columns>
         </TableView>
         <Button fx:id="showMenuBtn" layoutX="14.0" layoutY="222.0" mnemonicParsing="false" onAction="#requestMenu" prefHeight="0.0" prefWidth="94.0" text="Show Menu" />
-        <TableView fx:id="menuTable" layoutX="17.0" layoutY="255.0" prefHeight="338.0" prefWidth="691.0">
+        <TableView fx:id="menuTable" layoutX="575.0" layoutY="47.0" prefHeight="580.0" prefWidth="691.0">
             <columns>
                 <TableColumn fx:id="mealIdCol" prefWidth="39.99999809265137" text="ID" />
                 <TableColumn fx:id="mealImageCol" maxWidth="164.0" minWidth="150.0" prefWidth="153.60001373291016" text="pic" />
@@ -30,9 +30,9 @@
                 <TableColumn fx:id="mealPriceCol" minWidth="0.0" prefWidth="110.0" text="Price" />
             </columns>
         </TableView>
-        <AnchorPane layoutX="247.0" layoutY="8.0" prefHeight="214.0" prefWidth="457.0">
+        <AnchorPane layoutX="14.0" layoutY="259.0" prefHeight="341.0" prefWidth="457.0">
             <children>
-                <TableView fx:id="retaurantMapTable" layoutX="242.0" layoutY="10.0" prefHeight="202.0" prefWidth="208.0">
+                <TableView fx:id="retaurantMapTable" layoutX="14.0" layoutY="139.0" prefHeight="202.0" prefWidth="208.0">
                     <columns>
                         <TableColumn fx:id="tableNumberMapCol" prefWidth="63.0" text="Table No." />
                         <TableColumn fx:id="numOfSeatsMapCol" prefWidth="50.0" text="Seats" />
@@ -51,35 +51,36 @@
         </AnchorPane>
       <AnchorPane layoutX="12.0" layoutY="593.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="341.0" prefWidth="1038.0">
          <children>
-            <AnchorPane fx:id="paneManager1" layoutX="848.0" layoutY="48.0" prefHeight="190.0" prefWidth="170.0">
-               <children>
-                  <Button fx:id="showReportsBtn" layoutX="8.0" layoutY="150.0" mnemonicParsing="false" onAction="#showReports" prefHeight="25.0" prefWidth="94.0" text="Show Reports" />
-                  <CheckBox fx:id="ordersCheckBox" layoutX="9.0" layoutY="123.0" mnemonicParsing="false" text="Total Orders" />
-                  <CheckBox fx:id="cancelledCheckBox" layoutX="8.0" layoutY="96.0" mnemonicParsing="false" text="Cancelled by Quarantine" />
-                  <CheckBox fx:id="complaintsCheckBox" layoutX="9.0" layoutY="71.0" mnemonicParsing="false" text="Complaints" />
-                  <Label layoutX="8.0" layoutY="5.0" text="Request Reports:" />
-                  <ComboBox fx:id="monthComboBox" layoutX="10.0" layoutY="31.0" prefWidth="150.0" />
-               </children>
-            </AnchorPane>
-            <TableView fx:id="mealUpdatesTable" layoutX="14.0" layoutY="48.0" prefHeight="243.0" prefWidth="827.0">
+            <TableView fx:id="mealUpdatesTable" layoutX="14.0" layoutY="48.0" prefHeight="243.0" prefWidth="1019.0">
                <columns>
                   <TableColumn fx:id="mealUpdatesID" prefWidth="68.0" text="MealID" />
                   <TableColumn fx:id="mealUpdatesOldName" prefWidth="82.0" text="OldName" />
                   <TableColumn fx:id="mealUpdatesNewName" prefWidth="75.0" text="newName" />
                   <TableColumn fx:id="mealUpdatesOldPrice" prefWidth="75.0" text="oldPrice" />
-                  <TableColumn fx:id="mealUpdatesNewPrice" prefWidth="75.0" text="newPrice" />
+                  <TableColumn fx:id="mealUpdatesNewPrice" prefWidth="92.0" text="newPrice" />
                   <TableColumn fx:id="mealUpdatesOldImage" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="oldPic" />
-                  <TableColumn fx:id="mealUpdatesNewImage" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="newPic" />
-                  <TableColumn fx:id="mealUpdatesOldBranch" prefWidth="75.0" text="oldBranch" />
-                  <TableColumn fx:id="mealUpdatesNewBranch" prefWidth="75.0" text="newBranch" />
+                  <TableColumn fx:id="mealUpdatesNewImage" maxWidth="192.0" minWidth="140.0" prefWidth="150.0" text="newPic" />
+                  <TableColumn fx:id="mealUpdatesOldBranch" prefWidth="121.0" text="oldBranch" />
+                  <TableColumn fx:id="mealUpdatesNewBranch" prefWidth="205.0" text="newBranch" />
                </columns>
             </TableView>
             <Button fx:id="approveBtn" layoutX="119.0" layoutY="301.0" mnemonicParsing="false" onAction="#approveMeal" prefHeight="25.0" prefWidth="94.0" text="Approve" />
             <Button fx:id="denyBtn" layoutX="16.0" layoutY="301.0" mnemonicParsing="false" onAction="#denyMeal" prefHeight="25.0" prefWidth="94.0" text="Deny" />
-            <Button fx:id="viewUpdatesBtn" layoutX="78.0" layoutY="12.0" mnemonicParsing="false" onAction="#viewUpdates" prefHeight="25.0" prefWidth="94.0" text="Show Updates" />
             <Text layoutX="16.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manager" />
          </children>
       </AnchorPane>
-      <Button fx:id="logOutBtn" layoutX="788.0" layoutY="18.0" mnemonicParsing="false" onAction="#logOut" text="log out" textFill="#302c2c" />
+      <Button fx:id="logOutBtn" layoutX="1205.0" layoutY="14.0" mnemonicParsing="false" onAction="#logOut" text="log out" textFill="#302c2c" />
+      <Button fx:id="viewUpdatesBtn" layoutX="128.0" layoutY="221.0" mnemonicParsing="false" onAction="#viewUpdates" prefHeight="25.0" prefWidth="94.0" text="Show Updates" />
+      <AnchorPane fx:id="paneManager1" layoutX="343.0" layoutY="47.0" prefHeight="190.0" prefWidth="170.0">
+         <children>
+            <Button fx:id="showReportsBtn" layoutX="8.0" layoutY="150.0" mnemonicParsing="false" onAction="#showReports" prefHeight="25.0" prefWidth="94.0" text="Show Reports" />
+            <CheckBox fx:id="ordersCheckBox" layoutX="9.0" layoutY="123.0" mnemonicParsing="false" text="Total Orders" />
+            <CheckBox fx:id="cancelledCheckBox" layoutX="8.0" layoutY="96.0" mnemonicParsing="false" text="Cancelled by Quarantine" />
+            <CheckBox fx:id="complaintsCheckBox" layoutX="9.0" layoutY="71.0" mnemonicParsing="false" text="Complaints" />
+            <Label layoutX="8.0" layoutY="5.0" text="Request Reports:" />
+            <ComboBox fx:id="monthComboBox" layoutX="10.0" layoutY="31.0" prefWidth="150.0" />
+         </children>
+      </AnchorPane>
+      <Button layoutX="243.0" layoutY="222.0" mnemonicParsing="false" onAction="#goToBook" text="Book" />
     </children>
 </AnchorPane>

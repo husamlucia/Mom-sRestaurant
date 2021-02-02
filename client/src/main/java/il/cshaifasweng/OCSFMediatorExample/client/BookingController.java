@@ -1,10 +1,7 @@
 package il.cshaifasweng.OCSFMediatorExample.client;
 
 import il.cshaifasweng.OCSFMediatorExample.client.events.BranchDataControllerLoaded;
-import il.cshaifasweng.OCSFMediatorExample.entities.BookingEvent;
-import il.cshaifasweng.OCSFMediatorExample.entities.Booking;
-import il.cshaifasweng.OCSFMediatorExample.entities.Branch;
-import il.cshaifasweng.OCSFMediatorExample.entities.PurpleLetter;
+import il.cshaifasweng.OCSFMediatorExample.entities.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -34,10 +30,7 @@ public class BookingController implements Initializable {
      * Booking is working fine. Got to update so it limits time from 15 minutes of opening hour
      * and 1 hour before closing.*/
     private int branchID;
-    private String openh, closeh;
     private Branch branch;
-    private boolean branchHasInside;
-    private boolean branchHasOutside;
 
 
     private String bookingDate;
@@ -46,7 +39,6 @@ public class BookingController implements Initializable {
     private int bookingNumOfCustomers;
     private int countDeclare = 0;
 
-    AnchorPane anchorpane;
 
     public BookingController() {
     }
@@ -74,8 +66,6 @@ public class BookingController implements Initializable {
             Branch br = event.getBranch();
             branch = br;
             branchID = br.getId();
-            openh = br.getOpenHours();
-            closeh = br.getCloseHours();
             initializeDateAndHours(branch);
             if (br.getMap("inside") == null) insideButton.setDisable(true);
             if (br.getMap("outside") == null) outsideButton.setDisable(true);
@@ -84,7 +74,6 @@ public class BookingController implements Initializable {
 
 
     public void initializeDateAndHours(Branch branch) {
-
         String openh = branch.getOpenHours();
         String closeh = branch.getCloseHours();
         PurpleLetter p = branch.getPurpleLetter();
@@ -162,11 +151,6 @@ public class BookingController implements Initializable {
     @FXML
     private Button bookBtn;
 
-    @FXML
-    private TextField BookingDateTF;
-
-    @FXML
-    private TextField BookingTimeTF;
 
     @FXML
     private TextField BookingNumCustomersTF;
@@ -186,21 +170,6 @@ public class BookingController implements Initializable {
     @FXML
     private TableColumn colCustomersNum;
 
-    @FXML
-    private TextField BookingNameTF;
-
-    @FXML
-    private TextField BookingIdTF;
-
-    @FXML
-    void BookingCancel(ActionEvent event) {
-        String message = "#removeBook " + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
-        try {
-            SimpleClient.getClient().sendToServer(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     @FXML
     void BookingDeclare(ActionEvent event) {
@@ -212,14 +181,12 @@ public class BookingController implements Initializable {
 
     @FXML
     void BookingGetInAvailable(ActionEvent event) {
-
         checkAvailability("inside");
     }
 
     @FXML
     void BookingGetOutAvailable(ActionEvent event) {
         checkAvailability("outside");
-
     }
 
 
@@ -227,6 +194,10 @@ public class BookingController implements Initializable {
 
         init(datePicker.getValue().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), (String) hourComboBox.getValue(), location, Integer.parseInt(BookingNumCustomersTF.getText()));
         //        String msg = "#checkBooking " + " " +  brId + " " + book.getDate() + " " + book.getTime() + " " + book.getArea() + " " + book.getCustomersNum();
+        if(branchID == 0 || bookingDate.equals("") || bookingTime.equals("") || bookingArea.equals("") || bookingNumOfCustomers < 1){
+            EventBus.getDefault().post(new Warning("Please fill the required info correctly."));
+            return;
+        }
         String message = "#checkBooking " + branchID + ' ' + bookingDate + ' ' + bookingTime + ' ' + bookingArea + ' ' + bookingNumOfCustomers;
         //Checking for availability of Bookings in the bookingDate and bookingTime we present.
         //We also need to send Branch ID of the branch we're accessing.
@@ -244,6 +215,10 @@ public class BookingController implements Initializable {
         countDeclare = 0;
         bookBtn.setDisable(true);
         Booking book = (Booking) AvailableTimeTable.getSelectionModel().getSelectedItem();
+        if(book == null){
+            EventBus.getDefault().post(new Warning("Please select from the table to book."));
+            return;
+        }
         try {
             SimpleClient.getClient().sendToServer(book);
 
@@ -262,8 +237,11 @@ public class BookingController implements Initializable {
 
     @FXML
     void cancelBooking(ActionEvent event) {
-        System.out.println("Yo");
         String id = cancelBookingTF.getText();
+        if(id.equals("")){
+            EventBus.getDefault().post(new Warning("Enter correct complaint ID to cancel it."));
+            return;
+        }
         String message = "#cancelBooking " + id;
         try{
             SimpleClient.getClient().sendToServer(message);

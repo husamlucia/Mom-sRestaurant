@@ -32,8 +32,7 @@ public class Meal implements Serializable {
     @Column(name = "price")
     private Double price;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> ingredients;
+    private String ingredients;
 
 
     @OneToOne
@@ -44,7 +43,7 @@ public class Meal implements Serializable {
 
     }
 
-    public Meal(String name, double price, List<String> ingredients, ImageInfo image) {
+    public Meal(String name, double price, String ingredients, ImageInfo image) {
         this.name = name;
         this.price = price;
         this.ingredients = ingredients;
@@ -99,11 +98,11 @@ public class Meal implements Serializable {
         this.price = price;
     }
 
-    public List<String> getIngredients() {
+    public String getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<String> ingredients) {
+    public void setIngredients(String ingredients) {
         this.ingredients = ingredients;
     }
 }
